@@ -1,0 +1,28 @@
+name: Setup Rust CI
+description: Install stable rustc/cargo so Flutter can compile rqbit_engine.
+
+inputs:
+  targets:
+    description: Extra rustup targets, comma-separated (host triple is always installed)
+    required: false
+    default: ""
+  cargo-ndk:
+    description: Also install cargo-ndk and Android rust targets
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: ${{ inputs.targets }}
+
+    - name: Install cargo-ndk
+      if: ${{ inputs.cargo-ndk == 'true' }}
+      shell: bash
+      run: |
+        set -euo pipefail
+        rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android
+        cargo install cargo-ndk --locked

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=JAVP (TV / Game Mode)
+Comment=Stream media with TV layout for gamepad and remote
+GenericName=Media Player
+Exec=env JAVP_UI=tv javp %U
+Icon=javp
+Type=Application
+Categories=AudioVideo;Video;Player;Game;
+MimeType=x-scheme-handler/javp;x-scheme-handler/javp-sources;
+Keywords=media;player;video;stream;iptv;tv;gamepad;remote;steamdeck;
+StartupNotify=true
+StartupWMClass=javp
+X-Steam-Category=Games

@@ -1,0 +1,121 @@
+name: Build macOS
+
+# Produces unsigned portable javp.app zips (Apple Silicon + Intel). Publish with:
+#   python tool/deploy_update.py --apk-dir … \
+#     --macos-zip path/to/javp-macos-arm64.zip \
+#     --macos-x64-zip path/to/javp-macos-x64.zip
+#
+# No code signing / notarization — users open once via right-click → Open
+# (Gatekeeper). In-app updates clear the quarantine xattr after replace.
+
+on:
+  # Escape hatch only. Prefer: Mac host, or Deploy update on vX.Y.0 Releases.
+  # Do not dispatch for routine PR verification.
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Update channel baked into the binary (stable or dev)
+        type: choice
+        options:
+          - stable
+          - dev
+        default: stable
+
+concurrency:
+  group: build-macos-${{ github.ref }}-${{ github.event.inputs.channel || 'stable' }}
+  cancel-in-progress: true
+
+jobs:
+  macos:
+    name: Build macOS ${{ matrix.arch }}
+    runs-on: macos-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    # Intel is the extra slice; don't block the Apple Silicon zip if it fails.
+    continue-on-error: ${{ matrix.arch == 'x86_64' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            artifact: javp-macos-arm64
+          - arch: x86_64
+            artifact: javp-macos-x64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          # SDK cache is multi-GB and blows the 0.5 GB Actions storage quota.
+          # Pub-only is ~100–120 MB per OS and saves most of flutter pub get.
+          cache: false
+          pub-cache: true
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust-ci
+        with:
+          targets: ${{ matrix.arch == 'x86_64' && 'x86_64-apple-darwin' || 'aarch64-apple-darwin' }}
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Apply macOS channel icon
+        env:
+          CHANNEL: ${{ github.event.inputs.channel || 'stable' }}
+        run: python3 tool/apply_macos_channel_icon.py --channel "$CHANNEL"
+
+      # Packaging only — do not gate the zip on analyze/tests (same as
+      # build-linux.yml). Verify with flutter test on Cloud / a Mac host.
+
+      - name: Build macOS release
+        env:
+          CHANNEL: ${{ github.event.inputs.channel || 'stable' }}
+          FLUTTER_XCODE_ARCHS: ${{ matrix.arch }}
+          FLUTTER_XCODE_ONLY_ACTIVE_ARCH: "NO"
+        run: |
+          flutter build macos --release \
+            --dart-define=JAVP_DISTRIBUTION=sideload \
+            --dart-define=JAVP_UPDATE_CHANNEL="$CHANNEL"
+
+      - name: Package portable zip
+        env:
+          ARCH: ${{ matrix.arch }}
+          ARTIFACT: ${{ matrix.artifact }}
+        run: |
+          set -euo pipefail
+          src=build/macos/Build/Products/Release/javp.app
+          if [[ ! -d "$src" ]]; then
+            echo "::error::Missing macOS app at $src"
+            ls -la build/macos/Build/Products/Release || true
+            exit 1
+          fi
+          bin="$src/Contents/MacOS/javp"
+          if [[ ! -f "$bin" ]]; then
+            echo "::error::Missing macOS binary at $bin"
+            exit 1
+          fi
+          archs="$(lipo -archs "$bin" 2>/dev/null || true)"
+          echo "App archs: ${archs:-unknown}"
+          if [[ "$archs" != *"$ARCH"* ]]; then
+            echo "::error::Expected $ARCH in $bin (got ${archs:-none})"
+            exit 1
+          fi
+          mkdir -p build/macos-dist
+          (
+            cd "$(dirname "$src")"
+            zip -qr "$GITHUB_WORKSPACE/build/macos-dist/${ARTIFACT}.zip" "$(basename "$src")"
+          )
+          ls -lh "build/macos-dist/${ARTIFACT}.zip"
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: build/macos-dist/${{ matrix.artifact }}.zip
+          if-no-files-found: error
+          retention-days: 1

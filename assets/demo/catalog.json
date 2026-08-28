@@ -1,0 +1,142 @@
+{
+  "name": "Demo — open media",
+  "version": 1,
+  "items": [
+    {
+      "id": "bbb",
+      "title": "Big Buck Bunny",
+      "kind": "vod",
+      "group": "Open movies",
+      "year": 2008,
+      "subtitle": "Blender Foundation",
+      "plot": "A giant rabbit with a heart bigger than himself prepares a comical revenge on three bullying rodents. Creative Commons Attribution — Blender Foundation open movie. Demo uses the official trailer (full Archive.org hosts are too slow for Try demo).",
+      "playUrl": "https://media.w3.org/2010/05/bunny/trailer.mp4",
+      "posterUrl": "https://peach.blender.org/wp-content/uploads/poster_bunny_big.jpg",
+      "thumbnailUrl": "https://peach.blender.org/wp-content/uploads/poster_bunny_big.jpg",
+      "durationMs": 33000,
+      "studio": "Blender Foundation",
+      "tags": ["open", "demo", "cc"]
+    },
+    {
+      "id": "elephants-dream",
+      "title": "Elephants Dream",
+      "kind": "vod",
+      "group": "Open movies",
+      "year": 2006,
+      "subtitle": "Blender Foundation",
+      "plot": "The first open movie from the Blender Foundation — two characters explore a surreal mechanical world. Creative Commons Attribution. Demo uses a 20s open making-of clip (full Archive.org HD hosts time out).",
+      "playUrl": "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/0f/Making_of_Elephants_Dream_20_seconds.ogv/Making_of_Elephants_Dream_20_seconds.ogv.240p.vp9.webm",
+      "posterUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Elephants_Dream_s5_both.jpg/500px-Elephants_Dream_s5_both.jpg",
+      "thumbnailUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Elephants_Dream_s5_both.jpg/500px-Elephants_Dream_s5_both.jpg",
+      "durationMs": 20000,
+      "studio": "Blender Foundation",
+      "tags": ["open", "demo", "cc"]
+    },
+    {
+      "id": "sintel",
+      "title": "Sintel",
+      "kind": "vod",
+      "group": "Open movies",
+      "year": 2010,
+      "subtitle": "Blender Foundation",
+      "plot": "A lonely young woman, Sintel, searches for a baby dragon she raised. Independent open movie from the Blender Foundation. Demo uses the official 720p trailer stream.",
+      "playUrl": "https://download.blender.org/durian/trailer/sintel_trailer-720p.mp4",
+      "posterUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Sintel_poster.jpg/500px-Sintel_poster.jpg",
+      "thumbnailUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Sintel_poster.jpg/500px-Sintel_poster.jpg",
+      "durationMs": 52000,
+      "studio": "Blender Foundation",
+      "tags": ["open", "demo", "cc"]
+    },
+    {
+      "id": "tears-of-steel",
+      "title": "Tears of Steel",
+      "kind": "vod",
+      "group": "Open movies",
+      "year": 2012,
+      "subtitle": "Blender Foundation",
+      "plot": "Live-action / CGI short about a group of warriors and scientists who gather at the Oude Kerk in Amsterdam. Creative Commons Attribution. Demo uses a ~70s open clip (full Archive.org 720p hosts time out).",
+      "playUrl": "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/88/Tears_of_Steel_clip.ogv/Tears_of_Steel_clip.ogv.480p.vp9.webm",
+      "posterUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Tos-poster.png/250px-Tos-poster.png",
+      "thumbnailUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Tos-poster.png/250px-Tos-poster.png",
+      "durationMs": 70000,
+      "studio": "Blender Foundation",
+      "tags": ["open", "demo", "cc"]
+    },
+    {
+      "id": "sample-shorts",
+      "title": "Sample Shorts",
+      "kind": "series",
+      "group": "Open movies",
+      "year": 2015,
+      "subtitle": "Open test clips",
+      "plot": "A tiny demo series of short open-movie clips so reviewers can exercise the series / episode UI. Not copyrighted commercial TV.",
+      "posterUrl": "https://peach.blender.org/wp-content/uploads/poster_bunny_big.jpg",
+      "thumbnailUrl": "https://peach.blender.org/wp-content/uploads/poster_bunny_big.jpg",
+      "studio": "Open test media",
+      "tags": ["open", "demo"],
+      "seasons": [
+        {
+          "seasonNumber": 1,
+          "episodes": [
+            {
+              "id": "sample-shorts-s1e1",
+              "episodeNumber": 1,
+              "title": "Big Buck Bunny (720p clip)",
+              "playUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
+              "thumbnailUrl": "https://peach.blender.org/wp-content/uploads/poster_bunny_big.jpg",
+              "durationMs": 10000
+            },
+            {
+              "id": "sample-shorts-s1e2",
+              "episodeNumber": 2,
+              "title": "Big Buck Bunny (360p clip)",
+              "playUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4",
+              "thumbnailUrl": "https://peach.blender.org/wp-content/uploads/poster_bunny_big.jpg",
+              "durationMs": 10000
+            },
+            {
+              "id": "sample-shorts-s1e3",
+              "episodeNumber": 3,
+              "title": "Sintel (720p clip)",
+              "playUrl": "https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_1MB.mp4",
+              "thumbnailUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Sintel_poster.jpg/500px-Sintel_poster.jpg",
+              "durationMs": 10000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "live-akamai-test",
+      "title": "Akamai HLS Test",
+      "kind": "live",
+      "group": "Demo live",
+      "subtitle": "Public live test feed",
+      "plot": "Always-on HLS live test stream from Akamai (not a commercial TV channel). Used so reviewers can open the Live tab without adding an IPTV source.",
+      "playUrl": "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
+      "tags": ["open", "demo", "live", "hls"]
+    },
+    {
+      "id": "live-apple-bipbop",
+      "title": "Apple BipBop",
+      "kind": "live",
+      "group": "Demo live",
+      "subtitle": "Apple HLS sample",
+      "plot": "Apple’s classic multi-bitrate HLS sample playlist. Industry-standard demo content for player / Live UI checks.",
+      "playUrl": "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8",
+      "tags": ["open", "demo", "live", "hls"]
+    },
+    {
+      "id": "live-mux-bbb",
+      "title": "Mux Big Buck Bunny (HLS)",
+      "kind": "live",
+      "group": "Demo live",
+      "subtitle": "Mux public test stream",
+      "plot": "Public Mux HLS test playlist (Big Buck Bunny). Exercises Live playback over HLS rather than progressive MP4.",
+      "playUrl": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "posterUrl": "https://peach.blender.org/wp-content/uploads/poster_bunny_big.jpg",
+      "thumbnailUrl": "https://peach.blender.org/wp-content/uploads/poster_bunny_big.jpg",
+      "tags": ["open", "demo", "live", "hls"]
+    }
+  ]
+}

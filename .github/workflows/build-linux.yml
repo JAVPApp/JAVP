@@ -1,0 +1,85 @@
+name: Build Linux
+
+# Produces a portable x64 bundle zip. Publish with:
+#   python tool/deploy_update.py --linux-zip path/to/javp-linux-x64.zip
+#
+# Linux ARM64 is not built from this workflow (Dev or otherwise). Stable ARM
+# ships from deploy-update.yml on a host that can compile linux-arm64.
+
+on:
+  # Prefer: flutter build linux / tool/local_release.sh on a Linux host.
+  # From Windows, dispatch this to ship packages.linux-x64 (not for PR checks).
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Update channel baked into the binary (stable or dev)
+        type: choice
+        options:
+          - stable
+          - dev
+        default: stable
+
+concurrency:
+  group: build-linux-${{ github.ref }}-${{ github.event.inputs.channel || 'stable' }}
+  cancel-in-progress: true
+
+jobs:
+  linux-x64:
+    name: Build Linux x64
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Linux desktop build deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake ninja-build pkg-config \
+            libgtk-3-dev liblzma-dev libstdc++-12-dev libsecret-1-dev \
+            libjsoncpp-dev libmpv-dev mpv libayatana-appindicator3-dev
+
+      - name: Setup Flutter
+        uses: ./.github/actions/setup-flutter-ci
+        with:
+          linux-arch: x64
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust-ci
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      # Packaging only — do not gate the zip on widget tests (Linux CI can
+      # disagree with Windows). Verify with flutter test on Cloud / a Linux host.
+
+      - name: Build Linux release
+        env:
+          CHANNEL: ${{ github.event.inputs.channel || 'stable' }}
+        run: |
+          flutter build linux --release \
+            --dart-define=JAVP_DISTRIBUTION=sideload \
+            --dart-define=JAVP_UPDATE_CHANNEL="$CHANNEL"
+
+      - name: Package portable zip
+        run: |
+          set -euo pipefail
+          src=build/linux/x64/release/bundle
+          if [[ ! -d "$src" ]]; then
+            echo "::error::Missing Linux bundle at $src"
+            exit 1
+          fi
+          mkdir -p build/linux-dist
+          (cd "$src" && zip -qr "$GITHUB_WORKSPACE/build/linux-dist/javp-linux-x64.zip" .)
+          ls -lh build/linux-dist/javp-linux-x64.zip
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: javp-linux-x64-${{ github.event.inputs.channel || 'stable' }}
+          path: build/linux-dist/javp-linux-x64.zip
+          if-no-files-found: error
+          retention-days: 1

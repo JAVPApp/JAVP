@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=JAVP
+Comment=Stream and manage your media library
+GenericName=Media Player
+Exec=javp %U
+Icon=javp
+Type=Application
+Categories=AudioVideo;Video;Player;
+MimeType=x-scheme-handler/javp;x-scheme-handler/javp-sources;
+Keywords=media;player;video;stream;iptv;tv;
+StartupNotify=true
+StartupWMClass=javp

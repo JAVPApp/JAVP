@@ -1,0 +1,111 @@
+// Build or bundle librqbit_engine.so for Android ABIs.
+//
+// Prefer dropping prebuilts in ../prebuilt/android/<abi>/librqbit_engine.so.
+// Otherwise run `cargo ndk` when ANDROID_NDK_HOME (or the AGP NDK) and cargo
+// are on PATH.
+
+group = "app.javp.rqbit_engine"
+version = "0.1.0"
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.11.1")
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: "com.android.library"
+
+android {
+    namespace = "app.javp.rqbit_engine"
+    compileSdk = 36
+    ndkVersion = android.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        minSdk = 24
+    }
+
+    def prebuiltDir = file("${projectDir}/../prebuilt/android")
+    def crateDir = file("${projectDir}/../rust")
+    def skipCargo = (project.findProperty('rqbitEngineSkipCargo') ?:
+            System.getenv('RQBIT_ENGINE_SKIP_CARGO') ?: 'false')
+            .toString().toBoolean()
+    def requestedAbis = (project.findProperty('rqbitEngineAbis') ?:
+            'arm64-v8a,armeabi-v7a,x86_64')
+            .toString().split(',').collect { it.trim() }.findAll { it }
+
+    def ndkHome = System.getenv('ANDROID_NDK_HOME') ?:
+            System.getenv('ANDROID_NDK_ROOT') ?:
+            (android.hasProperty('ndkDirectory') ? android.ndkDirectory?.absolutePath : null)
+
+    if (!skipCargo) {
+        requestedAbis.each { abi ->
+            def soFile = file("${prebuiltDir}/${abi}/librqbit_engine.so")
+            if (soFile.exists()) {
+                return
+            }
+            def cargoNdk
+            try {
+                cargoNdk = ['cargo', 'ndk', '--version'].execute()
+                cargoNdk.consumeProcessOutput()
+                cargoNdk.waitFor()
+            } catch (Exception ignored) {
+                cargoNdk = null
+            }
+            if (cargoNdk == null || cargoNdk.exitValue() != 0 || ndkHome == null) {
+                throw new GradleException(
+                    "rqbit_engine: no prebuilt for ${abi} and cargo-ndk/NDK unavailable. " +
+                    "Install rustup + cargo-ndk, set ANDROID_NDK_HOME, or drop " +
+                    "prebuilt/android/${abi}/librqbit_engine.so"
+                )
+            }
+            soFile.parentFile.mkdirs()
+            println "rqbit_engine: cargo ndk -t ${abi}"
+            def envMap = [:]
+            envMap.putAll(System.getenv())
+            envMap.put('ANDROID_NDK_HOME', ndkHome.toString())
+            envMap.put('ANDROID_NDK_ROOT', ndkHome.toString())
+            def envp = envMap.collect { k, v -> "${k}=${v}" }
+            def proc = [
+                'cargo', 'ndk', '-t', abi, '-o', prebuiltDir.absolutePath,
+                'build', '--release',
+            ].execute(envp, crateDir)
+            proc.consumeProcessOutput(System.out, System.err)
+            proc.waitFor()
+            if (proc.exitValue() != 0) {
+                throw new GradleException(
+                    "rqbit_engine: cargo ndk failed for ${abi} (rc=${proc.exitValue()})"
+                )
+            }
+        }
+    }
+
+    def hasPrebuilt = prebuiltDir.exists() && prebuiltDir.listFiles()?.any { dir ->
+        dir.isDirectory() && dir.listFiles()?.any { f -> f.name == 'librqbit_engine.so' }
+    }
+    if (hasPrebuilt) {
+        sourceSets {
+            main {
+                jniLibs.srcDirs = ["${projectDir}/../prebuilt/android"]
+            }
+        }
+        println "rqbit_engine: using prebuilt JNI libs under ${prebuiltDir}"
+    } else {
+        println "rqbit_engine: no Android .so yet — torrent native lib will be missing until cargo-ndk runs"
+    }
+}

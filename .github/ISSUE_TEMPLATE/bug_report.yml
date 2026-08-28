@@ -1,0 +1,72 @@
+name: Bug report
+description: Something broken or unexpected in the app
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. BYO media only — do **not** paste real IPTV credentials,
+        playlist URLs with tokens, or copyrighted catalog dumps.
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      multiple: true
+      options:
+        - Android (phone)
+        - Android TV
+        - Windows
+        - Linux
+        - macOS
+        - Web (alpha)
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      description: Settings → General / About, or Play / sideload build number
+      placeholder: "0.6.0+…"
+    validations:
+      required: true
+  - type: dropdown
+    id: distribution
+    attributes:
+      label: Distribution
+      options:
+        - Sideload (updater.javp.app)
+        - Google Play
+        - Microsoft Store
+        - Built from source
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Expected vs actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. …
+        2. …
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Source types involved (optional)
+      description: e.g. Jellyfin, M3U, Xtream, custom JSON, torrent — no secrets
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (optional)
+      description: Settings → Diagnostics → share/copy. Redact URLs with credentials.
+      render: text

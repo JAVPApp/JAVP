@@ -1,0 +1,241 @@
+name: Build Windows
+
+# Produces a portable Release zip + Inno Setup installer (x64), and zip-only on ARM64.
+# Publish with:
+#   python tool/deploy_update.py --apk-dir … \
+#     --windows-zip path/to/javp-windows-x64.zip \
+#     --windows-installer path/to/javp-setup.exe \
+#     --windows-arm64-zip path/to/javp-windows-arm64.zip
+#
+# package=store builds a Partner Center MSIX (JAVP_DISTRIBUTION=msstore) instead.
+# Prefer Publish to Microsoft Store once that workflow is on the default branch.
+
+on:
+  # Escape hatch only. Prefer: local flutter build windows + package_windows.py,
+  # or Release-triggered Deploy update. Do not dispatch for routine checks.
+  workflow_dispatch:
+    inputs:
+      package:
+        description: sideload (zip+exe) or store (MSIX for Partner Center)
+        type: choice
+        options:
+          - sideload
+          - store
+        default: sideload
+
+concurrency:
+  group: build-windows-${{ github.ref }}-${{ inputs.package || 'sideload' }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    if: ${{ inputs.package != 'store' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            runner: windows-latest
+            release_dir: build\windows\x64\runner\Release
+            artifact: javp-windows-x64
+            zip_name: javp-windows-x64.zip
+            with_installer: true
+          - arch: arm64
+            runner: windows-11-arm
+            release_dir: build\windows\arm64\runner\Release
+            artifact: javp-windows-arm64
+            zip_name: javp-windows-arm64.zip
+            with_installer: false
+    name: Build Windows ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          # SDK cache is multi-GB and blows the 0.5 GB Actions storage quota.
+          # Pub-only is ~100–120 MB per OS and saves most of flutter pub get.
+          cache: false
+          pub-cache: true
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust-ci
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      # Warnings are fatal to `flutter analyze` by default and the tree carries
+      # a few pre-existing ones, so this gate is errors-only rather than
+      # failing every desktop build on unrelated dead code.
+      - name: Analyze
+        if: matrix.arch == 'x64'
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Test
+        if: matrix.arch == 'x64'
+        run: flutter test
+
+      - name: Build Windows release
+        run: flutter build windows --release
+
+      - name: Install Inno Setup
+        if: matrix.with_installer
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          $iscc = @(
+            "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
+            "${env:ProgramFiles}\Inno Setup 6\ISCC.exe"
+          ) | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $iscc) { throw "ISCC.exe not found after Inno Setup install" }
+          "ISCC=$iscc" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Package zip + installer
+        shell: pwsh
+        run: |
+          $src = "${{ matrix.release_dir }}"
+          if (-not (Test-Path $src)) { throw "Missing Release output at $src" }
+          $pkgArgs = @(
+            "tool/package_windows.py",
+            "--release-dir", $src,
+            "--out-dir", "build/windows-dist",
+            "--arch", "${{ matrix.arch }}"
+          )
+          if ("${{ matrix.with_installer }}" -ne "true") {
+            $pkgArgs += "--skip-installer"
+          }
+          python @pkgArgs
+          Get-ChildItem build/windows-dist | Format-Table Name, Length
+
+      - name: Upload Windows x64 artifacts
+        if: matrix.with_installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            build/windows-dist/${{ matrix.zip_name }}
+            build/windows-dist/javp-setup.exe
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Upload Windows arm64 zip
+        if: ${{ !matrix.with_installer }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: build/windows-dist/${{ matrix.zip_name }}
+          if-no-files-found: error
+          retention-days: 1
+
+  msstore:
+    name: Build Store MSIX
+    if: ${{ inputs.package == 'store' }}
+    runs-on: windows-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync localization ARBs
+        run: python tool/l10n/generate_arbs.py
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: false
+          pub-cache: true
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust-ci
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      # media_kit's CMake downloads once without retries; prefetch like Deploy update.
+      - name: Prefetch Windows media libraries
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $destination = "build\windows\x64"
+          New-Item -ItemType Directory -Force -Path $destination | Out-Null
+          $archives = @(
+            @{
+              Name = "mpv-dev-x86_64-20230924-git-652a1dd.7z"
+              Url = "https://github.com/media-kit/libmpv-win32-video-build/releases/download/2023-09-24/mpv-dev-x86_64-20230924-git-652a1dd.7z"
+              Md5 = "a832ef24b3a6ff97cd2560b5b9d04cd8"
+            },
+            @{
+              Name = "ANGLE.7z"
+              Url = "https://github.com/alexmercerind/flutter-windows-ANGLE-OpenGL-ES/releases/download/v1.0.1/ANGLE.7z"
+              Md5 = "e866f13e8d552348058afaafe869b1ed"
+            }
+          )
+          foreach ($archive in $archives) {
+            $path = Join-Path $destination $archive.Name
+            $temporary = "$path.download"
+            Remove-Item -Force -ErrorAction SilentlyContinue $path, $temporary
+            & curl.exe --fail --location --retry 5 --retry-all-errors `
+              --connect-timeout 20 --output $temporary $archive.Url
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to download $($archive.Name)"
+            }
+            $actual = (Get-FileHash -Algorithm MD5 $temporary).Hash.ToLowerInvariant()
+            if ($actual -ne $archive.Md5) {
+              throw "$($archive.Name) checksum mismatch: $actual"
+            }
+            Move-Item -Force $temporary $path
+          }
+
+      - name: Sync msix_version from pubspec version
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $text = Get-Content -Raw pubspec.yaml
+          if ($text -notmatch '(?m)^version:\s*([0-9]+)\.([0-9]+)\.([0-9]+)\+(\d+)') {
+            throw "Could not parse version: from pubspec.yaml"
+          }
+          # Store requires revision (4th) == 0. Main/stable bumps Z, so use
+          # X.Y.Z.0 (not +N). First Store upload used 0.5.65.0 as a one-off.
+          $msix = "$($Matches[1]).$($Matches[2]).$($Matches[3]).0"
+          if ($text -notmatch '(?m)^(\s*msix_version:\s*).+$') {
+            throw "msix_version missing under msix_config"
+          }
+          $updated = [regex]::Replace($text, '(?m)^(\s*msix_version:\s*).+$', "`${1}$msix")
+          Set-Content -Path pubspec.yaml -Value $updated -NoNewline
+          Write-Host "msix_version=$msix"
+
+      - name: Build Store MSIX
+        shell: pwsh
+        run: powershell -File tool/build_msix.ps1
+
+      - name: Locate MSIX package
+        id: pack
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $candidates = @(
+            Get-ChildItem -Path build -Recurse -Include *.msix,*.msixupload -ErrorAction SilentlyContinue
+          ) | Sort-Object LastWriteTime -Descending
+          if (-not $candidates) { throw "No .msix / .msixupload under build/" }
+          $pkg = $candidates[0].FullName
+          Write-Host "Package: $pkg ($([math]::Round($candidates[0].Length/1MB, 2)) MB)"
+          "msix=$pkg" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Upload MSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: javp-msstore-msix
+          path: ${{ steps.pack.outputs.msix }}
+          if-no-files-found: error
+          retention-days: 30

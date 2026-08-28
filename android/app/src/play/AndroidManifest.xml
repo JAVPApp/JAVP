@@ -1,0 +1,37 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Play forbids self-updating outside the store; strip if merged from a dependency. -->
+    <uses-permission
+        android:name="android.permission.REQUEST_INSTALL_PACKAGES"
+        tools:node="remove" />
+    <!-- JAVP does not use the Google Advertising ID; keep merged manifest aligned
+         with Play Console “Advertising ID → No”. Strip if a dependency adds it. -->
+    <uses-permission
+        android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_ADSERVICES_AD_ID"
+        tools:node="remove" />
+    <!-- Android 15 Play static analysis flags BOOT_COMPLETED receivers together
+         with restricted foreground service types (dataSync, mediaPlayback).
+         Our boot receiver only reschedules EPG AlarmManager alarms and never
+         starts an FGS; PiP uses Activity RemoteActions, not mediaPlayback FGS.
+         Still strip boot actions on Play — EPG reminders reschedule on next app
+         launch (library bootstrap). Sideload keeps full boot reschedule. -->
+    <uses-permission
+        android:name="android.permission.RECEIVE_BOOT_COMPLETED"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+        tools:node="remove" />
+    <application>
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
+            tools:node="replace"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

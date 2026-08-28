@@ -1,0 +1,43 @@
+name: Setup Flutter CI
+description: Flutter stable via flutter-action, or git clone on Linux ARM64.
+
+# Official releases_linux.json has no linux-arm64 SDK zip, so
+# subosito/flutter-action@v2 fails with:
+#   Unable to determine Flutter version for channel: stable … architecture: arm64
+# Clone the stable branch instead; the engine artifacts include linux-arm64.
+
+inputs:
+  linux-arch:
+    description: x64 (archive) or arm64 (git clone)
+    required: false
+    default: x64
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Flutter
+      if: ${{ inputs.linux-arch != 'arm64' }}
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        cache: false
+        pub-cache: true
+
+    - name: Clone Flutter stable (Linux ARM64)
+      if: ${{ inputs.linux-arch == 'arm64' }}
+      shell: bash
+      run: |
+        set -euo pipefail
+        git clone --depth 1 --branch stable \
+          https://github.com/flutter/flutter.git "$HOME/flutter"
+        echo "$HOME/flutter/bin" >> "$GITHUB_PATH"
+        echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
+
+    - name: Precache Flutter (Linux ARM64)
+      if: ${{ inputs.linux-arch == 'arm64' }}
+      shell: bash
+      run: |
+        set -euo pipefail
+        flutter config --no-analytics
+        flutter precache --linux
+        flutter --version

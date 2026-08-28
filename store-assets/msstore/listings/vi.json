@@ -1,0 +1,17 @@
+{
+  "title": "JAVP",
+  "shortTitle": "JAVP",
+  "voiceTitle": "JAVP",
+  "shortDescription": "Trình phát media BYO cho Windows — tệp, máy chủ và danh mục của bạn.",
+  "description": "JAVP (Just Another Video Player) phát media bạn tự mang tới: video cục bộ, Jellyfin, Emby, Plex, danh mục JSON, playlist IPTV và hơn thế.\n\nJAVP không lưu trữ, lập chỉ mục hay đóng gói media thương mại. Bạn kết nối nguồn của mình; thông tin đăng nhập ở lại trên thiết bị.\n\nTrình phát cử chỉ (giữ để 2×, scrub, PiP), kệ Home, Catalog, TV trực tiếp khi nguồn hỗ trợ, tải xuống tùy chọn và đồng bộ hồ sơ tùy chọn (thư mục / WebDAV / Google Drive).\n\nChưa có thư viện: chọn Try demo lúc mở lần đầu để xem mẫu Creative Commons / Blender.",
+  "features": [
+    "Video cục bộ và thư viện Jellyfin, Emby, Plex…",
+    "Trình phát cử chỉ: scrub, giữ 2×, picture-in-picture",
+    "TV trực tiếp / IPTV từ playlist của bạn",
+    "Đồng bộ hồ sơ tùy chọn (thư mục, WebDAV, Google Drive)",
+    "Demo với tiêu đề Creative Commons / Blender"
+  ],
+  "devStudio": "Cubeweb",
+  "websiteUrl": "https://javp.app",
+  "privacyPolicy": "https://javp.app/privacy.html"
+}

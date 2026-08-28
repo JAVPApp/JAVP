@@ -1,0 +1,62 @@
+name: Setup rqbit Android CI
+description: >-
+  Use committed rqbit_engine Android prebuilts when present; otherwise install
+  Rust + cargo-ndk and the Android NDK for on-runner cargo builds.
+
+inputs:
+  abis:
+    description: Comma-separated Android ABIs required for this job
+    required: false
+    default: arm64-v8a,armeabi-v7a,x86_64
+
+outputs:
+  use_prebuilt:
+    description: Whether all required prebuilts were found in the checkout
+    value: ${{ steps.detect.outputs.use_prebuilt }}
+
+runs:
+  using: composite
+  steps:
+    - name: Detect rqbit Android prebuilts
+      id: detect
+      shell: bash
+      run: |
+        set -euo pipefail
+        base="packages/rqbit_engine/prebuilt/android"
+        use_prebuilt=true
+        IFS=',' read -ra ABIS <<< "${{ inputs.abis }}"
+        for abi in "${ABIS[@]}"; do
+          abi="${abi// /}"
+          if [[ ! -f "$base/$abi/librqbit_engine.so" ]]; then
+            use_prebuilt=false
+            echo "rqbit_engine: missing prebuilt for ${abi}"
+            break
+          fi
+        done
+        echo "use_prebuilt=${use_prebuilt}" >> "$GITHUB_OUTPUT"
+        if [[ "${use_prebuilt}" == "true" ]]; then
+          echo "RQBIT_ENGINE_SKIP_CARGO=1" >> "$GITHUB_ENV"
+          echo "ORG_GRADLE_PROJECT_rqbitEngineSkipCargo=true" >> "$GITHUB_ENV"
+          echo "rqbit_engine: using committed Android prebuilts — skipping cargo-ndk"
+        fi
+
+    - name: Setup Rust
+      if: steps.detect.outputs.use_prebuilt != 'true'
+      uses: ./.github/actions/setup-rust-ci
+      with:
+        cargo-ndk: "true"
+
+    - name: Setup Android NDK
+      if: steps.detect.outputs.use_prebuilt != 'true'
+      uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r28c
+        add-to-path: false
+
+    - name: Export Android NDK for cargo-ndk
+      if: steps.detect.outputs.use_prebuilt != 'true'
+      shell: bash
+      run: |
+        echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> "$GITHUB_ENV"
+        echo "ANDROID_NDK_ROOT=${{ steps.setup-ndk.outputs.ndk-path }}" >> "$GITHUB_ENV"

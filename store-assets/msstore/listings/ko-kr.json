@@ -1,0 +1,17 @@
+{
+  "title": "JAVP",
+  "shortTitle": "JAVP",
+  "voiceTitle": "JAVP",
+  "shortDescription": "Windows용 BYO 미디어 플레이어 — 내 파일, 서버, 카탈로그.",
+  "description": "JAVP(Just Another Video Player)는 직접 가져온 미디어를 재생합니다. 로컬 동영상, Jellyfin, Emby, Plex, JSON 카탈로그, IPTV 재생목록 등.\n\nJAVP는 상업 미디어를 호스팅·색인·포함하지 않습니다. 자신의 소스를 연결하며 자격 증명은 기기에 남습니다.\n\n제스처 플레이어(2배속 길게 누르기, 스크럽, PiP), 홈 선반, 카탈로그, 소스가 지원하면 라이브 TV, 선택적 다운로드, 선택적 프로필 동기화(폴더 / WebDAV / Google Drive).\n\n라이브러리가 없어도 첫 실행의 Try demo로 Creative Commons / Blender 샘플을 사용할 수 있습니다.",
+  "features": [
+    "로컬 동영상과 Jellyfin, Emby, Plex 등 라이브러리",
+    "스크럽·길게 눌러 2배속·화면 속 화면 제스처 플레이어",
+    "내 재생목록으로 라이브 TV / IPTV",
+    "선택적 프로필 동기화(폴더, WebDAV, Google Drive)",
+    "Creative Commons / Blender 데모 타이틀"
+  ],
+  "devStudio": "Cubeweb",
+  "websiteUrl": "https://javp.app",
+  "privacyPolicy": "https://javp.app/privacy.html"
+}

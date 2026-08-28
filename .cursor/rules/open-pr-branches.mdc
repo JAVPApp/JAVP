@@ -1,0 +1,37 @@
+---
+description: Do not merge dev into sibling open PRs (re-triggers Bugbot)
+alwaysApply: true
+---
+
+# Open PR branches — do not bulk-update from dev
+
+When something merges to `dev`, **do not** merge or rebase `origin/dev` into
+**other open PRs** unless the user explicitly asks for that specific PR.
+
+## Why
+
+Each new commit on a PR head re-triggers **Cursor Bugbot** (and our l10n /
+changelog CI). Batch-updating every open PR after every dev merge wastes Bugbot
+usage and spams checks on PRs that did not change.
+
+Evidence: PR #90 got three `Merge origin/dev…` commits on 2026-08-13 and a
+second Bugbot review; PR #105 got two merge commits and a fresh review after
+#111 landed.
+
+## Allowed
+
+- Merge `origin/dev` into **the PR you are actively fixing or merging**, when
+  you need to resolve conflicts before **that** PR merges — not as a standing
+  chore for all siblings.
+- Push **real code changes** on a PR (including Bugbot fix commits) — Bugbot
+  should re-run on those.
+- Leave sibling PRs alone until their author or staff asks to update them.
+  GitHub `allow_update_branch` is off; staff can use **Update branch** in the
+  UI when they want it.
+
+## Bugbot settings (staff, not agents)
+
+Cursor Bugbot runs on **every PR update** by default. Optional team toggle:
+[Bugbot Automations](https://cursor.com/automations/from-cursor/bugbot) →
+**Run only once per PR** (skips later commits — including legitimate fix
+commits; use with care). **Incremental Review** reduces cost when re-runs happen.

@@ -1,0 +1,79 @@
+name: Localization check
+
+# English ARB vs Dart is required. Missing translations are non-blocking.
+# Generated AppLocalizations Dart is gitignored; this job regenerates it for tests.
+
+on:
+  pull_request:
+    paths:
+      - "tool/l10n/**"
+      - "lib/l10n/**"
+      - "l10n.yaml"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+      - ".github/workflows/l10n-check.yml"
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - "tool/l10n/**"
+      - "lib/l10n/**"
+      - "l10n.yaml"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+      - ".github/workflows/l10n-check.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: l10n-check-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  l10n:
+    name: English ARB & gen-l10n
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate English ARB vs Dart
+        run: python3 tool/l10n/preflight.py
+
+      - name: Untranslated strings report
+        continue-on-error: true
+        run: python3 tool/l10n/report_untranslated.py --write tool/l10n/l10n-untranslated.md
+
+      - name: Upload untranslated report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: l10n-untranslated
+          path: tool/l10n/l10n-untranslated.md
+          if-no-files-found: warn
+          retention-days: 1
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          # SDK cache is multi-GB and blows the 0.5 GB Actions storage quota.
+          # Pub-only is ~100–120 MB per OS and saves most of flutter pub get.
+          cache: false
+          pub-cache: true
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Generate Flutter localizations
+        run: flutter gen-l10n
+
+      - name: Localization unit tests
+        run: flutter test test/unit/app_localizations_test.dart
+
+      - name: Tooling unit tests
+        run: python3 tool/l10n/test_check_l10n.py

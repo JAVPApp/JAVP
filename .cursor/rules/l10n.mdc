@@ -1,0 +1,29 @@
+---
+description: Agent l10n — English ARB only, never translations
+alwaysApply: true
+---
+
+# Localization (agents)
+
+English source of truth: `lib/l10n/app_en.arb`.
+
+When you add or change a user-facing string:
+
+1. Print current copy: `python3 tool/l10n/add_en.py camelCaseKey`
+2. Add: `python3 tool/l10n/add_en.py camelCaseKey "English string"`
+3. Edit: `python3 tool/l10n/add_en.py camelCaseKey "New English" --update`
+4. Use `l10n.camelCaseKey` in Dart
+5. `python3 tool/l10n/preflight.py` must pass
+
+Do **not** Read `lib/l10n/app_en.arb` wholesale — `add_en.py <key>` prints one string.
+
+Do **not**:
+
+- Read or edit `tool/l10n/messages.json` (removed)
+- Hand-edit `lib/l10n/app_en.arb` when `add_en.py` can do it
+- Edit `lib/l10n/app_*.arb` for other locales, or translate strings
+- Commit `lib/l10n/app_localizations*.dart` (generated, gitignored)
+- Expect `generate_arbs.py` to rewrite translations (it is a no-op)
+
+Missing locale strings fall back to English. Weblate / humans own translations.
+See `tool/l10n/README.md`.

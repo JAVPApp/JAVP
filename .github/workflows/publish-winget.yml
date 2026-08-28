@@ -1,0 +1,57 @@
+name: Publish to WinGet
+
+# Opens a PR on microsoft/winget-pkgs for JAVPApp.JAVP after a GitHub Release
+# has javp-setup.exe attached (Deploy update does that on release: published).
+#
+# Prerequisites:
+#   1. At least one version already in winget-pkgs (initial PR #414628).
+#   2. Classic PAT secret WINGET_TOKEN (public_repo) for the account that
+#      owns the winget-pkgs fork (xemles/winget-pkgs).
+#   3. fork-user: xemles (org JAVPApp is the app repo owner; fork is personal).
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag that has javp-setup.exe (e.g. v0.2.9)
+        required: true
+        type: string
+  # Prefer Deploy update's winget job (waits for installer upload). This
+  # release trigger is a fallback if that job was skipped / failed.
+  release:
+    types: [published]
+
+concurrency:
+  group: publish-winget-${{ github.event.release.tag_name || inputs.tag || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  winget:
+    name: Submit winget-pkgs PR
+    runs-on: ubuntu-latest
+    # On release events, Deploy update also runs a winget job. Skip the
+    # racing release trigger; use workflow_dispatch for retries.
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    permissions:
+      contents: read
+
+    steps:
+      - name: Require WINGET_TOKEN
+        env:
+          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${WINGET_TOKEN:-}" ]]; then
+            echo "::error::Missing secret WINGET_TOKEN. Create a classic PAT with public_repo on the xemles account and add it as a repo secret."
+            exit 1
+          fi
+
+      - name: Publish JAVPApp.JAVP to WinGet
+        uses: vedantmgoyal9/winget-releaser@main
+        with:
+          identifier: JAVPApp.JAVP
+          installers-regex: 'javp-setup\.exe$'
+          release-tag: ${{ inputs.tag }}
+          fork-user: xemles
+          max-versions-to-keep: 5
+          token: ${{ secrets.WINGET_TOKEN }}

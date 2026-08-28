@@ -1,0 +1,39 @@
+name: Changelog fragments
+
+# Cheap Python-only gate. Agent PRs must not edit shared CHANGELOG.md
+# Unreleased (merge conflicts). Publish assembles changelog/unreleased/.
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+concurrency:
+  group: changelog-fragments-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fragments:
+    name: Assemble + Unreleased guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Changelog unit tests
+        run: python3 tool/test_deploy_changelog.py
+
+      - name: PR must not edit CHANGELOG.md Unreleased
+        if: github.event_name == 'pull_request'
+        run: python3 tool/changelog_fragments.py check --base "${{ github.event.pull_request.base.sha }}"

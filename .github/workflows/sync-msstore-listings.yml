@@ -1,0 +1,85 @@
+name: Sync Microsoft Store listings
+
+# Pushes store-assets/msstore/listings/*.json to Partner Center when those
+# files (or the sync tool) change on main. Does not run on ordinary Releases
+# or unrelated commits.
+#
+# Secrets (same as publish-msstore):
+#   AZURE_AD_TENANT_ID
+#   AZURE_AD_APPLICATION_CLIENT_ID
+#   AZURE_AD_APPLICATION_SECRET
+#
+# Soft-skip when secrets are missing.
+# Docs: store-assets/msstore/README.md, docs/microsoft-store.md
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "store-assets/msstore/listings/**"
+      - "store-assets/msstore/screenshots/**"
+      - "tool/msstore_sync_listings.py"
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Commit the Partner Center submission after updating listings
+        type: boolean
+        required: false
+        default: true
+      force:
+        description: Delete stuck pending submission and re-upload listings + screenshots
+        type: boolean
+        required: false
+        default: false
+
+concurrency:
+  group: sync-msstore-listings-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  STORE_PRODUCT_ID: 9P4PMM405RZH
+
+jobs:
+  sync:
+    name: Sync Store listings
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    env:
+      HAVE_CREDS: ${{ secrets.AZURE_AD_TENANT_ID != '' && secrets.AZURE_AD_APPLICATION_CLIENT_ID != '' && secrets.AZURE_AD_APPLICATION_SECRET != '' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Soft-skip without Store secrets
+        if: ${{ env.HAVE_CREDS != 'true' }}
+        run: |
+          echo "::warning::AZURE_AD_* secrets not set — skipping Store listing sync."
+          echo "Add AZURE_AD_TENANT_ID, AZURE_AD_APPLICATION_CLIENT_ID, AZURE_AD_APPLICATION_SECRET (see docs/microsoft-store.md)."
+
+      - name: Setup Python
+        if: ${{ env.HAVE_CREDS == 'true' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Push listings to Partner Center
+        if: ${{ env.HAVE_CREDS == 'true' }}
+        env:
+          AZURE_AD_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+          AZURE_AD_APPLICATION_CLIENT_ID: ${{ secrets.AZURE_AD_APPLICATION_CLIENT_ID }}
+          AZURE_AD_APPLICATION_SECRET: ${{ secrets.AZURE_AD_APPLICATION_SECRET }}
+          STORE_PRODUCT_ID: ${{ env.STORE_PRODUCT_ID }}
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.commit }}" != "true" ]]; then
+            args+=(--no-commit)
+          fi
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.force }}" == "true" ]]; then
+            args+=(--force)
+          fi
+          python3 tool/msstore_sync_listings.py "${args[@]}"

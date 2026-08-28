@@ -1,0 +1,17 @@
+{
+  "title": "JAVP",
+  "shortTitle": "JAVP",
+  "voiceTitle": "JAVP",
+  "shortDescription": "Pemutar media BYO untuk Windows — file, server, dan katalog Anda.",
+  "description": "JAVP (Just Another Video Player) memutar media yang Anda bawa sendiri: video lokal, Jellyfin, Emby, Plex, katalog JSON, playlist IPTV, dan lainnya.\n\nJAVP tidak meng-host, mengindeks, atau menyertakan media komersial. Anda menghubungkan sumber sendiri; kredensial tetap di perangkat.\n\nPemutar bergestur (tahan untuk 2×, scrub, PiP), rak Beranda, Katalog, TV langsung jika sumber mendukung, unduhan opsional, dan sinkron profil opsional (folder / WebDAV / Google Drive).\n\nTanpa pustaka sendiri: pilih Try demo saat pertama kali dibuka untuk sampel Creative Commons / Blender.",
+  "features": [
+    "Video lokal dan pustaka Jellyfin, Emby, Plex, dll.",
+    "Pemutar gestur dengan scrub, tahan 2×, dan picture-in-picture",
+    "TV langsung / IPTV dari playlist Anda",
+    "Sinkron profil opsional (folder, WebDAV, Google Drive)",
+    "Demo judul Creative Commons / Blender"
+  ],
+  "devStudio": "Cubeweb",
+  "websiteUrl": "https://javp.app",
+  "privacyPolicy": "https://javp.app/privacy.html"
+}

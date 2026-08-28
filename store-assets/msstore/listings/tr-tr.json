@@ -1,0 +1,17 @@
+{
+  "title": "JAVP",
+  "shortTitle": "JAVP",
+  "voiceTitle": "JAVP",
+  "shortDescription": "Windows için BYO medya oynatıcı — dosyalarınız, sunucularınız, kataloglarınız.",
+  "description": "JAVP (Just Another Video Player), sizin getirdiğiniz medyayı oynatır: yerel videolar, Jellyfin, Emby, Plex, JSON katalogları, IPTV oynatma listeleri ve daha fazlası.\n\nJAVP ticari medyayı barındırmaz, dizinlemez veya paketlemez. Kendi kaynaklarınızı bağlarsınız; kimlik bilgileri cihazda kalır.\n\nHareket destekli oynatıcı (2× için basılı tutma, scrub, PiP), Ana sayfa rafları, Katalog, kaynak destekliyorsa Canlı TV, isteğe bağlı indirmeler ve isteğe bağlı profil senkronu (klasör / WebDAV / Google Drive).\n\nKendi kitaplığınız yoksa: ilk açılışta Try demo ile Creative Commons / Blender örneklerini deneyin.",
+  "features": [
+    "Yerel videolar ve Jellyfin, Emby, Plex vb. kitaplıklar",
+    "Scrub, basılı tutarak 2× ve PIP destekli hareketli oynatıcı",
+    "Oynatma listelerinizle canlı TV / IPTV",
+    "İsteğe bağlı profil senkronu (klasör, WebDAV, Google Drive)",
+    "Creative Commons / Blender demosu"
+  ],
+  "devStudio": "Cubeweb",
+  "websiteUrl": "https://javp.app",
+  "privacyPolicy": "https://javp.app/privacy.html"
+}

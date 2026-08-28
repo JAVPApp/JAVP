@@ -1,0 +1,35 @@
+# Flutter web companion — SPA fallback for Apache (FTP origin).
+# Cloudflare should proxy web.javp.app to this directory as the docroot.
+
+Options -Indexes
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Send non-file routes (e.g. /add) to index.html for GoRouter path URLs.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  # GIS Drive-scope popups need an opener relationship.
+  Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  # Hashed entrypoints (main.<buildId>.dart.js) can be cached long; the
+  # unversioned main.dart.js must not stick on CDN edges across deploys.
+  <FilesMatch "^main\.[A-Za-z0-9]+\.dart\.js$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "^flutter_bootstrap\.[A-Za-z0-9]+\.js$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "^main\.dart\.js$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "flutter_bootstrap\.js$|flutter_service_worker\.js$|flutter\.js$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>

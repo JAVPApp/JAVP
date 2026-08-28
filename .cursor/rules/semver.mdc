@@ -1,0 +1,61 @@
+---
+description: Smart X.Y.Z version bumps for JAVP releases (pubspec + msix)
+alwaysApply: true
+---
+
+# SemVer X.Y.Z
+
+Pubspec form: `version: X.Y.Z+N`. Keep `msix_config.msix_version: X.Y.Z.0` in sync.
+Flutter/iOS/macOS pick marketing + build from pubspec — do not hand-edit plist versions.
+
+## When to touch versions
+
+| Context | Marketing `X.Y.Z` | Build `+N` |
+| --- | --- | --- |
+| Agent PR / feature work | **Never** | **Never** |
+| Dev channel publish | Keep current line | Auto (`tool/bump_dev_build.py`) — no commit |
+| New Dev marketing line (user asked, or Features piled up) | Bump smartly, commit on `dev` | Then let Dev publish advance `+N` |
+| Stable cut / GitHub Release | Bump smartly, commit, tag `vX.Y.Z` | Monotonic vs live stable + last used `+N` |
+
+## Choose X / Y / Z from unreleased notes
+
+Inspect `changelog/unreleased/*.md` + leftover `CHANGELOG.md` Unreleased **since the last marketing bump**:
+
+- **Z (patch)** — fixes, polish, regressions; no new capability users would name. Example: `0.4.2` → `0.4.3`.
+- **Y (minor)** — any real `### Features` / new user-facing capability, new distribution surface users notice. Reset Z → `0`. Prefer tagging `vX.Y.0` when macOS should ship (Deploy update builds macOS on `*.Y.0`).
+- **X (major)** — only if the user explicitly asks, or storage/API breaks old installs on purpose. While still `0.x`, prefer **Y** for milestones.
+
+**Tie-break:** any public Features → bump **Y**; fixes-only → bump **Z**. Never bump only `+N` on Stable and call it a release — Stable always moves `X.Y.Z` (or reuses only when re-shipping the exact same tree).
+
+## Changelog fragments (agents)
+
+- Agent PRs: add a **new unique** `changelog/unreleased/<slug>.md` only. Never edit
+  `CHANGELOG.md` ## Unreleased. Never re-paste old Unreleased bullets into CHANGELOG.
+- **Publish consumes automatically:** after a successful FTP publish,
+  `tool/deploy_update.py` folds assembled Unreleased under `## version+build`,
+  clears Unreleased, deletes fragment files, and commits/pushes that fold.
+  Agents must not fold/clear fragments on ordinary PRs — leave that to publish.
+
+## Stable marketing bump (dev→main)
+
+Dev notes live under `## X.Y.Z-dev+N`. Cutting `0.5.0` after `0.4.2-dev` does
+**not** match those headings. Before / during stable publish:
+
+- `python3 tool/rollup_dev_changelog.py --auto --write` (or let
+  `deploy_update.py --channel stable` / `local_release.sh` auto-roll)
+- Publish **fails** if the new stable section is still thin vs orphan `-dev`
+  history (`ensure_stable_changelog_rollup`).
+
+## Dev vs Stable
+
+- **Dev:** updater keys off `+N` / `baseVersionCode`. Reuse `X.Y.Z` across many Dev FTPs; only advance marketing when cutting a new line users should recognize (or user names the version).
+- **Stable:** bump `X.Y.Z`, tag, then `local_release` / deploy (publish fold clears fragments). Do not leave Stable on a `-dev` name.
+
+## Version-cut checklist
+
+1. Decide `X.Y.Z` from the rules above (state the choice + why in the reply).
+2. Set `pubspec.yaml` `version: X.Y.Z+N` and matching `msix_version`.
+3. Commit on the release branch; for Stable also tag `vX.Y.Z`. Do **not** manually fold fragments here — publish clears them.
+4. Publish via `tool/local_release.sh` / hybrid flow — do not invent a second version scheme.
+
+Do not bump versions under `packages/*` unless that package itself changed.

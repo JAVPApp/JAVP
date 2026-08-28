@@ -1,0 +1,17 @@
+{
+  "title": "JAVP",
+  "shortTitle": "JAVP",
+  "voiceTitle": "JAVP",
+  "shortDescription": "Windows 自带媒体播放器 — 你的文件、服务器与目录。",
+  "description": "JAVP（Just Another Video Player）播放你自己提供的媒体：本地视频、Jellyfin、Emby、Plex、JSON 目录、IPTV 播放列表等。\n\nJAVP 不托管、不索引、不附带商业媒体。你连接自己的来源；凭据保留在设备上。\n\n手势播放器（长按 2 倍速、scrub、画中画）、主页货架、目录、来源支持时的直播电视、可选下载，以及可选的配置同步（文件夹 / WebDAV / Google Drive）。\n\n没有自己的媒体库时：首次启动选择 Try demo，可试用 Creative Commons / Blender 示例。",
+  "features": [
+    "本地视频以及 Jellyfin、Emby、Plex 等媒体库",
+    "支持 scrub、长按 2 倍速与画中画的手势播放器",
+    "用你的播放列表观看直播电视 / IPTV",
+    "可选配置同步（文件夹、WebDAV、Google Drive）",
+    "Creative Commons / Blender 演示片源"
+  ],
+  "devStudio": "Cubeweb",
+  "websiteUrl": "https://javp.app",
+  "privacyPolicy": "https://javp.app/privacy.html"
+}

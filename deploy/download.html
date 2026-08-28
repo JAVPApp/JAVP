@@ -1,0 +1,581 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0c0f" />
+  <meta id="meta-desc" name="description" content="Download JAVP, Just Another Video Player for Android, Windows, Linux, and macOS." />
+  <title>Download JAVP</title>
+  <link rel="icon" type="image/png" href="javp_logo.png" />
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: #0b0c0f;
+      color: #f4f5f7;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      padding: 2.25rem 1.25rem 3rem;
+      text-align: center;
+    }
+
+    .skip {
+      position: absolute;
+      left: -999px;
+      top: 0.75rem;
+      background: #e11d48;
+      color: #fff;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.45rem;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .skip:focus { left: 1rem; }
+
+    main {
+      max-width: 38rem;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .logo {
+      width: 6.75rem;
+      height: auto;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.6rem;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    @media (max-width: 400px) {
+      h1 { font-size: 2.1rem; }
+    }
+
+    .tagline {
+      margin: 0.75rem 0 0;
+      color: #9aa3b2;
+      font-size: 1.05rem;
+      line-height: 1.45;
+    }
+
+    .version {
+      margin: 0.85rem 0 0;
+      color: #9aa3b2;
+      font-size: 0.9rem;
+    }
+
+    .version strong { color: #f4f5f7; }
+
+    .os-label {
+      margin: 1.85rem 0 0.65rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #9aa3b2;
+    }
+
+    .os-radio {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .os-tabs { margin: 0; }
+
+    .os-tab {
+      display: inline-block;
+      vertical-align: top;
+      width: 46%;
+      margin: 0.25rem 1.5%;
+      padding: 0.7rem 0.4rem 0.65rem;
+      border-radius: 0.75rem;
+      border: 1px solid #2a2f3a;
+      background: #1c1f28;
+      color: #f4f5f7;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    @media (min-width: 34rem) {
+      .os-tab { width: 22%; margin: 0.25rem 1%; }
+    }
+
+    .os-tab .you {
+      display: none;
+      margin-top: 0.2rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #e11d48;
+    }
+
+    .os-tab .you.is-on { display: block; }
+
+    #os-android:focus ~ .os-tabs label[for="os-android"],
+    #os-windows:focus ~ .os-tabs label[for="os-windows"],
+    #os-linux:focus ~ .os-tabs label[for="os-linux"],
+    #os-macos:focus ~ .os-tabs label[for="os-macos"] {
+      outline: 2px solid #e11d48;
+      outline-offset: 2px;
+    }
+
+    #os-android:checked ~ .os-tabs label[for="os-android"],
+    #os-windows:checked ~ .os-tabs label[for="os-windows"],
+    #os-linux:checked ~ .os-tabs label[for="os-linux"],
+    #os-macos:checked ~ .os-tabs label[for="os-macos"] {
+      border-color: #e11d48;
+      background: #3a1520;
+    }
+
+    .pick-prompt {
+      margin: 1.35rem 0 0;
+      padding: 1.2rem 1.1rem;
+      border: 1px solid #2a2f3a;
+      border-radius: 1rem;
+      background: #14161c;
+      color: #9aa3b2;
+      line-height: 1.45;
+    }
+
+    .hero {
+      display: none;
+      margin-top: 1.35rem;
+      padding: 1.35rem 1.15rem 1.4rem;
+      background: #14161c;
+      border: 1px solid #2a2f3a;
+      border-radius: 1rem;
+    }
+
+    .hero h2 {
+      margin: 0 0 0.85rem;
+      font-size: 1.15rem;
+    }
+
+    #os-android:checked ~ .pick-prompt,
+    #os-windows:checked ~ .pick-prompt,
+    #os-linux:checked ~ .pick-prompt,
+    #os-macos:checked ~ .pick-prompt { display: none; }
+
+    #os-android:checked ~ #panel-android,
+    #os-windows:checked ~ #panel-windows,
+    #os-linux:checked ~ #panel-linux,
+    #os-macos:checked ~ #panel-macos { display: block; }
+
+    .btn {
+      display: block;
+      border-radius: 0.65rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+      color: #fff;
+      background: #e11d48;
+      padding: 0.95rem 1.4rem;
+    }
+
+    .btn-alt {
+      margin-top: 0.65rem;
+      background: #1c1f28;
+      border: 1px solid #2a2f3a;
+      color: #f4f5f7;
+    }
+
+    .guess, .install-note {
+      margin: 0.75rem 0 0;
+      color: #9aa3b2;
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .guess strong { color: #f4f5f7; }
+
+    .unavailable {
+      margin: 0;
+      color: #9aa3b2;
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    .unavailable a, footer a { color: #f4f5f7; }
+
+    .other {
+      margin-top: 1rem;
+      text-align: left;
+      border: 1px solid #2a2f3a;
+      border-radius: 0.85rem;
+      background: #101218;
+      padding: 0.15rem 0.15rem 0.35rem;
+    }
+
+    .other summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.92rem;
+      padding: 0.75rem 0.9rem;
+    }
+
+    .choices { padding: 0 0.35rem 0.35rem; }
+
+    .choice {
+      display: block;
+      overflow: hidden;
+      padding: 0.7rem 0.85rem;
+      margin-top: 0.45rem;
+      border-radius: 0.55rem;
+      background: #1c1f28;
+      color: inherit;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+
+    .choice-label { font-weight: 600; }
+
+    .choice-meta {
+      float: right;
+      color: #9aa3b2;
+      font-size: 0.82rem;
+    }
+
+    .winget {
+      margin: 0.35rem 0.35rem 0.15rem;
+      padding: 0.7rem 0.85rem;
+      border-radius: 0.55rem;
+      background: #1c1f28;
+      color: #9aa3b2;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .winget code {
+      display: block;
+      margin-top: 0.3rem;
+      color: #f4f5f7;
+      font-size: 0.82rem;
+      word-break: break-all;
+    }
+
+    footer {
+      margin-top: 2rem;
+      color: #9aa3b2;
+      font-size: 0.85rem;
+    }
+
+    .early-testers { color: #6b7380; }
+
+    .dev-warn {
+      margin: 1.15rem 0 0;
+      padding: 0.9rem 1rem 1.05rem;
+      border: 1px solid #8a6a1a;
+      border-radius: 0.85rem;
+      background: #2a2210;
+      color: #e8d9a0;
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+
+    .dev-warn p { margin: 0; }
+
+    .btn-stable {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0.55rem 1rem;
+      border: 1px solid #c4b06a;
+      border-radius: 0.55rem;
+      color: #f4e6b0;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Unstamped / stable: hide Dev-only copy. Dev stamp hides Stable-only. */
+    body:not([data-channel="dev"]) .dev-only { display: none !important; }
+    body[data-channel="dev"] .stable-only { display: none !important; }
+
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body data-channel="__JAVP_CHANNEL__">
+  <main>
+    <input class="os-radio" type="radio" name="os" id="os-android" value="android" />
+    <input class="os-radio" type="radio" name="os" id="os-windows" value="windows" />
+    <input class="os-radio" type="radio" name="os" id="os-linux" value="linux" />
+    <input class="os-radio" type="radio" name="os" id="os-macos" value="macos" />
+
+    <a class="skip" href="#os-tabs">Skip to system picker</a>
+    <img class="logo" src="javp_logo.png" width="120" height="120" alt="JAVP" />
+    <h1>
+      <span class="stable-only">JAVP</span>
+      <span class="dev-only">JAVP Dev</span>
+    </h1>
+    <p class="tagline stable-only">Just Another Video Player. Pick your system and we'll hand you the right build.</p>
+    <p class="tagline dev-only">Unstable tester builds. Things can be bugged; use Stable if you want the reliable app.</p>
+
+    <div class="dev-warn dev-only">
+      <p><strong>You are on the Dev channel.</strong> These builds ship early, can break, and install beside the normal app as JAVP Dev.</p>
+      <a class="btn-stable" id="channel-stable" href="../">Get the stable app instead</a>
+    </div>
+    <p class="version" id="version-line">Sideload builds for Android, Windows, Linux, and macOS.</p>
+
+    <p class="os-label">Choose your system</p>
+    <div class="os-tabs" id="os-tabs">
+      <label class="os-tab" id="tab-android" for="os-android" data-os="android">
+        Android
+        <span class="you" id="you-android">This device</span>
+      </label>
+      <label class="os-tab" id="tab-windows" for="os-windows" data-os="windows">
+        Windows
+        <span class="you" id="you-windows">This PC</span>
+      </label>
+      <label class="os-tab" id="tab-linux" for="os-linux" data-os="linux">
+        Linux
+        <span class="you" id="you-linux">This computer</span>
+      </label>
+      <label class="os-tab" id="tab-macos" for="os-macos" data-os="macos">
+        macOS
+        <span class="you" id="you-macos">This Mac</span>
+      </label>
+    </div>
+
+    <p class="pick-prompt">Choose Android, Windows, Linux, or macOS above. The matching download appears here. No account needed.</p>
+
+    <section class="hero" id="panel-android">
+      <h2>Download for Android</h2>
+      <a class="btn" id="dl-android" data-apk="arm64-v8a" href="javp-arm64-v8a.apk">Download for Android</a>
+      <p class="guess">Suggested: <strong>ARM64</strong>, most phones and tablets</p>
+      <p class="install-note stable-only">If this doesn't install, try Universal, especially on a TV.</p>
+      <p class="install-note dev-only">Dev publishes ARM64. 32-bit ARM, x86, and many TVs need Stable Universal.</p>
+      <details class="other">
+        <summary>Other Android builds</summary>
+        <div class="choices">
+          <a class="choice stable-only" data-apk="armeabi-v7a" href="javp-armeabi-v7a.apk"><span class="choice-label">ARMv7</span><span class="choice-meta">older 32-bit devices</span></a>
+          <a class="choice" id="dl-android-universal" data-apk="universal" href="javp.apk"><span class="choice-label">Universal</span><span class="choice-meta">every ABI · best for Android TV</span></a>
+        </div>
+      </details>
+    </section>
+
+    <section class="hero" id="panel-windows">
+      <h2>Download for Windows</h2>
+      <a class="btn stable-only" id="dl-windows-store" href="https://apps.microsoft.com/detail/9P4PMM405RZH">Get it from Microsoft Store</a>
+      <p class="guess stable-only">Suggested: <strong>Microsoft Store</strong>, updates through the Store</p>
+      <a class="btn btn-alt stable-only" id="dl-windows" data-pkg="windows-x64-setup" href="javp-setup.exe">Download installer</a>
+      <a class="btn dev-only" id="dl-windows-zip" data-pkg="windows-x64" href="javp-windows-x64.zip">Download for Windows</a>
+      <p class="guess dev-only">Suggested: <strong>Windows x64</strong>, portable zip</p>
+      <p class="install-note stable-only">Prefer no Store account? Setup is per-user (no admin). In-app updates use the portable zip.</p>
+      <p class="install-note dev-only">Extract the zip and run javp.exe. In-app updates take over from there.</p>
+      <details class="other">
+        <summary>Other Windows builds</summary>
+        <div class="choices">
+          <a class="choice stable-only" data-pkg="windows-x64" href="javp-windows-x64.zip"><span class="choice-label">Windows portable zip (x64)</span><span class="choice-meta">extract and run javp.exe — library stays in the folder</span></a>
+          <a class="choice js-pkg" id="dl-windows-arm" hidden data-pkg="windows-arm64" href="javp-windows-x64.zip"><span class="choice-label">Windows ARM64</span><span class="choice-meta">Snapdragon / WoA</span></a>
+        </div>
+        <p class="winget stable-only">Or with WinGet:<code>winget install --id JAVPApp.JAVP</code></p>
+      </details>
+    </section>
+
+    <section class="hero" id="panel-linux">
+      <h2>Download for Linux</h2>
+      <a class="btn" id="dl-linux" data-pkg="linux-x64" href="javp-linux-x64.zip">Download for Linux</a>
+      <p class="guess">Suggested: <strong>Linux x64</strong>, portable zip</p>
+      <p class="install-note">Extract the zip and run ./javp. In-app updates take over from there.</p>
+      <details class="other" id="linux-other" hidden>
+        <summary>Other Linux builds</summary>
+        <div class="choices">
+          <a class="choice js-pkg" id="dl-linux-arm" hidden data-pkg="linux-arm64" href="javp-linux-x64.zip"><span class="choice-label">Linux ARM64</span><span class="choice-meta">Pi / ARM HTPC</span></a>
+        </div>
+      </details>
+    </section>
+
+    <section class="hero" id="panel-macos">
+      <h2>Download for macOS</h2>
+      <a class="btn js-macos-have" id="dl-macos" data-pkg="macos-arm64" href="javp-macos-arm64.zip">Download for Mac</a>
+      <p class="guess js-macos-have">Suggested: <strong>Apple Silicon</strong>, unsigned zip of javp.app</p>
+      <p class="install-note js-macos-have">Extract javp.app, then right-click and Open the first time (Gatekeeper).</p>
+      <p class="unavailable" id="no-macos" hidden>This cut does not include a macOS build yet. <a class="dev-only" href="../">Get the stable app</a>, or see <a href="https://github.com/JAVPApp/JAVP/releases">GitHub Releases</a>.</p>
+      <details class="other js-macos-have">
+        <summary>Other macOS builds</summary>
+        <div class="choices">
+          <a class="choice" id="dl-macos-intel" data-pkg="macos-x64" href="javp-macos-x64.zip"><span class="choice-label">macOS (Intel)</span><span class="choice-meta">unsigned zip · x86_64</span></a>
+        </div>
+      </details>
+    </section>
+
+    <footer>
+      <a href="https://github.com/JAVPApp/JAVP">GitHub</a>
+      ·
+      <a href="https://github.com/JAVPApp/JAVP/releases">Releases</a>
+      ·
+      <a href="latest.json">latest.json</a>
+      <span class="stable-only">
+        ·
+        <a id="channel-dev" class="early-testers" href="dev/">Early testers (unstable)</a>
+      </span>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      // Filled by tool/deploy_update.py (stamp_download_page). Path detect is fallback.
+      var CHANNEL_STAMP = "__JAVP_CHANNEL__";
+      var channel = CHANNEL_STAMP;
+      if (channel !== "stable" && channel !== "dev") {
+        channel = /\/dev(\/|$)/.test(location.pathname || "") ? "dev" : "stable";
+        document.body.setAttribute("data-channel", channel);
+      }
+      if (channel === "dev") document.title = "Download JAVP Dev (unstable)";
+
+      function byId(id) { return document.getElementById(id); }
+
+      function parseRequestedOs() {
+        var q = "";
+        try {
+          var m = (location.search || "").match(/[?&]os=([^&]+)/);
+          if (m) q = decodeURIComponent(m[1]);
+        } catch (e) {}
+        if (!q && location.hash) q = String(location.hash).replace(/^#/, "");
+        q = (q || "").toLowerCase();
+        if (q === "win" || q === "pc") q = "windows";
+        if (q === "mac" || q === "osx") q = "macos";
+        if (q === "droid" || q === "phone" || q === "tv") q = "android";
+        return q === "android" || q === "windows" || q === "linux" || q === "macos" ? q : "";
+      }
+
+      function guessOs() {
+        var ua = navigator.userAgent || "";
+        // Trust Android first: UA always contains "Linux".
+        if (/Android/i.test(ua)) {
+          if (/Android TV|GoogleTV|SMART-TV|\bTV\b|AFT[A-Z0-9]|BRAVIA|MIBOX|MiTV|SHIELD Android TV/i.test(ua)) {
+            return { os: "android", tv: 1 };
+          }
+          return { os: "android" };
+        }
+        if (/Windows/i.test(ua)) return { os: "windows", arm: /ARM|aarch64/i.test(ua) };
+        // Do not treat UA "Intel Mac OS X" as Intel: Apple Silicon still uses that token.
+        if (/Macintosh|Mac OS X/i.test(ua)) return { os: "macos" };
+        if (/Linux/i.test(ua)) return { os: "linux", arm: /aarch64|arm64|armv8/i.test(ua) };
+        return { os: "" };
+      }
+
+      function selectOs(os) {
+        var ids = ["android", "windows", "linux", "macos"];
+        var i, el;
+        for (i = 0; i < ids.length; i++) {
+          el = byId("os-" + ids[i]);
+          if (!el) continue;
+          if (ids[i] === os) {
+            el.checked = true;
+            el.setAttribute("checked", "checked");
+          } else {
+            el.checked = false;
+            el.removeAttribute("checked");
+          }
+        }
+      }
+
+      var requested = parseRequestedOs();
+      var guess = guessOs();
+      var os = requested || guess.os;
+      if (os) selectOs(os);
+      if (guess.os && !requested) {
+        var you = byId("you-" + guess.os);
+        if (you) {
+          you.className = "you is-on";
+          if (guess.tv) you.firstChild.nodeValue = "This TV";
+        }
+      }
+
+      function tweakForDevice() {
+        if (guess.tv) {
+          var phone = byId("dl-android");
+          var uni = byId("dl-android-universal");
+          if (phone && uni) phone.href = uni.href;
+        }
+        // Prefer ARM primary only after latest.json unhides the arm64 package link.
+        if (guess.arm) {
+          var armLink;
+          if (guess.os === "linux") {
+            armLink = byId("dl-linux-arm");
+            var linux = byId("dl-linux");
+            if (linux && armLink && !armLink.hasAttribute("hidden")) linux.href = armLink.href;
+          } else if (guess.os === "windows") {
+            armLink = byId("dl-windows-arm");
+            if (armLink && !armLink.hasAttribute("hidden")) {
+              var winSetup = byId("dl-windows");
+              var winZip = byId("dl-windows-zip");
+              if (winSetup) winSetup.href = armLink.href;
+              if (winZip) winZip.href = armLink.href;
+            }
+          }
+        }
+      }
+      tweakForDevice();
+      try {
+        if (/[?&]other=/.test(location.search || "") && os) {
+          var panel = byId("panel-" + os);
+          var det = panel && panel.getElementsByTagName("details")[0];
+          if (det) det.open = true;
+        }
+      } catch (e2) {}
+
+      function applyManifest(m) {
+        if (!m) return;
+        var apks = m.apks || {};
+        var pkgs = m.packages || {};
+        var links = document.getElementsByTagName("a");
+        var i, a, key;
+        for (i = 0; i < links.length; i++) {
+          a = links[i];
+          key = a.getAttribute("data-apk");
+          if (key && apks[key] && apks[key].url) a.href = apks[key].url;
+          key = a.getAttribute("data-pkg");
+          if (key && pkgs[key] && pkgs[key].url) {
+            a.href = pkgs[key].url;
+            if (a.className.indexOf("js-pkg") !== -1) a.removeAttribute("hidden");
+          }
+        }
+        var ver = byId("version-line");
+        if (ver && m.versionName) {
+          var extra = m.baseVersionCode ? "+" + m.baseVersionCode : "";
+          ver.textContent = "Latest: " + m.versionName + extra;
+        }
+        if (pkgs["linux-arm64"] && pkgs["linux-arm64"].url) {
+          var linuxOther = byId("linux-other");
+          if (linuxOther) linuxOther.removeAttribute("hidden");
+        }
+        if (channel === "dev" && !pkgs["macos-arm64"] && !pkgs["macos-x64"] && !pkgs.macos) {
+          var have = document.getElementsByClassName("js-macos-have");
+          for (i = 0; i < have.length; i++) have[i].setAttribute("hidden", "hidden");
+          var miss = byId("no-macos");
+          if (miss) miss.removeAttribute("hidden");
+        }
+      }
+
+      try {
+        var x = new XMLHttpRequest();
+        x.open("GET", "latest.json");
+        x.onreadystatechange = function () {
+          if (x.readyState === 4 && x.status === 200) {
+            try {
+              applyManifest(JSON.parse(x.responseText));
+              tweakForDevice();
+            } catch (e3) {}
+          }
+        };
+        x.send();
+      } catch (e4) {}
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{
+  "versionName": "0.1.0",
+  "versionCode": 1,
+  "apkUrl": "https://updater.javp.app/javp.apk",
+  "apkSha256": "replace-with-sha256-of-javp.apk",
+  "apks": {
+    "arm64-v8a": {
+      "url": "https://updater.javp.app/javp-arm64-v8a.apk",
+      "sha256": "replace-with-sha256-of-javp-arm64-v8a.apk"
+    },
+    "armeabi-v7a": {
+      "url": "https://updater.javp.app/javp-armeabi-v7a.apk",
+      "sha256": "replace-with-sha256-of-javp-armeabi-v7a.apk"
+    },
+    "universal": {
+      "url": "https://updater.javp.app/javp.apk",
+      "sha256": "replace-with-sha256-of-javp.apk"
+    }
+  },
+  "packages": {
+    "windows-x64": {
+      "url": "https://updater.javp.app/javp-windows-x64.zip",
+      "sha256": "replace-with-sha256-of-javp-windows-x64.zip",
+      "kind": "zip"
+    },
+    "windows-x64-setup": {
+      "url": "https://updater.javp.app/javp-setup.exe",
+      "sha256": "replace-with-sha256-of-javp-setup.exe",
+      "kind": "exe"
+    },
+    "linux-x64": {
+      "url": "https://updater.javp.app/javp-linux-x64.zip",
+      "sha256": "replace-with-sha256-of-javp-linux-x64.zip",
+      "kind": "zip"
+    }
+  },
+  "changelog": "Example changelog.\n- Hold center for 2x\n- Local history\n- Windows installer + Linux desktop builds",
+  "force": false,
+  "channel": "stable",
+  "publishedAt": "2026-08-09T00:00:00+00:00"
+}

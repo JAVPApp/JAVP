@@ -1,0 +1,2595 @@
+{
+  "@@locale": "en",
+  "about": "About",
+  "aboutSubtitle": "Just Another Video Player — an all-in-one BYO media client for local files, direct URLs, IPTV (M3U/Xtream + EPG/Catchup), and optional SIMKL tracking.",
+  "accessToken": "Access token",
+  "activeOnThisDevice": "Active on this device",
+  "adaptiveQuality": "Adaptive quality",
+  "adaptiveQualityHelp": "Lock an HLS/DASH rendition, or Auto to adapt.",
+  "aspect16x9": "16:9",
+  "aspect4x3": "4:3",
+  "aspectFill": "Fill",
+  "aspectFit": "Fit",
+  "aspectZoom": "Zoom",
+  "add": "Add",
+  "addAndSync": "Add & sync",
+  "addAsJsonCatalog": "Add as JSON catalog",
+  "addAsM3uPlaylist": "Add as M3U playlist",
+  "addASource": "Add a source",
+  "addAsXmltvEpg": "Add as EPG / XMLTV",
+  "addAsXtreamSource": "Add as Xtream",
+  "addedSyncingBackground": "Added \"{name}\" — syncing in background",
+  "@addedSyncingBackground": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "addedToMyList": "Added to My List",
+  "addedToName": "Added to {name}",
+  "@addedToName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "addEmby": "Add Emby",
+  "addFont": "Add font",
+  "addingSource": "Adding…",
+  "addJellyfin": "Add Jellyfin",
+  "addJsonCatalog": "Add JSON catalog",
+  "addM3uPlaylist": "Add M3U playlist",
+  "addMagnet": "Add magnet",
+  "addMagnetOrTorrent": "Add magnet / .torrent",
+  "addMediaSource": "Add media source",
+  "addPlex": "Add Plex",
+  "addPlexManual": "Add Plex (manual)",
+  "addProfile": "Add profile",
+  "addProfileFromFolder": "Add a profile from your folder",
+  "addProfileFromOtherTarget": "Add profile from another sync target",
+  "addRadioStream": "Add radio stream",
+  "addRadioUrlHint": "https://…/stream.mp3",
+  "addSource": "Add source",
+  "addSourceQuestion": "Add {type}?",
+  "@addSourceQuestion": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "addSourceToWatchLive": "Add a source to watch Live",
+  "addStalkerSource": "Add Stalker source",
+  "addStreamUrl": "Add stream URL",
+  "addToPlaylist": "Add to playlist",
+  "addTorrent": "Add torrent",
+  "addTorrentHelp": "Bring your own magnet or .torrent for content you have the rights to stream. JAVP resolves it to a local HTTP stream for playback.",
+  "addUrl": "Add URL",
+  "addXmltvEpg": "Add EPG / XMLTV",
+  "addXtreamSource": "Add Xtream source",
+  "adjustingSwitchesCustom": "Adjusting these switches the preset to Custom.",
+  "advertisement": "Ad",
+  "after": "After",
+  "airingOnChannelsYouKnow": "Airing on channels you know",
+  "airPlay": "AirPlay",
+  "all": "All",
+  "allCategories": "All categories",
+  "allSources": "All sources",
+  "alreadySetUpElsewhere": "Already set up elsewhere?",
+  "alsoEnrichMediaServers": "Also enrich Jellyfin / Emby / Plex",
+  "apiKeySet": "API key set",
+  "apiKeyV3": "API key (v3)",
+  "appKey": "App key",
+  "appLanguage": "App language",
+  "appLanguageSubtitle": "Choose the language for menus and labels",
+  "appTitle": "JAVP",
+  "audio": "Audio",
+  "audioAndSubtitles": "Audio & subtitles",
+  "audioSubtitlesHelp": "Automatically pick tracks when a stream opens. With original audio, captions turn on only when dialogue isn’t in your language. Manual picks in the player can update these defaults.",
+  "audioTrack": "Audio track",
+  "auto": "Auto",
+  "automaticSync": "Automatic sync",
+  "automaticSyncSubtitle": "On open, on resume, and after local changes (including playback).",
+  "autoSkipCredits": "Auto-skip credits",
+  "autoSkipIntro": "Auto-skip intro",
+  "autoSkipRecap": "Auto-skip recap",
+  "availableOffline": "Available offline",
+  "back": "Back",
+  "backgroundBox": "Background box",
+  "backgroundBoxSubtitle": "Opaque bar behind caption text",
+  "backToForYou": "Back to For you",
+  "becauseYouWatch": "Because you watch",
+  "before": "Before",
+  "betaseriesApiKeys": "BetaSeries API keys",
+  "betaseriesMetadataOptionalBlurb": "Optional. Link BetaSeries to pull Watching / Plan-to-Watch into My List. Dropped and completed titles stay out of Continue Watching.",
+  "betaseriesNeedsApiKey": "Add a BetaSeries API key under Developer to connect.",
+  "bottomMargin": "Bottom margin",
+  "boxOpacity": "Box opacity",
+  "bringYourOwnMedia": "Bring your own media",
+  "browseByGenre": "Browse by genre",
+  "browseByGenreSubtitle": "Browse titles grouped by genre",
+  "browseChannels": "Browse channels",
+  "cancel": "Cancel",
+  "cancelled": "Cancelled",
+  "cancelReminder": "Cancel reminder",
+  "capabilityGuideEpg": "Guide / EPG",
+  "capabilityIptv": "IPTV",
+  "capabilityIptvSubtitle": "M3U playlists and Xtream Codes logins",
+  "capabilityJsonCatalogs": "JSON catalogs",
+  "capabilityJsonCatalogsSubtitle": "Bring-your-own hosted item lists",
+  "capabilityLocalFiles": "Local files",
+  "capabilityLocalFilesSubtitle": "Import videos anytime from the Library tab",
+  "capabilityMediaServers": "Media servers",
+  "capabilityMediaServersSubtitle": "Plex, Jellyfin, or Emby (account or URL)",
+  "captions": "Captions",
+  "captionsHelp": "Style how subtitles look — including an Anime preset that matches Crunchyroll.",
+  "captionStyle": "Caption style",
+  "captionStyleSubtitle": "Presets, size, outline, colors",
+  "cast": "Cast",
+  "castCannotFetchStream": "The TV could not fetch this stream (often a CORS or CDN block). Direct play and a phone proxy were both tried.",
+  "castCannotPlayAudioCodec": "This TV cannot decode this audio (TrueHD, Atmos, or DTS-HD).",
+  "castCannotPlayVideoCodec": "This TV cannot decode this video (HEVC / H.265 / AV1). Chromecast needs H.264.",
+  "castingTo": "Casting to {device}",
+  "@castingTo": {
+    "placeholders": {
+      "device": {
+        "type": "Object"
+      }
+    }
+  },
+  "castLoadModeDirect": "direct play",
+  "castLoadModeProxy": "phone proxy",
+  "castLoadModeTranscode": "server transcode",
+  "castReceiverRejected": "Chromecast rejected this stream after trying the available playback paths. The TV may not support this codec or container.",
+  "castServerTranscodeFallback": "Transcode on Jellyfin / Emby / Plex if Chromecast cannot play",
+  "castServerTranscodeFallbackHelp": "Off by default. If Cast fails, the app asks your media server for an H.264 stream. This does not transcode on the phone (that would add a large binary and drain the battery).",
+  "castToDevice": "Cast to",
+  "castTriedModes": "Tried: {modes}",
+  "@castTriedModes": {
+    "placeholders": {
+      "modes": {
+        "type": "Object"
+      }
+    }
+  },
+  "catalogApiDocumentation": "Catalog API documentation",
+  "catalogExcludeGenres": "Hide these genres",
+  "catalogGenreFiltersEmpty": "No genre metadata on these titles yet.",
+  "catalogGenreFiltersHint": "Pin genres you want, and hide ones you don’t.",
+  "catalogHideWatchedHint": "Hide titles you’ve already finished. Turn this off to see them again.",
+  "catalogIncludeGenres": "Show these genres",
+  "catalogJsonUrl": "Catalog JSON URL or file",
+  "catalogSortRating": "Rating",
+  "catalogSortYear": "Newest",
+  "catchup": "Catchup",
+  "catchupFirst": "Catchup first",
+  "catchupOnly": "Catchup only",
+  "catchupRequiresArchive": "Catchup requires archive metadata on this channel.",
+  "catchupUnavailable": "Catchup isn’t available for this programme.",
+  "categories": "Categories",
+  "category": "Category",
+  "categoryHidden": "{name} hidden",
+  "@categoryHidden": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "categoryNotFound": "Category not found",
+  "categoryShown": "{name} shown",
+  "@categoryShown": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "changeProfilePhoto": "Change photo",
+  "channel": "Channel",
+  "channelCount": "{count} channels",
+  "@channelCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "channelNoCatchupArchive": "This channel has no catchup archive",
+  "channels": "Channels",
+  "channelSchedule": "Channel schedule",
+  "checkForUpdates": "Check for updates",
+  "checkingForUpdates": "Checking for updates…",
+  "chooseFolder": "Choose folder",
+  "chooseHowYouConnect": "Choose how you connect your media.",
+  "choosePlexServer": "Choose Plex server",
+  "chooseProfile": "Who’s watching?",
+  "chooseProfileBlurb": "Pick a profile to continue. Locked profiles need a PIN.",
+  "chooseQuality": "Choose quality",
+  "chooseSeasonEpisodes": "Choose season / episodes",
+  "chooseVersion": "Choose version",
+  "clear": "Clear",
+  "clearHistory": "Clear history",
+  "clearImport": "Clear import",
+  "clearLocalHistory": "Clear local history",
+  "clearWatchHistoryBody": "Removes JAVP’s on-device history only. External trackers are unchanged.",
+  "clearWatchHistoryTitle": "Clear watch history?",
+  "clientId": "Client ID",
+  "clientIdOverride": "Client ID override",
+  "clientSecret": "Client secret",
+  "close": "Close",
+  "closeToTray": "Close to notification area",
+  "closeToTraySubtitle": "Keep JAVP running in the system tray when you close the window",
+  "codeCopied": "Code copied",
+  "collection": "Collection",
+  "collections": "Collections",
+  "collectionsAppearHint": "Collections appear when TMDB matches a movie franchise.",
+  "collectionsSubtitle": "Curated groups from your sources",
+  "connect": "Connect",
+  "connected": "Connected",
+  "connectedPeriod": "Connected.",
+  "connectingAndSyncing": "Connecting & syncing…",
+  "connectionOk": "Connection OK",
+  "contentCannotBeCastToThisDevice": "This content cannot be cast to this device",
+  "continueAction": "Continue",
+  "continueWatching": "Continue watching",
+  "continueWatchingSubtitle": "Pick up where you left off",
+  "copy": "Copy",
+  "copyAdbCommand": "Copy adb command",
+  "copyUrl": "Copy URL",
+  "couldNotAddSource": "Could not add source: {error}",
+  "@couldNotAddSource": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotBuildEpisodeStreamUrl": "Could not build episode stream URL",
+  "couldNotLoadDemo": "Could not load demo: {error}",
+  "@couldNotLoadDemo": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "couldNotLoadSeries": "Could not load series",
+  "couldNotLoadSeriesError": "Could not load series: {error}",
+  "@couldNotLoadSeriesError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotRefreshEpisodes": "Could not refresh episodes: {error}",
+  "@couldNotRefreshEpisodes": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "couldNotValidateKey": "Could not validate key",
+  "couldntPlayVideo": "Couldn’t play this video",
+  "coverOrientationAuto": "Auto",
+  "coverOrientationHorizontal": "Horizontal",
+  "coverOrientationVertical": "Vertical",
+  "create": "Create",
+  "createFreeTmdbAccount": "Create a free TMDB account (if needed).",
+  "createPlaylistHint": "Create a playlist to queue favorites.",
+  "currentEpgProgrammeLength": "Current EPG programme length",
+  "customJsonCatalog": "Custom JSON catalog",
+  "daysAgo": "{count} days ago",
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "decoder": "Decoder",
+  "decoderHelp": "Hardware decode is faster and cooler. Switch to software if video is black or glitchy (common on emulators and some TV boxes).",
+  "defaultCatchupPadding": "Default catchup padding",
+  "defaultQuality": "Default",
+  "defaultsToServerName": "Defaults to server name",
+  "delete": "Delete",
+  "deleteDownloadTitle": "Delete download?",
+  "deleteFromDevice": "Delete “{title}” from this device?",
+  "@deleteFromDevice": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteProfileBody": "Removes this profile’s history, sources, and preferences from this device. A copy in your sync folder is left alone.",
+  "deleteProfileTitle": "Delete {name}?",
+  "@deleteProfileTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "details": "Details",
+  "developer": "Developer",
+  "deviceLanguageIfAudioDiffers": "Device language ({code}) · only if audio differs",
+  "@deviceLanguageIfAudioDiffers": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceLanguageWhenAudioDiffers": "Device language (when audio differs)",
+  "devicePairAddAsNewProfile": "Add as a new profile on the other device",
+  "devicePairAddAsNewProfileBlurb": "Creates a separate profile instead of mixing into whoever is open on the TV.",
+  "devicePairAddOnTv": "Enter source on this TV",
+  "devicePairAddOnTvBlurb": "Type a catalog URL, M3U, Xtream, or media server login with the remote.",
+  "devicePairBrowserEnterPin": "Open that address and enter the pairing code above (or scan the QR).",
+  "devicePairBrowserFallback": "Type this on your phone browser (same Wi‑Fi)",
+  "devicePairClientBlurb": "Same Wi‑Fi as the other device. Sources and passwords travel only on your LAN for this short session — no cloud account.",
+  "devicePairConfirmTransfer": "Transfer",
+  "devicePairDirectionNeither": "Neither device has sources to transfer yet.",
+  "devicePairDirectionReceive": "Get from this device",
+  "devicePairDirectionReceiveBlurb": "Copy selected sources from the other device onto this phone.",
+  "devicePairDirectionSend": "Send to this device",
+  "devicePairDirectionSendBlurb": "Copy selected sources from this phone onto the other device.",
+  "devicePairDirectionTitle": "What do you want to do?",
+  "devicePairEmulatorHelp": "The TV AVD is not on your Wi‑Fi. Run the adb forward command below, then open the pairing link in JAVP or a browser on this PC.",
+  "devicePairEmulatorTitle": "Emulator pairing",
+  "devicePairHostAdded": "Added \"{name}\" — syncing on this device",
+  "@devicePairHostAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "devicePairHostAddedProfile": "Added profile {name} from phone — switch to it when you’re ready",
+  "@devicePairHostAddedProfile": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "devicePairHostHelp": "Scan with a phone that has JAVP to push or pull sources. Or open the browser URL below to add one source without the app.",
+  "devicePairHostHint": "Host IP (e.g. 192.168.1.20)",
+  "devicePairHostImported": "Imported {count} sources from phone",
+  "@devicePairHostImported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairHostReady": "Sources updated on this device",
+  "devicePairHostSources": "Other device has {count} sources",
+  "@devicePairHostSources": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairHostStartFailed": "Could not start pairing: {error}",
+  "@devicePairHostStartFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "devicePairHostSyncLater": "You can leave pairing — catalog sync can finish in the background.",
+  "devicePairImportModeTitle": "How should sources be applied?",
+  "devicePairIncludeSyncSettings": "Include profile sync settings",
+  "devicePairInvalidLink": "This pairing link is incomplete. Open device pairing on the other device and scan again.",
+  "devicePairManualBlurb": "On the other device open Pair device, then enter its LAN address and the 6-character PIN shown next to the QR.",
+  "devicePairManualEntryBlurb": "Enter the LAN address and PIN from the other device’s QR screen",
+  "devicePairManualIncomplete": "Enter the host address and PIN",
+  "devicePairManualTitle": "Connect with PIN",
+  "devicePairNewCode": "New code ready",
+  "devicePairNoHostSources": "The other device has no sources to pull.",
+  "devicePairNoLanIp": "Could not find a LAN IP. Connect Ethernet/Wi‑Fi and try again.",
+  "devicePairNoLocalSources": "No sources on this device to push",
+  "devicePairNoneSelected": "Select at least one source.",
+  "devicePairPinHint": "6-character PIN",
+  "devicePairPinLabel": "PIN",
+  "devicePairPortHint": "Port",
+  "devicePairPreviewAdded": "{count} will be added",
+  "@devicePairPreviewAdded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPreviewKept": "{count} others stay unchanged",
+  "@devicePairPreviewKept": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPreviewNoChanges": "No source changes with this selection.",
+  "devicePairPreviewRemovedHost": "{count} on the other device will be removed",
+  "@devicePairPreviewRemovedHost": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPreviewRemovedLocal": "{count} on this device will be removed",
+  "@devicePairPreviewRemovedLocal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPreviewReplaceWarningHost": "Replace will delete {count} sources that are only on the other device.",
+  "@devicePairPreviewReplaceWarningHost": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPreviewReplaceWarningLocal": "Replace will delete {count} sources that are only on this device.",
+  "@devicePairPreviewReplaceWarningLocal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPreviewUpdated": "{count} already exist and will be updated",
+  "@devicePairPreviewUpdated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPull": "Pull sources from device",
+  "devicePairPullConfirmBody": "{count} sources and passwords will be copied from the other device over Wi‑Fi for this pairing session only.",
+  "@devicePairPullConfirmBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPullConfirmBodyWithSync": "{count} sources, passwords, and profile sync credentials will be downloaded over Wi‑Fi from the other device for this pairing session only.",
+  "@devicePairPullConfirmBodyWithSync": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPullConfirmTitle": "Pull sources?",
+  "devicePairPullDone": "Pulled {count} sources onto this device",
+  "@devicePairPullDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPush": "Push sources to device",
+  "devicePairPushConfirmBody": "{count} sources and their passwords will be sent over Wi‑Fi to the other device for this pairing session only.",
+  "@devicePairPushConfirmBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPushConfirmBodyWithSync": "{count} sources, passwords, and profile sync credentials will be sent over Wi‑Fi to the other device for this pairing session only.",
+  "@devicePairPushConfirmBodyWithSync": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPushConfirmTitle": "Push sources?",
+  "devicePairPushDone": "Pushed {count} sources to the other device",
+  "@devicePairPushDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairPushDoneNewProfile": "Added profile {name} on the other device",
+  "@devicePairPushDoneNewProfile": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "devicePairSelectAll": "Select all",
+  "devicePairSelectedCount": "{selected} of {total} selected",
+  "@devicePairSelectedCount": {
+    "placeholders": {
+      "selected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "devicePairSelectHostTitle": "Sources to pull",
+  "devicePairSelectLocalTitle": "Sources to send",
+  "devicePairSelectNone": "Select none",
+  "devicePairSetupProfileSync": "Set up profile sync",
+  "devicePairShowQr": "Show pairing QR",
+  "devicePairShowQrBlurb": "Let another phone or tablet push or pull sources over Wi‑Fi",
+  "devicePairSyncAppliedHost": "Profile sync settings were sent to the other device.",
+  "devicePairSyncAppliedLocal": "Profile sync settings were applied on this device.",
+  "devicePairSyncNeedsFolder": "Pick a sync folder on this device to finish setup.",
+  "devicePairTitle": "Pair device",
+  "devicePinScanHelp": "Scan with your phone to open the sign-in page, then enter this code.",
+  "diagnosticsClearLogs": "Clear logs",
+  "diagnosticsCopyLog": "Copy log",
+  "diagnosticsLogCopied": "Log copied to clipboard",
+  "diagnosticsLogging": "Save logs on this device",
+  "diagnosticsLoggingSubtitle": "Keep a rolling log to attach to bug reports",
+  "diagnosticsLogsCleared": "Logs cleared",
+  "diagnosticsNoEntries": "No log entries yet.",
+  "diagnosticsOpenFolder": "Open logs folder",
+  "diagnosticsPrivacyNotice": "Logs stay on this device, and passwords, tokens and API keys are removed before anything is written. Sharing only opens your device share sheet — JAVP does not upload logs.",
+  "diagnosticsRecentEntries": "Recent entries",
+  "diagnosticsShareFailed": "Could not open the share sheet",
+  "diagnosticsShareHint": "Shares a redacted log file via your device. Nothing is sent until you choose an app.",
+  "diagnosticsShareLog": "Share",
+  "diagnosticsStorageUsed": "Storage used: {size}",
+  "@diagnosticsStorageUsed": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "diagnosticsVerboseHitch": "Verbose hitch logging",
+  "@diagnosticsVerboseHitch": {
+    "description": "Diagnostics toggle for verbose hitch / light profiler logging"
+  },
+  "diagnosticsVerboseHitchSubtitle": "Lower jank threshold, more spans, and periodic hitch summaries. Extra overhead — leave off unless diagnosing lag. On by default on Dev builds.",
+  "@diagnosticsVerboseHitchSubtitle": {
+    "description": "Subtitle explaining verbose hitch logging overhead and Dev default"
+  },
+  "disableSource": "Disable temporarily",
+  "disconnect": "Disconnect",
+  "disconnected": "Disconnected",
+  "disconnectGoogle": "Disconnect Google",
+  "discordPresenceBrowsing": "Browsing library",
+  "discordPresenceCatchup": "Catch-up",
+  "discordPresenceCatchupPaused": "Catch-up · Paused",
+  "discordPresenceEpisodeStatus": "{code} · {status}",
+  "@discordPresenceEpisodeStatus": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "discordPresenceEpisodeTitleStatus": "{code} · {title} · {status}",
+  "@discordPresenceEpisodeTitleStatus": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "discordPresenceLive": "Live",
+  "discordPresenceLivePaused": "Live · Paused",
+  "discordPresenceLiveTvFallback": "Live TV",
+  "discordPresencePaused": "Paused",
+  "discordPresencePlaying": "Playing",
+  "discordPresencePrivateListening": "Listening to something",
+  "discordPresencePrivateLiveTv": "Watching live TV",
+  "discordPresencePrivateWatching": "Watching something",
+  "discordRichPresenceHideTitle": "Hide the title",
+  "discordRichPresenceHideTitleSubtitle": "Show only that JAVP is playing, not what",
+  "discordRichPresenceToggle": "Discord Rich Presence",
+  "discordRichPresenceToggleSubtitle": "Show what you’re watching on your Discord profile (desktop)",
+  "displayName": "Display name",
+  "distributionLabel": "Distribution: {label}",
+  "@distributionLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "dlna": "DLNA",
+  "doNotAutoSwitchAudio": "Do not auto-switch audio tracks",
+  "doneReordering": "Done",
+  "doubleTapSeek": "Double-tap seek",
+  "doubleTapSeekSubtitle": "Double-tap left/right thirds to jump ±10 seconds.",
+  "download": "Download",
+  "downloadAheadWhileWatching": "Download ahead while watching",
+  "downloadAndInstall": "Download & install",
+  "downloadAnyway": "Download anyway",
+  "downloadComplete": "Download complete",
+  "downloaded": "Downloaded",
+  "downloadedSeries": "Downloaded series",
+  "downloadedSeriesSubtitle": "Series with episodes saved on this device",
+  "downloadEntireSeries": "Download entire series",
+  "downloadEpisodesHint": "Download episodes, movies, or catchup from a title page — they’ll show up here to watch without internet.",
+  "downloadFailed": "Download failed",
+  "downloadFailedWithError": "Download failed — {error}",
+  "@downloadFailedWithError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadForOffline": "Download for offline",
+  "downloadingEllipsis": "Downloading…",
+  "downloadingPercent": "Downloading {percent}%",
+  "@downloadingPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadNewEpisodesMyList": "Download new episodes for My List",
+  "downloadNewEpisodesMyListSubtitle": "After a source sync, queues newly added episodes for series on My List. First sync only baselines.",
+  "downloadNextCount": "Download next {count}",
+  "@downloadNextCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadNotAvailable": "Download not available for this item",
+  "downloadQueued": "Download queued",
+  "downloadQueuedSeeLibrary": "Download queued — see Library → Downloads",
+  "downloadReadyInstall": "Download ready — tap Install",
+  "downloadRemainingInSeason": "Download remaining in season",
+  "downloads": "Downloads",
+  "downloadsActiveCount": "Downloads ({count} active)",
+  "@downloadsActiveCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadsChannelDesc": "Offline download progress",
+  "downloadSeasonNamed": "Download {name}",
+  "@downloadSeasonNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadsHelp": "Queues the next episodes of the series you’re watching. Progressive files and HLS VOD (saved as a local playlist package).",
+  "downloadsLinkSubtitle": "Queue and offline copies",
+  "downloadsSubtitleSettings": "Offline downloads and catch-up recordings",
+  "downloadsWaitingWifi": "Downloads (waiting for Wi‑Fi)",
+  "downloadThisEpisode": "Download this episode",
+  "downloadWifiOnly": "Download only over Wi‑Fi",
+  "downloadWifiOnlySubtitle": "Queued items wait until Wi‑Fi is available",
+  "drmPlaybackUnsupported": "This stream is DRM-protected and cannot be played in JAVP.",
+  "duration": "Duration",
+  "dvrScrubHint": "DVR · scrub to go back",
+  "edit": "Edit",
+  "editEllipsis": "Edit…",
+  "editSource": "Edit source",
+  "emptyLibraryHint": "Open local videos, paste stream URLs, or add a magnet",
+  "emptyMusicHint": "Paste a live radio URL (.mp3) or add an M3U playlist with Radio or Music groups.",
+  "emptyShelfHint": "Add an M3U/Xtream source, open local videos, or paste a stream URL.",
+  "enableSource": "Enable",
+  "end": "End",
+  "ended": "Ended",
+  "enterCodeOnBetaseries": "Enter the code on BetaSeries, then return here…",
+  "enterCodeOnTrakt": "Enter the code on Trakt, then return here…",
+  "enterPinOnSimkl": "Enter the PIN on SIMKL, then return here…",
+  "epgCatchupAfterIptvSync": "EPG and catchup appear after you sync IPTV sources.",
+  "epgCatchupAfterLiveSync": "EPG and catchup appear after you sync live sources.",
+  "epgFilters": "EPG filters",
+  "epgOff": "EPG off",
+  "epgSourceFromPlaylist": "From playlist",
+  "epgSourceFromProvider": "From provider",
+  "epgSourceHelpIptv": "None skips Guide. Playlist or provider uses this list’s own listings. URL, file, or an XMLTV source overrides them.",
+  "epgSourceHelpMediaServer": "None skips Guide. Server programme guide is the default. URL, file, or an XMLTV source overrides matching channels.",
+  "epgSourceLabel": "EPG source",
+  "epgSourceOff": "None",
+  "epgSourceServerGuide": "Server programme guide",
+  "epgSourceUrlOrFile": "URL or file",
+  "epgXmlUrl": "EPG / XMLTV URL or file",
+  "episodeNumber": "Episode {count}",
+  "@episodeNumber": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "episodes": "Episodes",
+  "episodesAhead": "Episodes ahead",
+  "exitFullscreen": "Exit fullscreen",
+  "exitPictureInPicture": "Back to player",
+  "@exitPictureInPicture": {
+    "description": "Desktop PiP overlay: restore the main player window"
+  },
+  "exportPassphraseBody": "You’ll need this passphrase to import passwords and tokens on the other device.",
+  "exportPassphraseConfirmHint": "Confirm passphrase",
+  "exportPassphraseHint": "Passphrase",
+  "exportPassphraseTitle": "Encryption passphrase",
+  "exportSecretsEncrypt": "Encrypt with passphrase",
+  "exportSecretsOmit": "Omit secrets",
+  "exportSecretsPlaintext": "Include plaintext (risky)",
+  "exportSecretsPlaintextConfirmBody": "Anyone with this file can access your media servers. Prefer a passphrase, or omit secrets and re-enter them after import.",
+  "exportSecretsPlaintextConfirmTitle": "Share plaintext secrets?",
+  "exportSources": "Export sources",
+  "exportSourcesSecretsBody": "Source passwords and Plex/API tokens can be omitted, encrypted with a passphrase, or included in plaintext after confirmation.",
+  "exportSourcesSecretsTitle": "Include passwords & tokens?",
+  "externalPlayer": "External player",
+  "@externalPlayer": {
+    "description": "Short in-player settings row to open the current stream in another app"
+  },
+  "externalPlayerFailed": "Couldn’t open an external player.",
+  "externalPlayerNoProgress": "Progress isn’t tracked in an external player.",
+  "favorite": "Favorite",
+  "favoriteChannel": "Favorite channel",
+  "favorited": "Favorited",
+  "favorites": "Favorites",
+  "favoritesSearchHint": "Search favorite channels…",
+  "filledByConnectOrPaste": "Filled by Connect, or paste manually",
+  "filterCategoriesHint": "Filter categories…",
+  "filterEpgByCategory": "Filter EPG by category",
+  "filters": "Filters",
+  "findProfilesOnTarget": "Find profiles on this target",
+  "fineTune": "Fine-tune",
+  "finishedDownloadsMayBeRemoved": "Finished downloads may be removed after watching.",
+  "font": "Font",
+  "fontImportBadFormat": "Unsupported font format. Use TTF or OTF.",
+  "fontImportNoFamily": "Could not read a font family name from that file.",
+  "fontImportNotFound": "Font file not found.",
+  "fontNameHelp": "Use a family installed on this device, or import a TTF/OTF file.",
+  "fontNameHint": "Font family name",
+  "forward10Seconds": "Forward 10 seconds",
+  "forYou": "For you",
+  "forYouSubtitle": "Local recommendations from your library",
+  "foundNProfiles": "Found {count} profiles",
+  "@foundNProfiles": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "foundOneProfile": "Found a profile",
+  "fromFavoriteCategories": "From favorite categories",
+  "fromYourCatalog": "From your catalog",
+  "fullscreen": "Fullscreen",
+  "googleCast": "Google Cast",
+  "googleCastPicker": "Choose a Chromecast…",
+  "googleClientIdMissing": "Add a Google OAuth client id, or build with --dart-define=GOOGLE_OAUTH_CLIENT_ID=…",
+  "googleDriveApiUnavailable": "Google Drive sign-in isn’t available here. Use Folder sync with the Google Drive desktop app instead.",
+  "googleDriveConnected": "Google Drive connected.",
+  "googleDriveDesktopBlurb": "On desktop, Sign in with Google opens your browser (no client secret). Or use Folder sync with the Google Drive desktop app.",
+  "googleDriveSignedInBlurb": "Signed in. Profiles sync to a JAVP folder in your Drive.",
+  "googleDriveSignInBlurb": "Sign in with Google to sync profiles across devices. No passwords or client secrets are stored in the app.",
+  "googleSignInNeedsMobile": "Google Sign-In needs Android or iOS.",
+  "guide": "Guide",
+  "hasEpg": "Has EPG",
+  "hideBrowsePanel": "Hide browse panel",
+  "hideCategory": "Hide category",
+  "hideCategoryHelp": "Hidden from Live while the parental PIN is locked.",
+  "hideCategoryNeedsPin": "Set a parental PIN in Settings to hide categories.",
+  "hideWatched": "Hide watched",
+  "history": "History",
+  "historyClearLocalOnly": "This only clears JAVP’s on-device history. External trackers (SIMKL, etc.) are not changed.",
+  "historyHelp": "Anything you play is remembered here on-device — Live, VOD, local files, and URLs. No account needed.",
+  "historyLocalOnlyHelp": "Saved on this device. SIMKL and other trackers are optional extras — history works without them.",
+  "holdOkToClose": "Hold OK to close",
+  "holdSidesFor2x": "Hold sides for 2x",
+  "holdSidesFor2xSubtitle": "Long-press the left or right third of the player, or hold Space on a computer, for temporary 2x speed.",
+  "holdSpaceFor2x": "Temporary 2x speed",
+  "host": "Host",
+  "hostedCatalogJsonUrl": "Catalog JSON URL or local file",
+  "hoursAgo": "{count} hours ago",
+  "@hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "hoursMinutesLeft": "{hours}h {minutes}m left",
+  "@hoursMinutesLeft": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "howSubtitlesLook": "How subtitles look during playback.",
+  "ignoreThisVersion": "Ignore this version",
+  "imported": "Imported",
+  "importExportZipCsv": "Import export (ZIP/CSV)",
+  "importFiles": "Import files",
+  "importFontFile": "Import font file",
+  "importing": "Importing…",
+  "importPassphraseBody": "This file’s passwords and tokens are encrypted.",
+  "importPassphraseTitle": "Enter passphrase",
+  "importSources": "Import sources",
+  "importSourcesMerge": "Add / update (keep existing)",
+  "importSourcesMergeBody": "Keeps current sources; adds new ones and updates matching ids from the file.",
+  "importSourcesReplace": "Replace existing sources",
+  "importSourcesReplaceBody": "Removes sources on this device and loads the file instead.",
+  "importSourcesTitle": "Import sources",
+  "importVideos": "Import videos",
+  "includeXtreamVod": "Include movies & series",
+  "includeXtreamVodSubtitle": "When off, this source syncs live TV only",
+  "inMyList": "In My List",
+  "install": "Install",
+  "installAndRestart": "Install & restart",
+  "installingEllipsis": "Installing…",
+  "installVersion": "Install {version}",
+  "@installVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "invalidLink": "Invalid link",
+  "inYourLanguage": "In your language",
+  "iptvSourcesCount": "{count} IPTV sources",
+  "@iptvSourcesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "joinDiscord": "Discord",
+  "joinDiscordSubtitle": "Community support, releases, and feature ideas",
+  "jumpBackIn": "Jump back in",
+  "jumpToLive": "Jump to live",
+  "jumpToPercent": "Jump to 0–90%",
+  "justNow": "just now",
+  "keyboardShortcuts": "Keyboard shortcuts",
+  "labelNew": "New",
+  "lastSyncedAt": "Last synced at {time}",
+  "@lastSyncedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastUpdatedAgo": "Last updated {ago}",
+  "@lastUpdatedAgo": {
+    "placeholders": {
+      "ago": {
+        "type": "Object"
+      }
+    }
+  },
+  "later": "Later",
+  "layoutMode": "Layout",
+  "layoutModeAuto": "Auto",
+  "layoutModeDesktop": "Desktop",
+  "layoutModeEnvForced": "Forced by JAVP_UI environment or launch flag — change that to unlock this setting.",
+  "layoutModeRestartRequired": "Restart JAVP to apply the layout change.",
+  "layoutModeSubtitle": "Auto detects Steam Deck / Game Mode. TV uses the leanback shell; Desktop keeps mouse and keyboard chrome.",
+  "layoutModeTv": "TV",
+  "learnMore": "Learn more",
+  "leaveBlankBuiltInClientId": "Leave blank to use the built-in client ID",
+  "leaveBlankKeepPassword": "Leave blank to keep the current password",
+  "letterboxdApiAccess": "Letterboxd API access",
+  "letterboxdApiLockedHelp": "The official Letterboxd API requires partner access. Until approved, import your free account export (ZIP or CSV) from Letterboxd Settings → Data. No scraping.",
+  "letterboxdCleared": "Letterboxd import cleared",
+  "letterboxdExportYourData": "Export your data",
+  "letterboxdImportFailed": "Could not read that export. Use the ZIP from Letterboxd Settings → Data, or a watchlist/diary CSV.",
+  "letterboxdImportSummary": "Imported {watchlist} watchlist · {completed} watched/rated films",
+  "@letterboxdImportSummary": {
+    "placeholders": {
+      "watchlist": {
+        "type": "Object"
+      },
+      "completed": {
+        "type": "Object"
+      }
+    }
+  },
+  "letterboxdMoviesOnlyBlurb": "Movies only — Letterboxd does not track TV series",
+  "letterboxdWatchlistCount": "{count} films on Letterboxd watchlist",
+  "@letterboxdWatchlistCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "linked": "Linked",
+  "linkTrackersOnDeviceAction": "Connect trackers",
+  "linkTrackersOnDeviceBody": "This profile uses SIMKL, Trakt, or Serializd elsewhere. Sign-in tokens aren’t synced — connect again here to restore Watching and scrobble.",
+  "linkTrackersOnDeviceTitle": "Link trackers on this device?",
+  "linuxUpdateSummary": "Checks updater.javp.app for newer Linux builds and applies them in place.",
+  "list": "List",
+  "live": "Live",
+  "liveBadge": "LIVE",
+  "liveCategories": "Live categories",
+  "liveFilters": "Live filters",
+  "liveQualityAsk": "Ask each time",
+  "liveQualityAskSubtitle": "Prompt once per channel until you pick a quality.",
+  "liveQualityAuto": "Auto (best available)",
+  "liveQualityAutoSubtitle": "Best quality for live (FHD unless the screen is UHD/4K). Catchup/DVR can use a sibling stream.",
+  "liveQualityMode": "Live TV quality",
+  "liveQualityModeHelp": "Default when opening a channel that has SD / HD / 4K variants.",
+  "liveScrubber": "Live scrubber",
+  "loadingCategories": "Loading categories…",
+  "loadingEllipsis": "Loading…",
+  "loadingGuide": "Loading guide…",
+  "local": "Local",
+  "localHistory": "Local history",
+  "localHistoryBlurb": "JAVP always keeps watch history on this device — Live, VOD, local files, and URLs. No account required.",
+  "lockControls": "Lock controls",
+  "lockControlsSubtitle": "Use the lock icon in the player to block taps until you unlock.",
+  "lookForProfiles": "Look for profiles",
+  "looksLikeHlsStreamSuggest": "This looks like a single HLS stream. Use Add URL instead of an M3U source.",
+  "looksLikeJsonCatalogSuggest": "This URL looks like a JSON catalog, not an M3U playlist.",
+  "looksLikeM3uPlaylistSuggest": "This URL looks like an M3U playlist, not a JSON catalog.",
+  "looksLikeXtreamSuggest": "This looks like an Xtream Codes URL. Add it as Xtream for categories, VOD, and EPG.",
+  "m3uPlaylist": "M3U playlist",
+  "m3uPlaylistSubtitle": "Playlist URL or local file, and optional EPG",
+  "m3uUrl": "M3U URL or file",
+  "macAddress": "MAC address",
+  "macosUpdateSummary": "Checks updater.javp.app for newer macOS builds and applies them in place.",
+  "magnetLink": "Magnet link",
+  "manageSources": "Manage sources",
+  "markAsUnwatched": "Mark as unwatched",
+  "markAsWatched": "Mark as watched",
+  "matchedToLang": "Matched to {lang}",
+  "@matchedToLang": {
+    "placeholders": {
+      "lang": {
+        "type": "String"
+      }
+    }
+  },
+  "matchMetadata": "Match metadata",
+  "mediaServersHelp": "Stream quality for Jellyfin, Emby, and Plex. Original direct-plays when possible; lower presets ask the server to transcode.",
+  "metadata": "Metadata",
+  "metadataTakeoverHelp": "Takes over posters and plots on thin catalogs (Custom JSON, Xtream). Media servers keep their own metadata unless you opt in below.",
+  "minimize": "Minimize",
+  "minutesAgo": "{count} minutes ago",
+  "@minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "minutesBehindLive": "{count}m behind",
+  "@minutesBehindLive": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesLeft": "{count}m left",
+  "@minutesLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesShort": "{count} min",
+  "@minutesShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "moreInCategory": "More in {category}",
+  "@moreInCategory": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "moreLikeThis": "More like this",
+  "moreTitlesAsCatalogFills": "More titles appear as the Catalog fills.",
+  "moveSourceDown": "Move down",
+  "moveSourceUp": "Move up",
+  "movie": "Movie",
+  "movieCoverOrientation": "Movie covers",
+  "movieCoverOrientationSubtitle": "Choose vertical posters or horizontal thumbnails for movies and series",
+  "movies": "Movies",
+  "multiViewChangeSecondary": "Change second channel",
+  "multiViewEnter": "Multi-view",
+  "multiViewExit": "Exit multi-view",
+  "multiViewNoChannels": "No other live channels available",
+  "multiViewPickChannel": "Pick second channel",
+  "multiViewPip": "Picture-in-picture",
+  "multiViewPrimary": "Primary",
+  "multiViewSecondary": "Secondary",
+  "multiViewSideBySide": "Side by side",
+  "multiViewSwapAudio": "Swap audio",
+  "multiViewToggleFocus": "Switch focused pane",
+  "musicLibrarySubtitle": "Live radio and audio streams",
+  "musicYourStations": "Your stations",
+  "mute": "Mute",
+  "muted": "Muted",
+  "myList": "My List",
+  "myListBetaseriesEmptyHelp": "Sync BetaSeries from Settings → Integrations, or mark shows as current / not started on BetaSeries.",
+  "myListCountFavorites": "{myList} in My List · {favorites} favorite channels",
+  "@myListCountFavorites": {
+    "placeholders": {
+      "myList": {
+        "type": "int"
+      },
+      "favorites": {
+        "type": "int"
+      }
+    }
+  },
+  "myListEmptyHelp": "Save movies, series, or channels here from the ★ / bookmark actions.",
+  "myListLetterboxdEmptyHelp": "Import a Letterboxd export under Integrations to pull your movie watchlist.",
+  "myListNoFilterMatches": "No titles match these filters.",
+  "myListPlanEmptyHelp": "Link SIMKL under Integrations to pull your Plan to Watch list.",
+  "myListSearchHint": "Search your list…",
+  "myListSerializdEmptyHelp": "Link Serializd under Settings → Integrations, then Sync now.",
+  "myListSimklEmptyHelp": "Link SIMKL under Integrations to pull titles you’re Watching.",
+  "myListSourceBetaseriesPlan": "BetaSeries Plan",
+  "myListSourceBetaseriesWatching": "BetaSeries Watching",
+  "myListSourceLetterboxd": "Letterboxd",
+  "myListSourcePlanToWatch": "Plan to watch",
+  "myListSourceSerializdWatching": "Serializd Watching",
+  "myListSourceSerializdWatchlist": "Serializd Watchlist",
+  "myListSourceTrakt": "Trakt",
+  "myListSourceWatching": "Watching",
+  "myListTraktEmptyHelp": "Link Trakt under Integrations to pull your watchlist.",
+  "name": "Name",
+  "nAvailable": "{count} available",
+  "@nAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nAvailableOffline": "{count} available offline",
+  "@nAvailableOffline": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "navCatalog": "Catalog",
+  "navHome": "Home",
+  "navLibrary": "Library",
+  "navLive": "Live",
+  "navMusic": "Music",
+  "navSettings": "Settings",
+  "navTv": "TV",
+  "neededOnlyForConnectLogin": "Needed only for Connect / device login",
+  "networkProxy": "Network proxy",
+  "networkProxyHelp": "Optional HTTP(S) or SOCKS5 proxy. Credentials stay on-device. Prefer SOCKS5 for torrents so DHT/uTP can use UDP ASSOCIATE; HTTP proxies disable DHT and force TCP-only peers. Provider presets fill a typical host and port. Torrents use the proxy by default; tick other categories below if you want those too.",
+  "newCode": "New code",
+  "newerBuildReady": "A newer JAVP build is ready.",
+  "newPlaylist": "New playlist",
+  "newProfile": "New profile",
+  "nextEpisode": "Next episode",
+  "nextProgramLabel": "Next",
+  "nextProgrammeAt": "Next {time} {title}",
+  "@nextProgrammeAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "nItems": "{count} items",
+  "@nItems": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "noCastDevicesFound": "No TVs found. Check Wi-Fi and that the device supports Google Cast, DLNA, or AirPlay.",
+  "noCategoriesMatch": "No categories or channels match.",
+  "noCategoriesYet": "No categories yet. Sync a source to browse titles.",
+  "noChannelsForGuideYet": "No channels for the guide yet",
+  "noChannelsInThisList": "No channels in this list",
+  "noDescription": "No description",
+  "noEpgEntriesForTvgId": "No EPG entries for this tvg-id",
+  "noEpgGroupsMatch": "No EPG groups match. Try another search, category, or turn off “Catchup only”.",
+  "noEpisodesFound": "No episodes found for this series.",
+  "noFileSelected": "No file selected",
+  "noGuideEntriesYet": "No guide entries for this channel yet.",
+  "noLiveChannelsYet": "No live channels yet. Add an M3U, Xtream, or Plex source.",
+  "noLocalStreamYet": "No local stream yet — add a source that includes this title",
+  "noMatches": "No matches",
+  "noMatchesYetOpenCatalog": "No matches yet.\nOpen Catalog or Sync a source to cache titles.",
+  "noMetadataMatches": "No metadata matches found",
+  "noOtherProfilesInFolder": "No other profiles in this folder.",
+  "noOtherQualitiesForEpgId": "No other qualities for this EPG id",
+  "noPlexServersFound": "No Plex servers found",
+  "noProfilesOnTargetYet": "No JAVP profiles on that target yet. Sync is on for this device, so this profile will appear there for your other devices to pick up.",
+  "noSettingsForStream": "No settings for this stream",
+  "noSourcesYet": "No sources yet. Add Plex, Jellyfin, Emby, Xtream / M3U, or a JSON catalog.",
+  "nothingNewToDownload": "Nothing new to download",
+  "nothingSavedOfflineYet": "Nothing saved offline yet",
+  "nothingToPlay": "Nothing to play",
+  "notifiedWhenStarts": "You’ll be notified when it starts",
+  "notifyMe": "Notify me",
+  "notImported": "Not imported",
+  "notInLibrary": "Not in library",
+  "noTitlesCachedYet": "No titles cached yet",
+  "noTitlesInCategory": "No titles in this category",
+  "noTitlesMatchEnrichTmdb": "No titles match. Enrich metadata with a TMDB key first.",
+  "noTitlesMatchFilters": "No titles match these filters.",
+  "notSet": "Not set",
+  "notSyncedYet": "Not synced yet",
+  "noVodTitlesSynced": "No VOD titles synced from your sources.",
+  "now": "Now",
+  "noWatchHistoryYet": "No watch history yet",
+  "nowPlaying": "Now playing",
+  "nSources": "{count} sources",
+  "@nSources": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nTitles": "{count} titles",
+  "@nTitles": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "off": "Off",
+  "offline": "Offline",
+  "offlineCopiesAndQueue": "Offline copies and download queue",
+  "ok": "OK",
+  "onDemandTitles": "On-demand titles",
+  "oneChannel": "1 channel",
+  "onLatestBuild": "You’re on the latest build",
+  "onLatestJavpBuild": "You’re on the latest JAVP build",
+  "onlyDownloaded": "Only downloaded",
+  "onNow": "On now",
+  "onNowForYou": "On now for you",
+  "onNowSubtitle": "Live programmes from your sources",
+  "onThisChannel": "On this channel",
+  "open": "Open",
+  "openApiSettingsRequestKey": "Open API settings and request an API key (v3 auth).",
+  "openBrowser": "Open browser",
+  "openCategory": "Open category",
+  "openHistoryBrowseOrClear": "Open History to browse or clear",
+  "openInExternalPlayer": "Open in external player",
+  "openingGoogleSignIn": "Opening Google Sign-In…",
+  "openPlexSignIn": "Open Plex sign-in",
+  "openSeries": "Open series",
+  "openSources": "Open Sources",
+  "openTmdbApiSettings": "Open TMDB API settings",
+  "openWebsite": "Website",
+  "optionalCreateSimklApp": "Optional: create your own SIMKL app.",
+  "originalStreamDefault": "Original / stream default",
+  "originCustomCatalog": "Custom catalog",
+  "originDirectUrl": "Direct URL",
+  "originDownload": "Download",
+  "originLocalFile": "Local file",
+  "originOpenedMagnet": "Opened magnet",
+  "originOpenedTorrent": "Opened torrent",
+  "originTorrent": "Torrent",
+  "outline": "Outline",
+  "outlinePresetHelp": "Outline: white text, hard black border, no caption box.",
+  "overview": "Overview",
+  "padAfter": "Pad after",
+  "padBefore": "Pad before",
+  "parentalAppLockedMessage": "Enter your parental PIN to continue.",
+  "parentalAppLockedTitle": "JAVP is locked",
+  "parentalChangePin": "Change PIN",
+  "parentalConfirmPinLabel": "Confirm PIN",
+  "parentalControls": "Parental controls",
+  "parentalControlsBlurb": "Hide Live IPTV groups behind a PIN. The PIN stays on this device and is never synced.",
+  "parentalCurrentPinLabel": "Current PIN",
+  "parentalHiddenGroups": "Hidden Live groups",
+  "parentalHiddenGroupsCount": "{count} groups hidden when locked",
+  "@parentalHiddenGroupsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "parentalHiddenGroupsEmpty": "No groups hidden",
+  "parentalHiddenGroupsHelp": "Checked groups stay hidden until you unlock with your PIN.",
+  "parentalHiddenSources": "Hidden sources",
+  "@parentalHiddenSources": {
+    "description": "Settings row: pick IPTV/catalog sources to hide while parental PIN is locked"
+  },
+  "parentalHiddenSourcesCount": "{count} sources hidden when locked",
+  "@parentalHiddenSourcesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "parentalHiddenSourcesEmpty": "No sources hidden",
+  "parentalHiddenSourcesHelp": "Checked sources stay hidden from browse, search, and Sources until you unlock with your PIN.",
+  "parentalHideSourceAdult": "Hide source-marked adult content",
+  "@parentalHideSourceAdult": {
+    "description": "Settings toggle: when locked, hide items flagged adult by Xtream/catalog/Plex/etc."
+  },
+  "parentalHideSourceAdultSubtitle": "When locked, also hide Live/VOD marked adult by the provider (default on)",
+  "parentalLockNow": "Lock now",
+  "parentalLockOnResume": "Lock app on resume",
+  "parentalLockOnResumeSubtitle": "Require the PIN when returning to JAVP from the background",
+  "parentalNewPinLabel": "New PIN",
+  "parentalNoLiveGroups": "No Live groups yet — sync a source first",
+  "parentalNoSources": "No sources yet — add one first",
+  "parentalPinConfigured": "PIN is set on this device",
+  "parentalPinHelp": "Choose a 4–8 digit PIN. You’ll need it to show hidden Live groups.",
+  "parentalPinIncorrect": "Incorrect PIN",
+  "parentalPinLabel": "PIN",
+  "parentalPinMismatch": "PINs do not match",
+  "parentalPinRemoved": "PIN removed",
+  "parentalPinSaved": "PIN saved",
+  "parentalRemovePin": "Remove PIN",
+  "parentalRemovePinHelp": "Enter your current PIN to remove parental controls.",
+  "parentalSetPin": "Set PIN",
+  "parentalSetPinFirst": "Set a PIN before hiding groups",
+  "parentalUnlockMessage": "Unlock to show hidden Live groups.",
+  "parentalUnlockTitle": "Enter PIN",
+  "parentalUnlockToManageSources": "Unlock parental controls to manage sources",
+  "@parentalUnlockToManageSources": {
+    "description": "SnackBar when add/edit source is blocked while parental session is locked"
+  },
+  "passphrasesDoNotMatch": "Passphrases do not match",
+  "password": "Password",
+  "passwordOptional": "Password (optional)",
+  "pause": "Pause",
+  "percentWatched": "{percent}% watched",
+  "@percentWatched": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "phoneRemoteChannelHelp": "Jump to a Live channel by number.",
+  "@phoneRemoteChannelHelp": {
+    "description": "Phone remote channel tab help text"
+  },
+  "phoneRemoteChannelHint": "e.g. 42",
+  "@phoneRemoteChannelHint": {
+    "description": "Phone remote channel field placeholder"
+  },
+  "phoneRemoteChannelLabel": "Channel number",
+  "@phoneRemoteChannelLabel": {
+    "description": "Phone remote channel field label"
+  },
+  "phoneRemoteChannelTuned": "Tuned to channel {number}",
+  "@phoneRemoteChannelTuned": {
+    "placeholders": {
+      "number": {
+        "type": "Object"
+      }
+    }
+  },
+  "phoneRemoteChannelUnavailable": "Channel {number} not in the current list — start Live first",
+  "@phoneRemoteChannelUnavailable": {
+    "placeholders": {
+      "number": {
+        "type": "Object"
+      }
+    }
+  },
+  "phoneRemoteErrorBadToken": "Invalid or expired token",
+  "@phoneRemoteErrorBadToken": {
+    "description": "Phone remote API bad/expired token"
+  },
+  "phoneRemoteErrorChannelInvalid": "Channel number must be a positive integer",
+  "@phoneRemoteErrorChannelInvalid": {
+    "description": "Phone remote validation: bad channel number"
+  },
+  "phoneRemoteErrorChannelRequired": "Channel number required",
+  "@phoneRemoteErrorChannelRequired": {
+    "description": "Phone remote validation: empty channel"
+  },
+  "phoneRemoteErrorFailed": "Failed",
+  "@phoneRemoteErrorFailed": {
+    "description": "Phone remote generic error"
+  },
+  "phoneRemoteErrorInvalidJson": "Invalid JSON",
+  "@phoneRemoteErrorInvalidJson": {
+    "description": "Phone remote API invalid JSON body"
+  },
+  "phoneRemoteErrorSearchRequired": "Search text required",
+  "@phoneRemoteErrorSearchRequired": {
+    "description": "Phone remote validation: empty search"
+  },
+  "phoneRemoteErrorUrlInvalid": "URL must start with http(s):// or magnet:",
+  "@phoneRemoteErrorUrlInvalid": {
+    "description": "Phone remote validation: bad URL scheme"
+  },
+  "phoneRemoteErrorUrlRequired": "URL required",
+  "@phoneRemoteErrorUrlRequired": {
+    "description": "Phone remote validation: empty URL"
+  },
+  "phoneRemoteHelp": "Open the camera or browser on the same Wi‑Fi to type search, enter a channel number, or paste a stream URL.",
+  "phoneRemoteLastSent": "Last sent",
+  "@phoneRemoteLastSent": {
+    "description": "Phone remote last-sent chip prefix"
+  },
+  "phoneRemotePageSubtitle": "Same Wi‑Fi as the TV. Text stays on your LAN.",
+  "@phoneRemotePageSubtitle": {
+    "description": "Phone remote web page subtitle under the title"
+  },
+  "phoneRemotePasteHelp": "Add a stream or magnet link to the TV.",
+  "@phoneRemotePasteHelp": {
+    "description": "Phone remote paste tab help text"
+  },
+  "phoneRemotePasteHint": "https://…/stream.m3u8",
+  "@phoneRemotePasteHint": {
+    "description": "Phone remote paste field placeholder"
+  },
+  "phoneRemotePasteLabel": "Stream or magnet URL",
+  "@phoneRemotePasteLabel": {
+    "description": "Phone remote paste field label"
+  },
+  "phoneRemoteSearchHelp": "Find titles and channels in your library.",
+  "@phoneRemoteSearchHelp": {
+    "description": "Phone remote search tab help text"
+  },
+  "phoneRemoteSearchHint": "Type a title or channel…",
+  "@phoneRemoteSearchHint": {
+    "description": "Phone remote search field placeholder"
+  },
+  "phoneRemoteSearchReceived": "Search: \"{query}\"",
+  "@phoneRemoteSearchReceived": {
+    "placeholders": {
+      "query": {
+        "type": "Object"
+      }
+    }
+  },
+  "phoneRemoteSending": "Sending…",
+  "@phoneRemoteSending": {
+    "description": "Phone remote in-flight status"
+  },
+  "phoneRemoteSendToTv": "Send to TV",
+  "@phoneRemoteSendToTv": {
+    "description": "Phone remote primary search action"
+  },
+  "phoneRemoteSendUrl": "Send URL",
+  "@phoneRemoteSendUrl": {
+    "description": "Phone remote paste send action"
+  },
+  "phoneRemoteSent": "Sent to TV.",
+  "@phoneRemoteSent": {
+    "description": "Phone remote success status"
+  },
+  "phoneRemoteSessionExpiredBody": "This remote code expired. Open phone remote on the TV and scan again.",
+  "@phoneRemoteSessionExpiredBody": {
+    "description": "Phone remote expired token page body"
+  },
+  "phoneRemoteSessionExpiredTitle": "Session expired",
+  "@phoneRemoteSessionExpiredTitle": {
+    "description": "Phone remote expired token page title"
+  },
+  "phoneRemoteTabPasteUrl": "Paste URL",
+  "@phoneRemoteTabPasteUrl": {
+    "description": "Phone remote tab for pasting a stream URL"
+  },
+  "phoneRemoteTitle": "Phone remote",
+  "phoneRemoteTuneOnTv": "Tune on TV",
+  "@phoneRemoteTuneOnTv": {
+    "description": "Phone remote channel send action"
+  },
+  "phoneRemoteUrlAdded": "URL added from phone",
+  "phoneRemoteUrlFailed": "Could not add URL: {error}",
+  "@phoneRemoteUrlFailed": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "pickDifferentTarget": "Pick a different target",
+  "pickJsonCatalog": "Pick .json",
+  "pickM3u": "Pick .m3u",
+  "pickSyncFolder": "Pick your sync folder",
+  "pickTorrent": "Pick .torrent",
+  "pickXmltv": "Pick XMLTV file",
+  "pictureInPicture": "Picture in picture",
+  "pinCancelled": "PIN cancelled",
+  "pinCategory": "Pin category",
+  "pinCategoryHelp": "Pinned categories sort to the top of the list.",
+  "pinCopied": "PIN copied",
+  "play": "Play",
+  "playbackSpeed": "Playback speed",
+  "playbackSpeedCycleHint": "Tick speeds a tap cycles through",
+  "@playbackSpeedCycleHint": {
+    "description": "Hint on the player speed picker: checkboxes choose which rates a tap on the speed chip rotates through"
+  },
+  "playCatchup": "Play catchup",
+  "playerSection": "Player",
+  "playing": "Playing",
+  "playingLive": "Playing · Live",
+  "playlists": "Playlists",
+  "playlistsSubtitle": "Playlists pulled from your media servers",
+  "playNow": "Play now",
+  "@playNow": {
+    "description": "TV VOD Up next primary action"
+  },
+  "popular": "Popular",
+  "popularInYourCatalog": "Popular titles you actually have",
+  "port": "Port",
+  "portalUrl": "Portal URL",
+  "preferAssStyling": "Prefer ASS styling",
+  "preferAssStylingSubtitle": "Keep fonts, colors, and karaoke from .ass/.ssa tracks. Other formats always use the preset above.",
+  "preferLanguage": "Prefer language",
+  "preferLanguageNamed": "Prefer {language}",
+  "@preferLanguageNamed": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "preferredContentLanguages": "Preferred content languages",
+  "preferredContentLanguagesCount": "{count} languages",
+  "@preferredContentLanguagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "preferredContentLanguagesFollowDevice": "Follow device languages",
+  "preferredContentLanguagesSubtitle": "Prioritize titles and metadata in these languages when available",
+  "preferredQualityHint": "Applies to this playback. Enable Remember to save for this channel.",
+  "preferredSubtitles": "Preferred subtitles",
+  "previousEpisode": "Previous episode",
+  "profileAddedSwitchToSync": "{name} added — switch to it to sync.",
+  "@profileAddedSwitchToSync": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePhotoInvalid": "That file isn’t a usable photo",
+  "profilePinHelp": "Required to open this profile on this device. The PIN stays here and is not synced.",
+  "profilePinUnlockMessage": "Enter the PIN for this profile.",
+  "profilePinUnlockTitle": "Unlock {name}",
+  "@profilePinUnlockTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profilesBlurb": "Each profile keeps its own history, sources, and preferences on this device.",
+  "proxyAllowDirectFallback": "Retry without proxy if handshake fails",
+  "proxyAllowDirectFallbackSubtitle": "Off by default. When a ticked category cannot authenticate to the proxy, try a direct connection instead of failing.",
+  "proxyEnabledSummary": "Enabled · {type} · {host}",
+  "@proxyEnabledSummary": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "proxyGetCredentials": "Get credentials",
+  "proxyHandshakeFailed": "Proxy authentication failed. Check the username/password in Settings → Network, or turn the proxy off for this traffic.",
+  "proxyPresetCustom": "Custom",
+  "proxyPresetCustomHelp": "Enter your own host, port, and credentials",
+  "proxyPresetNordVpnCredentials": "NordVPN service credentials",
+  "proxyPresetPiaCredentials": "PIA proxy username",
+  "proxyPresetPrivateVpnCredentials": "PrivateVPN proxy username",
+  "proxyPresetTorGuardCredentials": "TorGuard service credentials",
+  "proxyProviderPreset": "Provider preset",
+  "proxyRouteCatalogs": "Catalogs",
+  "proxyRouteCatalogsSubtitle": "Custom JSON catalog browse and search",
+  "proxyRouteDownloads": "Downloads",
+  "proxyRouteDownloadsSubtitle": "Offline progressive and HLS downloads",
+  "proxyRouteIptv": "IPTV",
+  "proxyRouteIptvSubtitle": "M3U playlists, XMLTV EPG, and Xtream API",
+  "proxyRouteMediaServers": "Media servers",
+  "proxyRouteMediaServersSubtitle": "Jellyfin, Emby, and Plex",
+  "proxyRouteMetadata": "Metadata",
+  "proxyRouteMetadataSubtitle": "SIMKL, Trakt, TMDB, artwork, and intro segments",
+  "proxyRouteThrough": "Route through proxy",
+  "proxyRouteThroughHelp": "Torrents start on. Turn off a category to keep that traffic on your normal connection.",
+  "proxyRouteTorrents": "Torrents",
+  "proxyRouteTorrentsSubtitle": "Peer and tracker traffic via the torrent engine",
+  "proxyRuntimeFailed": "Proxy failed for {host}: {error}",
+  "@proxyRuntimeFailed": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      },
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "proxySavedStatus": "Proxy saved ({label})",
+  "@proxySavedStatus": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "proxySaveFailed": "Proxy save failed: {error}",
+  "@proxySaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "proxyServiceCredentialsHint": "Service credentials from your provider",
+  "proxyTestAuthFailed": "Proxy authentication failed. Check the username and password.",
+  "proxyTestFailed": "Proxy test failed: {error}",
+  "@proxyTestFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "proxyTesting": "Testing proxy…",
+  "proxyTestOk": "Proxy connected ({label})",
+  "@proxyTestOk": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "proxyTypeHttp": "HTTP",
+  "proxyTypeSocks5": "SOCKS5",
+  "quality": "Quality",
+  "qualityDataSaver360": "Data saver (360p)",
+  "qualityForEpisode": "Quality · {label}",
+  "@qualityForEpisode": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "qualityHigh1080": "High (1080p)",
+  "qualityLow480": "Low (480p)",
+  "qualityMedium720": "Medium (720p)",
+  "qualityOriginal": "Original",
+  "qualityOriginalSubtitle": "Direct play when possible — best quality, more bandwidth",
+  "queue": "Queue",
+  "queued": "Queued",
+  "queuedNDownloads": "Queued {count} downloads",
+  "@queuedNDownloads": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "queuedOneDownload": "Queued 1 download",
+  "queueEveryEpisodeOffline": "Queue every episode for offline",
+  "radio": "Radio",
+  "recentLive": "Recent live",
+  "recentLiveSubtitle": "Last watched and favorites",
+  "recentlyWatched": "Recently watched",
+  "recents": "Recents",
+  "recordFromArchive": "Record from archive",
+  "refreshingFromSimkl": "Refreshing from SIMKL…",
+  "registerBetaseriesApiKey": "Register an API key at betaseries.com/api, or pass it via dart-define. API secret is only needed for Connect (device login).",
+  "registerTraktApiApp": "Register an API app at trakt.tv, or pass Client ID via dart-define. Client secret is only needed for Connect (device login).",
+  "rememberForThisChannel": "Remember for this channel",
+  "rememberLastAudioPick": "Remember last audio pick",
+  "rememberLastAudioPickSubtitle": "Switches to “preferred” and stores that language",
+  "rememberLastSubtitlePick": "Remember last subtitle pick",
+  "rememberLastSubtitlePickSubtitle": "Player choice becomes your preferred language",
+  "reminderCancelled": "Reminder cancelled",
+  "reminderSet": "Reminder set",
+  "remove": "Remove",
+  "removeAfterWatching": "Remove after watching",
+  "removeAfterWatchingSubtitle": "Deletes the offline file a couple of minutes after an episode finishes or you go to the next one (~80% watched). Waits while offline, then resumes when you're back online.",
+  "removedFromMyList": "Removed from My List",
+  "removeFavorite": "Remove favorite",
+  "removeFontBody": "Captions using this font will fall back to the default.",
+  "removeFontTitle": "Remove {family}?",
+  "@removeFontTitle": {
+    "placeholders": {
+      "family": {
+        "type": "String"
+      }
+    }
+  },
+  "removeFromContinueWatching": "Remove from Continue watching",
+  "removeFromHistory": "Remove from history",
+  "removeFromMyList": "Remove from My List",
+  "removeOfflineCopyTitle": "Remove offline copy?",
+  "removeProfilePhoto": "Remove photo",
+  "rename": "Rename",
+  "renameProfile": "Rename profile",
+  "renameSource": "Rename source",
+  "reorderSources": "Reorder",
+  "replaceServerArtwork": "Replace server artwork and plots with the provider above",
+  "requestingDeviceCode": "Requesting device code…",
+  "requestingPin": "Requesting PIN…",
+  "requiredForEnrichment": "Required for enrichment",
+  "resetFilters": "Reset",
+  "resetToOutline": "Reset to Outline",
+  "resolveVersions": "Resolve versions",
+  "resolvingEllipsis": "Resolving…",
+  "restoreFromSync": "Restore from sync",
+  "restoreFromSyncBlurb": "Already using JAVP on another device? Point this one at the same sync target and pick up where you left off.",
+  "restoreSourcesHistoryBlurb": "Restore sources and history from your sync folder",
+  "resultsCachingCatalog": "{count} results · caching Catalog titles…",
+  "@resultsCachingCatalog": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsCount": "{count} results",
+  "@resultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsSearching": "{count} results · searching…",
+  "@resultsSearching": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resume": "Resume",
+  "resumeEpisodeProgress": "Resume {code} · {percent}%",
+  "@resumeEpisodeProgress": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "retry": "Retry",
+  "retryDownload": "Retry download",
+  "rewind10Seconds": "Rewind 10 seconds",
+  "rollingCatchupWindow": "Rolling catchup window",
+  "save": "Save",
+  "saveAndSync": "Save & sync",
+  "saveAndSyncInBackground": "Save & sync in background",
+  "saveAndTest": "Save & test",
+  "saved": "Saved",
+  "savedForLater": "Saved for later",
+  "saveOverrides": "Save overrides",
+  "saveProxy": "Save proxy",
+  "scanWithYourPhone": "Scan with your phone",
+  "scrubber": "Scrubber",
+  "scrubModeProgramme": "Programme",
+  "scrubModeTimeline": "Timeline",
+  "search": "Search",
+  "searchChannels": "Search channels…",
+  "searchEpgHint": "Search EPG…",
+  "searchHint": "Movies, series, TV channels…",
+  "searchHintAll": "Search TV channels, Catalog titles, and all sources",
+  "searchHistoryHint": "Search watch history…",
+  "searchIdleHelp": "Search Catalog, TV channels, JAVP APIs, and local files",
+  "searching": "Searching…",
+  "searchingCastDevices": "Looking for TVs on this network…",
+  "searchLibrary": "Search library",
+  "@searchLibrary": {
+    "description": "TV VOD OK-menu action to search via phone remote"
+  },
+  "seasons": "Seasons",
+  "secondsLeft": "{count}s left",
+  "@secondsLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "seeAll": "See all",
+  "seekBackForward": "Back / forward 10s",
+  "serializdEmail": "Serializd email",
+  "serializdNeedEmailPassword": "Enter your Serializd email and password",
+  "serializdScrobbleToggle": "Log finished episodes",
+  "serializdScrobbleToggleSubtitle": "Mark episodes watched on Serializd when playback finishes",
+  "serializdSyncBlurb": "TV watching + watchlist sync (unofficial API)",
+  "serializdUnofficialApiHelp": "Serializd has no public OAuth. Sign in with email/password (token stored on this device only) or paste a token.",
+  "serialOptional": "Serial (optional)",
+  "series": "Series",
+  "seriesNotFound": "Series not found",
+  "serverUrl": "Server URL",
+  "serverUrlUsernamePassword": "Server URL, username, and password",
+  "setHost": "set host",
+  "setPreferredQuality": "Quality",
+  "settingsAppearance": "Appearance",
+  "settingsAppearanceSubtitle": "Movie posters and cover layout",
+  "settingsDiagnostics": "Diagnostics",
+  "settingsDiagnosticsSubtitle": "On-device logs for troubleshooting",
+  "settingsGeneral": "General",
+  "settingsGeneralSubtitle": "Language, library, updates, and about",
+  "settingsIntegrations": "Integrations",
+  "settingsIntegrationsSubtitle": "Trackers, metadata, and Discord Rich Presence on desktop",
+  "settingsNetwork": "Network",
+  "settingsNetworkSubtitle": "Optional HTTP or SOCKS5 proxy for network traffic",
+  "settingsParentalSubtitle": "PIN, hidden Live groups, and adult content",
+  "settingsPlayback": "Playback",
+  "settingsPlaybackSubtitle": "Skip intros, downloads, captions, and video decoder",
+  "settingsProfiles": "Profiles",
+  "settingsProfilesSubtitle": "Switch profiles and sync history across devices",
+  "setupTrackersAction": "Configure trackers",
+  "setupTrackersBody": "Connect SIMKL, Trakt, Serializd, or TMDB for watching progress and richer metadata. You can always do this later in Settings.",
+  "setupTrackersNotNow": "Not now",
+  "setupTrackersTitle": "Set up trackers?",
+  "showActivityStatusBar": "Show activity status bar",
+  "@showActivityStatusBar": {
+    "description": "Settings → Profiles → Sync: show/hide the thin top profile-sync banner"
+  },
+  "showActivityStatusBarSubtitle": "Thin top strip while profile sync is running (Drive, WebDAV, or folder).",
+  "@showActivityStatusBarSubtitle": {
+    "description": "Explains the thin top strip during Drive/WebDAV/folder profile sync"
+  },
+  "showBrowsePanel": "Show browse panel",
+  "showCategory": "Show category",
+  "showLess": "Show less",
+  "showMore": "Show more",
+  "showMusicTab": "Show Music tab",
+  "showMusicTabSubtitle": "Add live radio to the main menu. Music stays available from Library.",
+  "showsAndSeasons": "Shows and seasons",
+  "signInAgain": "Sign in again",
+  "signingIn": "Signing in…",
+  "signInWithGoogle": "Sign in with Google",
+  "signInWithPlex": "Sign in with Plex",
+  "signInWithPlexOrUrlToken": "Sign in with Plex, or URL + token",
+  "simklDeveloperSettings": "SIMKL developer settings",
+  "simklMetadataHelp": "Works with the built-in app key",
+  "simklMetadataSyncBlurb": "Metadata + optional Watching sync / scrobble",
+  "simklScrobbleToggle": "Scrobble watch progress",
+  "simklScrobbleToggleSubtitle": "Send play progress to SIMKL when linked",
+  "size": "Size",
+  "skipAd": "Skip ad",
+  "skipAdInSeconds": "Skip in {seconds}s",
+  "@skipAdInSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "skipCredits": "Skip Credits",
+  "skipForNow": "Skip for now",
+  "skipIntro": "Skip Intro",
+  "skipIntroCredits": "Skip intro / credits",
+  "skipIntroCreditsHelp": "Uses IntroDB + TheIntroDB (and Jellyfin/Emby chapters when present). Needs TMDB/IMDb ids on the title.",
+  "skipPreview": "Skip Preview",
+  "skipRecap": "Skip Recap",
+  "sleepTimer": "Sleep timer",
+  "sleepTimerFired": "Sleep timer ended — playback paused.",
+  "sleepTimerMinutes": "{count} minutes",
+  "@sleepTimerMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sleepTimerOff": "Off",
+  "slowStreamLoadHint": "Taking a while… Try a lower quality?",
+  "softwareDecoderOff": "Hardware (auto-safe) — default",
+  "softwareDecoderOn": "libmpv hwdec=no — higher CPU use",
+  "softwareVideoDecoder": "Software video decoder",
+  "sortLiveChannels": "Sort live channels",
+  "sortRecentlyAdded": "Recently added",
+  "sortTitleAz": "Title A–Z",
+  "source": "Source",
+  "sourceAlreadyAdded": "Source already added",
+  "sourceColor": "Source color",
+  "sourceDisabled": "Disabled",
+  "sourceFilterAllBlurb": "Show content from every enabled source.",
+  "sourceFilterCustom": "Custom",
+  "sourceLiveVodCount": "{live} live · {vod} VOD",
+  "@sourceLiveVodCount": {
+    "description": "TV source picker subtitle with live and VOD counts",
+    "placeholders": {
+      "live": {
+        "type": "int"
+      },
+      "vod": {
+        "type": "int"
+      }
+    }
+  },
+  "sourceLocationFile": "File",
+  "sources": "Sources",
+  "sourcesBlurb": "Bring your own media: Plex, Jellyfin, Emby, Xtream / M3U, or a JSON catalog. Optional standalone EPG. Credentials stay on-device.",
+  "sourcesExported": "Sources exported",
+  "sourcesExportFailed": "Could not export sources",
+  "sourcesImported": "Imported {count} sources",
+  "@sourcesImported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sourcesImportFailed": "Could not import that file",
+  "sourcesImportInvalid": "That file isn’t a JAVP sources export",
+  "sourcesOrderHint": "Drag to reorder — order and colors show in badges and filters.",
+  "sourcesTransfer": "Export / import sources",
+  "sourcesTransferBlurb": "Move library sources between installs over Wi‑Fi (pair device) or via a file — no cloud account required.",
+  "sourceSyncCachingMovies": "Caching movies… {done} / {total}",
+  "@sourceSyncCachingMovies": {
+    "placeholders": {
+      "done": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncCachingSeries": "Caching series… {done} / {total}",
+  "@sourceSyncCachingSeries": {
+    "placeholders": {
+      "done": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncConnecting": "Connecting…",
+  "sourceSyncConnectingTo": "Connecting to {name}…",
+  "@sourceSyncConnectingTo": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncDemoItems": "{count} demo items",
+  "@sourceSyncDemoItems": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncFetchingCustomCatalog": "Fetching custom catalog…",
+  "sourceSyncFetchingLibraries": "Fetching {count} libraries…",
+  "@sourceSyncFetchingLibraries": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncFetchingLiveTv": "Fetching Live TV…",
+  "sourceSyncFetchingM3u": "Fetching M3U playlist…",
+  "sourceSyncFetchingM3uBytes": "Fetching M3U… {size}",
+  "@sourceSyncFetchingM3uBytes": {
+    "placeholders": {
+      "size": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncFetchingVodCatalog": "Fetching VOD catalog…",
+  "sourceSyncFillingLiveChannels": "Filling live channels…",
+  "sourceSyncFillingLiveChannelsProgress": "Filling live channels… {filled} / {total}",
+  "@sourceSyncFillingLiveChannelsProgress": {
+    "placeholders": {
+      "filled": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncIndexingLive": "Indexing {count} live…",
+  "@sourceSyncIndexingLive": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncIndexingLiveCategories": "Indexing {live} live · {categories} categories…",
+  "@sourceSyncIndexingLiveCategories": {
+    "placeholders": {
+      "live": {
+        "type": "Object"
+      },
+      "categories": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncLiveCategories": "Syncing live categories…",
+  "sourceSyncLiveCategoriesCount": "Live categories {count}",
+  "@sourceSyncLiveCategoriesCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncLiveChannelsCategories": "Syncing live channels & categories…",
+  "sourceSyncLiveCount": "Live {count}",
+  "@sourceSyncLiveCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncLoadedTitles": "Loaded {count} titles…",
+  "@sourceSyncLoadedTitles": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncLoadedTitlesLibraries": "Loaded {titles} titles · {libraries} libraries…",
+  "@sourceSyncLoadedTitlesLibraries": {
+    "placeholders": {
+      "titles": {
+        "type": "Object"
+      },
+      "libraries": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncLoadingDemoCatalog": "Loading demo catalog…",
+  "sourceSyncLoadingXmltv": "Loading XMLTV guide…",
+  "sourceSyncNoVideoLibraries": "No video libraries",
+  "sourceSyncPagedTitles": "Paged {count} titles",
+  "@sourceSyncPagedTitles": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncPagingCatalog": "Paging catalog… {titles} titles · page {page}",
+  "@sourceSyncPagingCatalog": {
+    "placeholders": {
+      "titles": {
+        "type": "Object"
+      },
+      "page": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncPagingLibrary": "Paging {name}… {titles} titles · library {index}/{total}",
+  "@sourceSyncPagingLibrary": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      },
+      "titles": {
+        "type": "Object"
+      },
+      "index": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncPagingRemaining": "Paging remaining titles…",
+  "sourceSyncParsedItems": "Parsed {count} items…",
+  "@sourceSyncParsedItems": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncParsingGuide": "Parsing guide… {size}",
+  "@sourceSyncParsingGuide": {
+    "placeholders": {
+      "size": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncParsingGuideProgress": "Parsing guide {index} / {total}… {size}",
+  "@sourceSyncParsingGuideProgress": {
+    "placeholders": {
+      "index": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      },
+      "size": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncParsingPlaylist": "Parsing playlist…",
+  "sourceSyncQueryCatalog": "Query catalog v{version} · {count} titles",
+  "@sourceSyncQueryCatalog": {
+    "placeholders": {
+      "version": {
+        "type": "Object"
+      },
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncQueryCatalogSearchToLoad": "Query catalog v{version} · {count} titles (search to load)",
+  "@sourceSyncQueryCatalogSearchToLoad": {
+    "placeholders": {
+      "version": {
+        "type": "Object"
+      },
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncReadingCustomCatalog": "Reading custom catalog…",
+  "sourceSyncReadingM3u": "Reading M3U playlist…",
+  "sourceSyncRemote": "remote",
+  "sourceSyncSavingVod": "Saving VOD… {count}",
+  "@sourceSyncSavingVod": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncSeededFromBrowse": "Seeded {count} titles from browse",
+  "@sourceSyncSeededFromBrowse": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncStartingVodCache": "Starting VOD cache…",
+  "sourceSyncTitlesAndLive": "{titles} titles · {live} live",
+  "@sourceSyncTitlesAndLive": {
+    "placeholders": {
+      "titles": {
+        "type": "Object"
+      },
+      "live": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncTitlesLiveFailed": "{count} titles · Live TV sync failed (kept previous)",
+  "@sourceSyncTitlesLiveFailed": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncTitlesPagedLibraries": "{count} titles (paged libraries)",
+  "@sourceSyncTitlesPagedLibraries": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncUpdatingGuide": "Updating guide…",
+  "sourceSyncUpdatingGuideProgress": "Updating guide… {index} / {total}",
+  "@sourceSyncUpdatingGuideProgress": {
+    "placeholders": {
+      "index": {
+        "type": "Object"
+      },
+      "total": {
+        "type": "Object"
+      }
+    }
+  },
+  "sourceSyncWaitingOther": "Waiting for other sync…",
+  "sportsApiKey": "TheSportsDB API key",
+  "sportsApiKeyHelp": "Optional. Leave blank to use the free demo key (rate-limited). Get your own at thesportsdb.com.",
+  "sportsApiKeyHint": "Optional BYO key",
+  "sportsApiKeySaved": "API key saved",
+  "sportsBlurb": "Football fixtures from TheSportsDB, matched to your Live channels and EPG. JAVP never hosts streams.",
+  "sportsEmptyDay": "No fixtures for today with your current follows",
+  "sportsFollow": "Follow",
+  "sportsFollowedLeagues": "Followed leagues",
+  "sportsFollowedTeams": "Followed teams",
+  "sportsFollowPrompt": "Follow leagues or teams",
+  "sportsFollowPromptSubtitle": "Pick favorites so today's list stays relevant",
+  "sportsLoadFailed": "Could not load fixtures: {error}",
+  "@sportsLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sportsNoChannelMatch": "No matching Live channel yet — check channel names or EPG",
+  "sportsNoTeamsFollowed": "No teams followed yet",
+  "sportsSearchTeamsHint": "Search teams…",
+  "sportsSettings": "Sports",
+  "sportsSettingsBlurb": "Follow leagues or teams to filter today's fixtures. Matching uses your playlist channel names and EPG titles — bring your own IPTV.",
+  "sportsSettingsSubtitle": "Followed leagues and teams, schedule API key",
+  "sportsTitle": "Sports",
+  "sportsWatchOnChannel": "Watch on {channel}",
+  "@sportsWatchOnChannel": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "stalkerPortal": "Stalker / Ministra",
+  "stalkerPortalSubtitle": "Portal URL and MAG MAC address",
+  "starLiveChannelsHelp": "Star live channels to pin them at the top of Live and the Guide.",
+  "startOver": "Start Over",
+  "startOverUnavailable": "Start Over isn’t available for this programme.",
+  "startsAt": "Starts at {time}",
+  "@startsAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "stopCasting": "Stop casting",
+  "streamQuality": "Stream quality",
+  "streamStats": "Stream stats",
+  "streamStatsOn": "On",
+  "style": "Style",
+  "subtitles": "Subtitles",
+  "suggestedForYou": "Suggested for you",
+  "sync": "Sync",
+  "syncBackendFolder": "Synced folder",
+  "syncBackendFolderDesc": "Point JAVP at a folder your file sync already watches.",
+  "syncBackendGoogleDriveDesc": "Sync through your Google account (JAVP folder in Drive).",
+  "syncBackendOffDesc": "Everything stays on this device.",
+  "syncBackendWebdavDesc": "Nextcloud, ownCloud, or a NAS.",
+  "syncBlurb": "JAVP writes one small file per profile to the target you choose, and merges it on the other device. Automatic sync covers open, resume, playback progress, and backgrounding.",
+  "syncedEmptyWatching": "Synced (empty Watching)",
+  "syncedNWatching": "Synced ({count} watching)",
+  "@syncedNWatching": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "syncedPeriod": "Synced.",
+  "syncFailed": "Sync failed",
+  "syncFolderSubtitle": "Syncthing, Drive, Dropbox, or a mounted share",
+  "syncForProfile": "Sync for {name}",
+  "@syncForProfile": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syncing": "Syncing…",
+  "syncingInBackground": "Syncing in background…",
+  "syncNotSetUp": "Not set up",
+  "syncNotSignedIn": "Not signed in",
+  "syncNow": "Sync now",
+  "syncPhaseApplyingLibrary": "Applying library…",
+  "syncPhaseApplyingPrefs": "Applying preferences…",
+  "syncPhaseDownloading": "Downloading…",
+  "syncPhaseMerging": "Merging…",
+  "syncPhaseReadingLocal": "Reading device…",
+  "syncPhaseUploading": "Uploading…",
+  "syncSignedIn": "Signed in",
+  "systemDefault": "System default",
+  "tapPastProgrammeCatchUp": "Tap a past programme to catch up",
+  "tapToCheckForUpdates": "Tap to check for updates",
+  "tapToSwitch": "Tap to switch",
+  "tapToUnlock": "Locked — tap to unlock",
+  "test": "Test",
+  "testEllipsis": "Testing…",
+  "textColor": "Text color",
+  "titleNotFound": "Title not found",
+  "titleOptional": "Title (optional)",
+  "titlesInLibraryCount": "{count} titles in library",
+  "@titlesInLibraryCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tmdbByoKeyBlurb": "Bring-your-own key · non-commercial API use",
+  "tmdbDisclaimer": "This application uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB. Non-commercial use only unless you have a separate agreement with TMDB.",
+  "tmdbDiscoveryEmpty": "No Popular or Trending titles overlap your catalog yet. Titles need matching metadata (TMDB ids) on your sources — enrichment is optional and never required for playback.",
+  "tmdbHelpBody": "Optional enrichment only — posters, plots, episode stills, ratings/studio, and ids when your catalog is sparse; IMDb/TVDB → TMDB matching; franchise collections from titles you own; For You similar boosts; Popular / Trending shelves limited to titles you already have; tracker and skip-intro id bridging. Not a list replacement. Playback and your library work without a TMDB key.",
+  "tmdbHelpTitle": "About TMDB",
+  "tmdbMetadataHelp": "Enrich posters, plots & IDs (BYO key)",
+  "tmdbNeedsApiKey": "TMDB needs an API key below before enrichment works.",
+  "today": "Today",
+  "todayStamp": "Today · {stamp}",
+  "@todayStamp": {
+    "placeholders": {
+      "stamp": {
+        "type": "String"
+      }
+    }
+  },
+  "tomorrow": "Tomorrow",
+  "tomorrowStamp": "Tomorrow · {stamp}",
+  "@tomorrowStamp": {
+    "placeholders": {
+      "stamp": {
+        "type": "String"
+      }
+    }
+  },
+  "torrentVpnTipContinue": "Continue anyway",
+  "torrentVpnTipMessage": "Torrent traffic exposes your IP address to every other peer. A VPN or SOCKS5 proxy keeps it private.",
+  "torrentVpnTipOpenNetwork": "Open network settings",
+  "torrentVpnTipTitle": "Use a VPN for torrents",
+  "trackerSyncFetching": "Fetching list…",
+  "trackerSyncIndexing": "Indexing library…",
+  "trackerSyncMatching": "Matching titles…",
+  "trackerSyncMerging": "Merging progress…",
+  "trackNumber": "Track {id}",
+  "@trackNumber": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "trailer": "Trailer",
+  "trailerNamed": "{title} — Trailer",
+  "@trailerNamed": {
+    "placeholders": {
+      "title": {
+        "type": "Object"
+      }
+    }
+  },
+  "traktApiApplications": "Trakt API applications",
+  "traktMetadataHelp": "Needs a Trakt API app client id",
+  "traktMetadataOptionalBlurb": "Metadata enrichment (account link optional)",
+  "traktNeedsClientId": "Trakt needs a client id (Developer section or dart-define) before enrichment works.",
+  "trayOpenApp": "Open",
+  "trayQuit": "Quit",
+  "trending": "Trending",
+  "trendingAndPopular": "Trending & Popular",
+  "trendingInYourCatalog": "Trending titles you actually have",
+  "tryDemo": "Try demo",
+  "tvGuideOverlayHint": "OK tune · Back closes · playback keeps running",
+  "tvLiveWatchHint": "← channels · → recent · ↑↓ zap · OK menu",
+  "tvLiveWatchHintPhone": "← channels · → recent · ↑↓ zap · OK menu",
+  "typeOnPhone": "Type on phone",
+  "unlock": "Unlock",
+  "unpinCategory": "Unpin category",
+  "upcoming": "Upcoming",
+  "updateAvailable": "Update available",
+  "updateAvailableSubtitle": "Update {version} available — tap to review",
+  "@updateAvailableSubtitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updateCheckFailed": "Update check failed",
+  "updateCheckFailedWithError": "Update check failed: {error}",
+  "@updateCheckFailedWithError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "updateRequired": "Update required",
+  "updates": "Updates",
+  "updatesBlurb": "Checks https://updater.javp.app for newer APK builds and installs them on-device.",
+  "updatesViaGooglePlay": "Updates are delivered through Google Play",
+  "updatesViaMicrosoftStore": "Updates are delivered through the Microsoft Store",
+  "updateVersionAvailable": "JAVP {versionName} ({versionCode}) is available.\nYou have {current}.",
+  "@updateVersionAvailable": {
+    "placeholders": {
+      "versionName": {
+        "type": "String"
+      },
+      "versionCode": {
+        "type": "String"
+      },
+      "current": {
+        "type": "String"
+      }
+    }
+  },
+  "upNext": "Up next",
+  "@upNext": {
+    "description": "TV VOD end-of-episode card title"
+  },
+  "url": "URL",
+  "useCatalogServerMetadataOnly": "Use catalog / server metadata only",
+  "useProxy": "Use proxy",
+  "username": "Username",
+  "usernameOptional": "Username (optional)",
+  "useServerUrlToken": "Use server URL + token",
+  "useServerUrlTokenHelp": "Connect manually with your Plex server URL and access token.",
+  "usingBuildTimeDefault": "Using build-time default",
+  "usingJavpDefault": "Using JAVP default",
+  "version": "Version",
+  "versionLabel": "Version {version}",
+  "@versionLabel": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "versions": "Versions",
+  "versionsCount": "{count} versions",
+  "@versionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "versionsForEpisode": "Versions · {label}",
+  "@versionsForEpisode": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "versionsLocaleHint": "Play picks a match. Change audio, subtitles, and quality in the player.",
+  "videoAspect": "Aspect",
+  "viewAction": "View",
+  "vodItemCount": "{count} VOD",
+  "@vodItemCount": {
+    "description": "TV source picker subtitle when only VOD items are present",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vodOff": "VOD off",
+  "volume": "Volume",
+  "volumeBoost": "Volume boost",
+  "volumeBoostHint": "Only for this title. Resets when playback ends.",
+  "volumeBoostPercent": "{percent}%",
+  "@volumeBoostPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "waiting": "Waiting…",
+  "waitingEllipsis": "Waiting…",
+  "waitingForWifi": "Waiting for Wi‑Fi",
+  "watchChannel": "Watch channel",
+  "watchChannelNow": "Watch channel now",
+  "watchedStatus": "Watched",
+  "watchedTitlesCount": "{count} watched titles",
+  "@watchedTitlesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "watchFromStart": "Watch from start",
+  "watchFullscreen": "Back to video",
+  "watching": "Watching",
+  "watchingSimklSubtitle": "In progress on SIMKL",
+  "watchlistAndStarred": "Watchlist and starred live channels",
+  "watchLive": "Watch live",
+  "watchLiveChannelSubtitle": "Resume {channel}",
+  "@watchLiveChannelSubtitle": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "watchLiveSubtitle": "Resume your last live channel",
+  "welcomeBodyPhone": "Add a playlist, media server, or catalog to fill your shelf. Credentials stay on this device.",
+  "welcomeBodyTv": "Pair your phone over Wi‑Fi to push playlists, media servers, or catalogs — credentials stay on this TV. No account required.",
+  "windowsUpdateSummary": "Checks updater.javp.app for newer Windows builds and applies them in place.",
+  "wrongPassphrase": "Wrong passphrase",
+  "xmltvEpg": "EPG / XMLTV",
+  "xmltvEpgSubtitle": "Programme guide URL or file — attach to live lists",
+  "xtreamCodes": "Xtream Codes",
+  "yesterday": "Yesterday",
+  "yesterdayStamp": "Yesterday · {stamp}",
+  "@yesterdayStamp": {
+    "placeholders": {
+      "stamp": {
+        "type": "String"
+      }
+    }
+  },
+  "yourShelfIsEmpty": "Your shelf is empty",
+  "googleDriveAllowAccess": "Allow Drive access",
+  "googleDriveNeedsGestureBlurb": "Almost done — click Allow Drive access. Browsers only open Google’s permission window after a direct click.",
+  "googleDrivePopupBlocked": "Google’s permission window didn’t open. Allow popups for web.javp.app, then try Allow Drive access again.",
+  "webDownloadApp": "Download the app",
+  "webBrowserLimitBlame": "This is a browser limit on the web companion — not a JAVP bug. The Android / desktop app can use these sources normally.",
+  "webFeatureUnavailableTitle": "Not available in the web app",
+  "webFeatureUnavailableBody": "This feature needs the native app. Browsers can’t run torrents, Cast, downloads, and similar tools here.",
+  "webHttpStreamTitle": "Can’t play over HTTP in the web app",
+  "webHttpStreamBody": "Browsers block insecure (HTTP) media on https://web.javp.app. Your playlist is fine in the native app.",
+  "webHttpInsecureContentTip": "Chrome / Edge tip: padlock (or ⓘ) left of the URL → Site settings → Insecure content → Allow → reload, then Retry.",
+  "webHttpSourcesTitle": "Some sources use HTTP",
+  "webHttpSourcesBody": "Browsers block insecure (HTTP) playlists and streams on this HTTPS site. Playback may fail until you use HTTPS sources, allow insecure content (Chrome/Edge), or download the native app.",
+  "webHttpSourcesList": "Affected: {names}",
+  "@webHttpSourcesList": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "webHttpSourcesMore": " +{count} more",
+  "@webHttpSourcesMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webLimitationDismiss": "Dismiss",
+  "playlistOrder": "Playlist order",
+  "@playlistOrder": {
+    "description": "Live channel sort: playlist position"
+  },
+  "nameAZ": "Name A–Z",
+  "@nameAZ": {
+    "description": "Live channel sort: name A–Z"
+  },
+  "noChannelsMatchedLanguage": "No channels matched your language yet.",
+  "@noChannelsMatchedLanguage": {
+    "description": "Empty Live list after opening In your language"
+  },
+  "deinterlace": "Deinterlace",
+  "deinterlaceHelp": "Fixes combing on interlaced live channels (1080i, 576i). Auto follows the stream; Always if a channel still looks jagged.",
+  "deinterlaceAlways": "Always",
+  "deinterlaceAutoSubtitle": "When the stream is marked interlaced",
+  "deinterlaceAlwaysSubtitle": "Every video — use if Auto still shows combing",
+  "deinterlaceOffSubtitle": "Show fields as-is",
+  "plexLiveTv": "Plex Live TV & Movies",
+  "plexLiveTvFastSubtitle": "Free ad-supported channels, movies, and shows from your Plex account",
+  "plexAccountSignInHelp": "Sign in with your Plex account to add free Live TV and movies, or pick a server — including Live TV/DVR when that server has a tuner. Credentials stay on-device.",
+  "myListSourcePlex": "Plex",
+  "myListPlexEmptyHelp": "Add a Plex source to pull your Plex watchlist. Titles you already have play from your library.",
+  "pictureInPictureFailed": "Couldn't start picture-in-picture. Check that it's allowed for this app in Android settings.",
+  "homeFirstSyncTitle": "First sync in progress",
+  "@homeFirstSyncTitle": {
+    "description": "Home banner while a newly added source downloads its first catalog"
+  },
+  "homeFirstSyncHint": "This can take a while on a large catalog. Catalog and Live TV stay browsable while it runs.",
+  "@homeFirstSyncHint": {
+    "description": "Home first-sync body; do not name third-party catalogs"
+  },
+  "resultsStillCheckingSources": "{count} results · still checking {sources}…",
+  "@resultsStillCheckingSources": {
+    "description": "Search status while remote catalog/media-server queries are in flight",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "sources": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsSourcesSyncing": "{count} results · {sources} still syncing…",
+  "@resultsSourcesSyncing": {
+    "description": "Search status when IPTV/catalog sources are mid-sync and results may grow",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "sources": {
+        "type": "String"
+      }
+    }
+  },
+  "searchingSources": "Still checking {sources}…",
+  "@searchingSources": {
+    "description": "Empty Search pane while remote sources are pending",
+    "placeholders": {
+      "sources": {
+        "type": "String"
+      }
+    }
+  },
+  "notAiredYet": "Not aired yet",
+  "@notAiredYet": {
+    "description": "Episode row when air date is in the future"
+  },
+  "episodesAiredAndUpcoming": "{aired} episodes · {upcoming} upcoming",
+  "@episodesAiredAndUpcoming": {
+    "description": "Series header when some episodes have future air dates",
+    "placeholders": {
+      "aired": {
+        "type": "Object"
+      },
+      "upcoming": {
+        "type": "Object"
+      }
+    }
+  }
+}

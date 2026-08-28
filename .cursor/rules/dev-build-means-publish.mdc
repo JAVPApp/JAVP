@@ -1,0 +1,70 @@
+---
+description: "Dev build" / ship testers / put it on the updater means FTP-publish /dev/latest.json, not flutter build apk alone. Use when publishing, deploying, bumping +N, or the user asks for a dev build.
+globs:
+  - tool/deploy_update.py
+  - tool/bump_dev_build.py
+  - tool/local_release.sh
+  - tool/package_windows.py
+  - tool/apply_windows_channel_icon.py
+  - docs/updates.md
+  - .github/workflows/deploy-update.yml
+  - .github/workflows/build-linux.yml
+  - .github/workflows/build-windows.yml
+alwaysApply: false
+---
+
+# “Dev build” = updater publish
+
+When the user says **build a dev build**, **dev build**, **ship to testers**, or
+**put it on the updater**, they mean FTP-publish **`/dev/latest.json`**.
+`flutter build apk` alone is not done.
+
+Testers install from the in-app updater / [updater.javp.app/dev](https://updater.javp.app/dev/).
+A local APK is only enough when they ask for **adb install**, **sideload only**,
+or **don’t publish**.
+
+On the **Windows ship host**, a Dev publish must include **Android + Windows +
+Linux**. Missing `packages.windows-x64` makes Windows clients report “already
+latest” even when Android moved ahead — that is a failed ship. Do **not** call
+Android-only FTP “done.” Do **not** relabel an old Windows/Linux zip as the new
+`+N`.
+
+## Do this (Windows build host)
+
+1. `python tool/bump_dev_build.py` — `+N` must exceed live
+   `https://updater.javp.app/dev/latest.json` `baseVersionCode`. **Do not commit**
+   the pubspec bump.
+2. Clear stale `build/app/outputs/flutter-apk/*sideloadDev*` leftovers so old
+   v7a/universal APKs are not uploaded under the new `+N`.
+3. Start Linux early: `gh workflow run build-linux.yml --ref dev -f channel=dev`
+   (wait + `gh run download` for `javp-linux-x64-dev` before the final FTP).
+4. Rebuild Android **after** the bump (`sideloadDev`, `JAVP_UPDATE_CHANNEL=dev`).
+5. Build Windows locally (same bump / dart-defines):
+   `python tool/apply_windows_channel_icon.py --channel dev`
+   `flutter build windows --release --dart-define=JAVP_DISTRIBUTION=sideload --dart-define=JAVP_UPDATE_CHANNEL=dev`
+   `python tool/package_windows.py` (zip is required; installer needs Inno Setup —
+   ship the zip even if ISCC is missing; restore `windows/runner/resources/app_icon.ico`
+   afterward).
+6. Load `.env`, then one FTP that attaches **all** artifacts for that `+N`:
+   `python tool/deploy_update.py --channel dev --apk-dir build/app/outputs/flutter-apk --skip-universal --windows-zip build/windows-dist/javp-windows-x64.zip [--windows-installer …] --linux-zip path/to/javp-linux-x64.zip`
+7. Confirm `https://updater.javp.app/dev/latest.json` shows the new
+   `baseVersionCode` and `packages` has **both** `windows-x64` and `linux-x64`
+   (plus `apks`).
+
+Prefer `tool/local_release.sh --channel dev` when bash + Linux zip are available.
+Full hybrid: [`docs/updates.md`](docs/updates.md).
+
+`--skip-windows` / Android-only publish is only for hosts that **cannot** build
+Windows (Linux bot / Cloud), and only when the user explicitly accepts desktop
+out of date.
+
+## Do not
+
+- Stop after a local APK unless they say **adb install**, **sideload only**, or
+  **don’t publish**.
+- Re-upload leftover APKs or old Windows/Linux zips as the new `+N` (wrong
+  binary / updater loops). Android-only publish **drops** `packages.*` — omit
+  desktop rather than relabeling `+65` zips as `+66`.
+- Commit/push the Dev `+N` bump (live `latest.json` is the floor).
+- Dispatch `build-windows.yml` / `build-macos.yml` / `deploy-update.yml` just to
+  check a PR or get a signed APK this host can already produce.

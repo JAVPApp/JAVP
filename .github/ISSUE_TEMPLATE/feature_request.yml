@@ -1,0 +1,43 @@
+name: Feature request
+description: Suggest an improvement or new capability
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check [docs/roadmap.md](https://github.com/JAVPApp/JAVP/blob/main/docs/roadmap.md)
+        before filing — some ideas are already planned or explicitly non-goals.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do that is hard or impossible today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: How should it work? Keep it BYO / non-cloud-first when possible.
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platforms this matters on
+      multiple: true
+      options:
+        - Android (phone)
+        - Android TV
+        - Windows
+        - Linux
+        - macOS
+        - Web
+        - All / not sure
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered (optional)

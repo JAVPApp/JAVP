@@ -1,0 +1,22 @@
+---
+description: Keep large catalogs off the UI isolate
+globs:
+  - lib/providers/library/**
+  - lib/providers/library_provider.dart
+  - lib/services/storage/**
+  - lib/services/catalog/**
+  - lib/services/iptv/**
+  - lib/compat/ui_isolate.dart
+  - lib/compat/javp_compute.dart
+alwaysApply: false
+---
+
+# UI isolate
+
+Native IPTV / catalog / EPG lists are large. Do not copy a huge
+`List<MediaItem>` or packed EPG onto the UI isolate in one shot.
+
+- Parse and ingest off-isolate (`Isolate.run`, chunked handoff).
+- Prefer SQLite + paged reads for browse/search.
+- Use helpers in `lib/compat/ui_isolate.dart` / `javp_compute.dart`.
+- See `docs/architecture.md` → Catalog storage / UI isolate.

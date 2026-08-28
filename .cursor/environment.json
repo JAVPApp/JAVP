@@ -1,0 +1,9 @@
+{
+  "name": "javp",
+  "user": "ubuntu",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "install": "bash .cursor/install.sh"
+}

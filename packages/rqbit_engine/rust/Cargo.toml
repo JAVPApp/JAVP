@@ -1,0 +1,23 @@
+[package]
+name = "rqbit_engine"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "FFI wrapper that starts an embedded librqbit HTTP API for JAVP."
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow = "1"
+librqbit = { version = "8.1.1", default-features = false, features = [
+    "http-api",
+    "rust-tls",
+    "tracing-subscriber-utils",
+] }
+# `rc` implements Deserialize for Arc<str> (rqbit stream path params).
+serde = { version = "1", default-features = false, features = ["rc"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "sync"] }
+tokio-util = "0.7"
+tracing = "0.1"

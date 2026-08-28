@@ -1,0 +1,17 @@
+{
+  "title": "JAVP",
+  "shortTitle": "JAVP",
+  "voiceTitle": "JAVP",
+  "shortDescription": "Bring-your-own media player for Windows — your files, servers, and catalogs.",
+  "description": "JAVP (Just Another Video Player) plays media you bring yourself: local videos, Jellyfin, Emby, Plex, custom JSON catalogs, IPTV playlists, and more.\n\nJAVP does not host, index, or bundle commercial media. You connect your own sources; credentials stay on the device.\n\nFeatures include a gesture-friendly player (hold-to-2×, scrub, PiP), Home shelves, Catalog, Live TV when your source supports it, optional downloads, and optional profile sync (folder / WebDAV / Google Drive).\n\nTo try the app without your own library, choose Try demo on first launch for Creative Commons / open Blender sample titles.",
+  "features": [
+    "Play local videos and libraries from Jellyfin, Emby, Plex, and more",
+    "Gesture-friendly player with scrub, hold-to-2×, and picture-in-picture",
+    "Live TV and IPTV from playlists you provide",
+    "Optional profile sync via folder, WebDAV, or Google Drive",
+    "Try demo with Creative Commons / open Blender sample titles"
+  ],
+  "devStudio": "Cubeweb",
+  "websiteUrl": "https://javp.app",
+  "privacyPolicy": "https://javp.app/privacy.html"
+}

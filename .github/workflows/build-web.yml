@@ -1,0 +1,114 @@
+name: Build Web
+
+# Static companion for web.javp.app (not a full native replacement).
+# Policy: production FTP publish is stable/main only — not Dev channel cuts.
+# Local `tool/deploy_web.py` from a laptop is for emergencies / first bring-up.
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish_ftp:
+        description: >
+          Upload build/web to web.javp.app FTP. Allowed only on main or a v*
+          tag (stable releases). Builds from other refs stay artifacts-only.
+        type: boolean
+        default: false
+  # Ship the companion with each GitHub Release (stable).
+  release:
+    types: [published]
+
+concurrency:
+  group: build-web-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Build Flutter web
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: false
+          pub-cache: true
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Build web release
+        run: |
+          flutter build web --release \
+            --dart-define=JAVP_DISTRIBUTION=sideload \
+            --base-href=/ \
+            --no-wasm-dry-run \
+            --pwa-strategy=none
+
+      - name: Upload web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: javp-web
+          path: build/web
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Decide whether to publish
+        id: publish
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          WANT_FTP: ${{ github.event_name == 'release' || inputs.publish_ftp }}
+        run: |
+          set -euo pipefail
+          ALLOW=0
+          if [[ "$REF" == "refs/heads/main" || "$REF" == refs/tags/v* ]]; then
+            ALLOW=1
+          fi
+          DO=0
+          if [[ "$WANT_FTP" == "true" && "$ALLOW" == "1" ]]; then
+            DO=1
+          elif [[ "$WANT_FTP" == "true" && "$ALLOW" == "0" ]]; then
+            echo "::error::web.javp.app FTP publish is stable-only (main or v* tag). Ref=$REF"
+            exit 1
+          fi
+          echo "do_ftp=$DO" >> "$GITHUB_OUTPUT"
+          echo "publish_ftp=$DO event=$EVENT_NAME ref=$REF"
+
+      - name: Publish to FTP
+        if: ${{ steps.publish.outputs.do_ftp == '1' }}
+        env:
+          JAVP_WEB_FTP_HOST: ${{ secrets.JAVP_WEB_FTP_HOST }}
+          JAVP_WEB_FTP_PORT: ${{ secrets.JAVP_WEB_FTP_PORT }}
+          JAVP_WEB_FTP_USER: ${{ secrets.JAVP_WEB_FTP_USER }}
+          JAVP_WEB_FTP_PASS: ${{ secrets.JAVP_WEB_FTP_PASS }}
+          JAVP_WEB_FTP_DIR: ${{ secrets.JAVP_WEB_FTP_DIR }}
+          JAVP_WEB_PUBLIC_BASE: ${{ vars.JAVP_WEB_PUBLIC_BASE || 'https://web.javp.app' }}
+          # Fallback if dedicated secrets are absent:
+          JAVP_FTP_HOST: ${{ secrets.JAVP_FTP_HOST }}
+          JAVP_FTP_PORT: ${{ secrets.JAVP_FTP_PORT }}
+          JAVP_FTP_USER: ${{ secrets.JAVP_FTP_USER }}
+          JAVP_FTP_PASS: ${{ secrets.JAVP_FTP_PASS }}
+          JAVP_FTP_DIR: ${{ secrets.JAVP_FTP_DIR }}
+        run: |
+          set -euo pipefail
+          if [[ -n "${JAVP_WEB_FTP_HOST:-}" ]]; then
+            export JAVP_WEB_FTP_PORT="${JAVP_WEB_FTP_PORT:-21}"
+            export JAVP_WEB_FTP_USER="${JAVP_WEB_FTP_USER:-javpweb}"
+            export JAVP_WEB_FTP_DIR="${JAVP_WEB_FTP_DIR:-/}"
+            : "${JAVP_WEB_FTP_PASS:?JAVP_WEB_FTP_PASS required with JAVP_WEB_FTP_HOST}"
+          else
+            echo "::warning::No JAVP_WEB_FTP_HOST — falling back to updater FTP + web/ prefix"
+            : "${JAVP_FTP_HOST:?Missing JAVP_WEB_FTP_* or JAVP_FTP_HOST}"
+            : "${JAVP_FTP_PASS:?Missing JAVP_FTP_PASS}"
+            export JAVP_FTP_PORT="${JAVP_FTP_PORT:-21}"
+            export JAVP_FTP_USER="${JAVP_FTP_USER:-javp}"
+            export JAVP_FTP_DIR="${JAVP_FTP_DIR:-/}"
+          fi
+          python3 tool/deploy_web.py

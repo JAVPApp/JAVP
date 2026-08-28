@@ -1,0 +1,41 @@
+name: Create stable GitHub Release
+
+# Stable shipping tags `vX.Y.Z` but WinGet / Microsoft Store / desktop Release
+# assets only run on `release: published`. Forgetting to click "Publish release"
+# after tagging left Store/WinGet dark for cuts that only had a tag (e.g. v0.6.0).
+#
+# On push of a stable version tag, create the GitHub Release if it is missing.
+# That fires Deploy update (Windows; macOS on x.Y.0; attach → WinGet + MS Store).
+# Local FTP still uses tool/local_release.sh after desktop assets land.
+#
+# Docs: docs/updates.md, docs/microsoft-store.md
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+.*"
+
+concurrency:
+  group: create-stable-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  create-release:
+    name: Ensure GitHub Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Create Release if missing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: python3 tool/ensure_github_release.py "$TAG" --repo "$GITHUB_REPOSITORY"

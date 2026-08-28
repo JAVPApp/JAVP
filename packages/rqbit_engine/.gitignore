@@ -1,0 +1,7 @@
+rust/target/
+macos/build/
+macos/librqbit_engine.dylib
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock

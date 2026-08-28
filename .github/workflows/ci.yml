@@ -1,0 +1,53 @@
+# CI — PR checks
+
+# Community intake gates: analyze + unit tests + existing cheap Python checks
+# (l10n / changelog stay in their own workflows). Manual desktop/store builds
+# stay on workflow_dispatch — do not burn minutes verifying PRs that way.
+
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze-test:
+    name: Analyze + test
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Linux deps (mpv / sqflite ffi)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libmpv-dev libsecret-1-dev
+
+      - name: Setup Flutter
+        uses: ./.github/actions/setup-flutter-ci
+        with:
+          linux-arch: x64
+
+      - name: Pub get
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Test
+        run: flutter test

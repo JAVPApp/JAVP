@@ -1,0 +1,17 @@
+{
+  "title": "JAVP",
+  "shortTitle": "JAVP",
+  "voiceTitle": "JAVP",
+  "shortDescription": "Lecteur multimédia BYO pour Windows — vos fichiers, serveurs et catalogues.",
+  "description": "JAVP (Just Another Video Player) lit les médias que vous apportez : vidéos locales, Jellyfin, Emby, Plex, catalogues JSON, playlists IPTV, et plus.\n\nJAVP n’héberge, n’indexe ni ne fournit de contenus commerciaux. Vous connectez vos propres sources ; les identifiants restent sur l’appareil.\n\nLecteur gestuel (maintien pour 2×, scrub, PiP), étagères Accueil, Catalogue, TV en direct selon la source, téléchargements optionnels, sync de profil optionnelle (dossier / WebDAV / Google Drive).\n\nSans bibliothèque : essayez « Try demo » au premier lancement (échantillons Creative Commons / Blender).",
+  "features": [
+    "Vidéos locales et bibliothèques Jellyfin, Emby, Plex, etc.",
+    "Lecteur gestuel : scrub, maintien 2×, image dans l’image",
+    "TV en direct / IPTV via vos playlists",
+    "Sync de profil optionnelle (dossier, WebDAV, Google Drive)",
+    "Démo avec titres Creative Commons / Blender"
+  ],
+  "devStudio": "Cubeweb",
+  "websiteUrl": "https://javp.app",
+  "privacyPolicy": "https://javp.app/privacy.html"
+}

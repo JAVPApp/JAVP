@@ -1,0 +1,17 @@
+{
+  "title": "JAVP",
+  "shortTitle": "JAVP",
+  "voiceTitle": "JAVP",
+  "shortDescription": "BYO-медіаплеєр для Windows — ваші файли, сервери та каталоги.",
+  "description": "JAVP (Just Another Video Player) відтворює медіа, які ви додаєте самі: локальні відео, Jellyfin, Emby, Plex, JSON-каталоги, IPTV-плейлисти тощо.\n\nJAVP не розміщує, не індексує й не постачає комерційні медіа. Ви підключаєте власні джерела; облікові дані лишаються на пристрої.\n\nЖестовий плеєр (утримання для 2×, scrub, PiP), полиці Home, Каталог, пряме ТБ за підтримки джерела, додаткові завантаження та додаткова синхронізація профілю (тека / WebDAV / Google Drive).\n\nБез власної бібліотеки: оберіть Try demo під час першого запуску — зразки Creative Commons / Blender.",
+  "features": [
+    "Локальні відео та бібліотеки Jellyfin, Emby, Plex тощо",
+    "Жестовий плеєр: scrub, утримання 2×, зображення в зображенні",
+    "Пряме ТБ та IPTV з ваших плейлистів",
+    "Додаткова синхронізація профілю (тека, WebDAV, Google Drive)",
+    "Демо з роликами Creative Commons / Blender"
+  ],
+  "devStudio": "Cubeweb",
+  "websiteUrl": "https://javp.app",
+  "privacyPolicy": "https://javp.app/privacy.html"
+}

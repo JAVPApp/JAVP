@@ -1,0 +1,9 @@
+# Copy to android/key.properties (gitignored) and fill in for release / Play builds.
+# Generate an upload keystore once, then enroll it in Play App Signing.
+#
+#   keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias javp
+#
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=javp
+storeFile=upload-keystore.jks

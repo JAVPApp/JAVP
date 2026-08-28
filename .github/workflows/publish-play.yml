@@ -1,0 +1,250 @@
+name: Publish to Google Play
+
+# Builds a Play flavor AAB (JAVP_DISTRIBUTION=play) and, when the Play
+# Developer API secret is set, uploads it with tool/play_publish.py — same
+# idea as publish-msstore.yml for Partner Center.
+#
+# Prefer Deploy update's play job on GitHub Release (waits for Release
+# assets). This workflow is the manual retry / track-override path
+# (workflow_dispatch only — no racing release trigger).
+#
+# First listing questionnaires (Data safety, content rating, description)
+# stay manual in Play Console. After the draft app exists, this workflow
+# owns package updates.
+#
+# Secrets (Settings → Secrets → Actions):
+#   ANDROID_KEYSTORE_BASE64
+#   ANDROID_KEYSTORE_PASSWORD
+#   ANDROID_KEY_PASSWORD          (optional; falls back to store password)
+#   ANDROID_KEY_ALIAS             (optional; default javp)
+#   PLAY_SERVICE_ACCOUNT_JSON     Play Console service-account JSON
+#
+# Soft-skip Play API when PLAY_SERVICE_ACCOUNT_JSON is missing (still
+# uploads the AAB as an artifact / attaches it to a Release).
+# Docs: docs/play-store.md
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to attach/publish from (e.g. v0.5.3). Empty = this ref.
+        required: false
+        type: string
+      submit:
+        description: Upload to Play Console when PLAY_SERVICE_ACCOUNT_JSON exists
+        type: boolean
+        required: false
+        default: true
+      track:
+        description: Play track
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+          - production
+        default: internal
+      status:
+        description: Track release status (completed = testers can install)
+        type: choice
+        options:
+          - completed
+          - draft
+        default: completed
+      listing:
+        description: Also upload store/play listing screenshots + graphics
+        type: boolean
+        required: false
+        default: false
+      notes:
+        description: en-US release notes (optional, max 500 chars)
+        required: false
+        type: string
+        default: ""
+
+concurrency:
+  group: publish-play-${{ inputs.tag || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  play:
+    name: Build + submit Play AAB
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    env:
+      HAVE_PLAY_CREDS: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON != '' }}
+      PLAY_PACKAGE: com.javp.javp
+      PYTHONUNBUFFERED: "1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - name: Sync localization ARBs
+        run: python3 tool/l10n/generate_arbs.py
+
+      # media-kit "full" + rqbit_engine + Flutter native intermediates need ~20GB+
+      # free. Same cleanup as Deploy update's Android job.
+      - name: Free disk space
+        run: |
+          set -euo pipefail
+          echo "Before cleanup:"
+          df -h
+          sudo swapoff -a || true
+          sudo rm -f /swapfile || true
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android/sdk/ndk-bundle || true
+          sudo rm -rf /usr/share/swift || true
+          sudo rm -rf /usr/local/.ghcup || true
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /usr/local/share/boost || true
+          sudo rm -rf /usr/share/az_* || true
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          sudo rm -rf /opt/hostedtoolcache/go || true
+          sudo rm -rf /opt/hostedtoolcache/Python || true
+          sudo rm -rf /opt/hostedtoolcache/PyPy || true
+          sudo rm -rf /opt/hostedtoolcache/node || true
+          sudo rm -rf /opt/hostedtoolcache/Ruby || true
+          sudo docker system prune -af || true
+          sudo fallocate -l 4G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          echo "After cleanup:"
+          df -h
+          free -h
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          # SDK cache is multi-GB and blows the 0.5 GB Actions storage quota.
+          # Pub-only is ~100–120 MB per OS and saves most of flutter pub get.
+          cache: false
+          pub-cache: true
+
+      - name: Setup rqbit Android native
+        uses: ./.github/actions/setup-rqbit-android-ci
+
+      - name: Cache Gradle wrapper & media-kit jars
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/wrapper
+            packages/media_kit_libs_android_video/android/build/v1.1.11
+          key: ${{ runner.os }}-javp-android-jars-play-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'packages/**/android/**/*.gradle*', 'packages/**/android/**/*.gradle', 'pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-javp-android-jars-play-
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Install release signing keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${ANDROID_KEYSTORE_BASE64:-}" || -z "${ANDROID_KEYSTORE_PASSWORD:-}" ]]; then
+            echo "::error::Missing ANDROID_KEYSTORE_BASE64 / ANDROID_KEYSTORE_PASSWORD — refusing debug-signed Play AAB."
+            exit 1
+          fi
+          alias="${ANDROID_KEY_ALIAS:-javp}"
+          key_pass="${ANDROID_KEY_PASSWORD:-$ANDROID_KEYSTORE_PASSWORD}"
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/upload-keystore.jks
+          printf '%s\n' \
+            "storePassword=${ANDROID_KEYSTORE_PASSWORD}" \
+            "keyPassword=${key_pass}" \
+            "keyAlias=${alias}" \
+            "storeFile=upload-keystore.jks" \
+            > android/key.properties
+          chmod 600 android/upload-keystore.jks android/key.properties
+          keytool -list -keystore android/upload-keystore.jks \
+            -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$alias" >/dev/null
+
+      - name: Build Play AAB
+        env:
+          JAVP_REQUIRE_RELEASE_SIGNING: "1"
+          GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2
+        run: |
+          set -euo pipefail
+          df -h
+          python3 tool/build_distribution.py play
+          df -h
+
+      - name: Locate AAB
+        id: pack
+        run: |
+          set -euo pipefail
+          aab="build/app/outputs/bundle/playRelease/app-play-release.aab"
+          if [[ ! -f "$aab" ]]; then
+            echo "::error::Play AAB not found at $aab"
+            exit 1
+          fi
+          echo "AAB: $aab ($(du -h "$aab" | cut -f1))"
+          echo "aab=$aab" >> "$GITHUB_OUTPUT"
+          echo "aab_name=$(basename "$aab")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: javp-play-aab
+          path: ${{ steps.pack.outputs.aab }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Attach AAB to GitHub Release
+        if: ${{ inputs.tag != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          PKG: ${{ steps.pack.outputs.aab }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${TAG:-}" ]]; then
+            echo "No release tag — skip attach"
+            exit 0
+          fi
+          gh release upload "$TAG" "$PKG" --clobber --repo "$GITHUB_REPOSITORY"
+
+      - name: Install Play API client
+        if: ${{ env.HAVE_PLAY_CREDS == 'true' && inputs.submit }}
+        run: |
+          python3 -m pip install --upgrade \
+            google-api-python-client google-auth google-auth-httplib2 httplib2
+
+      - name: Submit AAB to Play Console
+        if: ${{ env.HAVE_PLAY_CREDS == 'true' && inputs.submit }}
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          PLAY_HTTP_TIMEOUT: "900"
+          PLAY_RELEASE_NOTES: ${{ inputs.notes }}
+          PLAY_TRACK: ${{ inputs.track }}
+          PLAY_STATUS: ${{ inputs.status }}
+          PLAY_LISTING: ${{ inputs.listing }}
+          AAB: ${{ steps.pack.outputs.aab }}
+        run: |
+          set -euo pipefail
+          args=(--aab "$AAB" --track "$PLAY_TRACK" --status "$PLAY_STATUS")
+          if [[ "$PLAY_LISTING" == "true" ]]; then
+            args+=(--listing)
+          fi
+          python3 tool/play_publish.py "${args[@]}"
+
+      - name: Manual-upload reminder (no Play API secret)
+        if: ${{ env.HAVE_PLAY_CREDS != 'true' }}
+        run: |
+          echo "::warning::PLAY_SERVICE_ACCOUNT_JSON not set — AAB built and uploaded as artifact only."
+          echo "Upload ${{ steps.pack.outputs.aab_name }} in Play Console → Internal testing, or add the secret (see docs/play-store.md)."

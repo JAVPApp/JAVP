@@ -1,0 +1,33 @@
+name: Localization preflight
+
+# Cheap Python-only gate (no Flutter, no Windows). Fails PRs to dev/main when
+# Dart uses an l10n key that lib/l10n/app_en.arb lacks.
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+concurrency:
+  group: l10n-preflight-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preflight:
+    name: English ARB vs Dart
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: l10n preflight
+        run: python3 tool/l10n/preflight.py

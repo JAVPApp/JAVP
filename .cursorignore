@@ -1,0 +1,8 @@
+# Translation catalogs and generated l10n — agents use app_en.arb + add_en.py only.
+lib/l10n/app_*.arb
+!lib/l10n/app_en.arb
+lib/l10n/app_localizations.dart
+lib/l10n/app_localizations_*.dart
+tool/l10n/untranslated.json
+tool/l10n/l10n-untranslated.md
+tool/l10n/messages.json

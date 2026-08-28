@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Leanback banner 320×180 — Dev (yellow accent) -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#0B0C0F" />
+            <size android:width="320dp" android:height="180dp" />
+        </shape>
+    </item>
+    <item android:gravity="start|fill_vertical" android:width="10dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#EAB308" />
+        </shape>
+    </item>
+    <item
+        android:bottom="28dp"
+        android:drawable="@mipmap/ic_launcher"
+        android:gravity="center"
+        android:height="88dp"
+        android:width="88dp" />
+</layer-list>

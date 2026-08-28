@@ -1,0 +1,32 @@
+name: rqbit_engine
+description: >
+  Embedded librqbit (Apache-2.0) session plus localhost HTTP API for JAVP
+  torrent streaming. Dart talks to 127.0.0.1; native code is a Rust cdylib.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+  flutter: '>=3.3.0'
+
+dependencies:
+  ffi: ^2.1.0
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        ffiPlugin: true
+      linux:
+        ffiPlugin: true
+      macos:
+        ffiPlugin: true
+      windows:
+        ffiPlugin: true

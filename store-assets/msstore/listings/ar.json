@@ -1,0 +1,17 @@
+{
+  "title": "JAVP",
+  "shortTitle": "JAVP",
+  "voiceTitle": "JAVP",
+  "shortDescription": "مشغّل وسائط BYO لـ Windows — ملفاتك وخوادمك وفهارسك.",
+  "description": "يشغّل JAVP (Just Another Video Player) الوسائط التي تحضرها بنفسك: فيديوهات محلية، Jellyfin، Emby، Plex، فهارس JSON، قوائم IPTV والمزيد.\n\nلا يستضيف JAVP وسائط تجارية ولا يفهرسها ولا يضمّنها. تصل مصادرك بنفسك؛ وتبقى بيانات الاعتماد على الجهاز.\n\nمشغّل بإيماءات (اضغط مطولاً لـ 2×، تمرير، صورة داخل صورة)، رفوف الصفحة الرئيسية، الكتالوج، تلفزيون مباشر عند دعم المصدر، تنزيلات اختيارية ومزامنة ملف شخصي اختيارية (مجلد / WebDAV / Google Drive).\n\nبدون مكتبتك: اختر Try demo عند التشغيل الأول لعينات Creative Commons / Blender.",
+  "features": [
+    "فيديوهات محلية ومكتبات Jellyfin وEmby وPlex وغيرها",
+    "مشغّل إيماءات مع التمرير والضغط المطوّل 2× وصورة داخل صورة",
+    "تلفزيون مباشر وIPTV عبر قوائمك",
+    "مزامنة ملف شخصي اختيارية (مجلد، WebDAV، Google Drive)",
+    "تجربة بعناوين Creative Commons / Blender"
+  ],
+  "devStudio": "Cubeweb",
+  "websiteUrl": "https://javp.app",
+  "privacyPolicy": "https://javp.app/privacy.html"
+}

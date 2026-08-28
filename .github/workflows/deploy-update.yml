@@ -1,0 +1,1452 @@
+name: Deploy update
+
+# Hybrid release model (saves Actions minutes):
+#   - GitHub Release / default path: Windows always; macOS only on x.Y.0 tags.
+#     Artifacts attach to the GitHub Release — no FTP from CI.
+#   - Android + Linux + FTP publish: run on the build host via
+#     tool/local_release.sh (see docs/updates.md).
+#   - workflow_dispatch escape hatches can still build Android/Linux and FTP
+#     when Actions minutes allow.
+#
+# Channels (sideload): stable → /latest.json ; dev → /dev/latest.json.
+# Local/FTP publish stamps download.html (stable → /, dev → /dev/); Dev still
+# skips universal / versioned FTP copy.
+# Required for emergency FTP publish from CI:
+#   JAVP_FTP_HOST, JAVP_FTP_PASS, ANDROID_KEYSTORE_* (see docs/play-store.md)
+# For WinGet on Releases:
+#   WINGET_TOKEN — classic PAT (public_repo) for winget-pkgs fork owner (xemles)
+# For Microsoft Store package updates (after first live listing):
+#   AZURE_AD_TENANT_ID, AZURE_AD_APPLICATION_CLIENT_ID,
+#   AZURE_AD_APPLICATION_SECRET, SELLER_ID — see docs/microsoft-store.md
+# For Google Play package updates (after the draft app + first AAB exist):
+#   PLAY_SERVICE_ACCOUNT_JSON, ANDROID_KEYSTORE_* — see docs/play-store.md
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Update channel (stable or dev) — only used if publish_ftp
+        type: choice
+        options:
+          - stable
+          - dev
+        default: stable
+      changelog:
+        description: Changelog text for latest.json (FTP publish only)
+        required: false
+        default: ""
+      force:
+        description: Mark update as required (force)
+        type: boolean
+        required: false
+        default: false
+      dry_run:
+        description: Build only — skip FTP upload
+        type: boolean
+        required: false
+        default: false
+      build_windows:
+        description: Build Windows zip + installer
+        type: boolean
+        required: false
+        default: true
+      build_macos:
+        description: Build macOS zip (off-cycle; Releases auto-build on x.Y.0)
+        type: boolean
+        required: false
+        default: false
+      build_linux:
+        description: Build Linux zip on GHA (prefer local_release.sh)
+        type: boolean
+        required: false
+        default: false
+      build_android:
+        description: Build Android APKs on GHA (prefer local_release.sh)
+        type: boolean
+        required: false
+        default: false
+      skip_universal:
+        description: Skip fat universal APK when build_android
+        type: boolean
+        required: false
+        default: false
+      publish_ftp:
+        description: FTP publish to updater.javp.app from CI (prefer local)
+        type: boolean
+        required: false
+        default: false
+  release:
+    types: [published]
+
+concurrency:
+  group: deploy-update-${{ github.event_name == 'workflow_dispatch' && inputs.channel || (github.event_name == 'release' && 'stable') || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  decide:
+    name: Decide platforms
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      build_windows: ${{ steps.d.outputs.build_windows }}
+      build_macos: ${{ steps.d.outputs.build_macos }}
+      build_linux: ${{ steps.d.outputs.build_linux }}
+      build_android: ${{ steps.d.outputs.build_android }}
+      publish_ftp: ${{ steps.d.outputs.publish_ftp }}
+      channel: ${{ steps.d.outputs.channel }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: l10n preflight
+        run: python3 tool/l10n/preflight.py
+
+      - name: Resolve what to build
+        id: d
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          TAG: ${{ github.event.release.tag_name }}
+          IN_CHANNEL: ${{ inputs.channel }}
+          IN_WIN: ${{ inputs.build_windows }}
+          IN_MAC: ${{ inputs.build_macos }}
+          IN_LINUX: ${{ inputs.build_linux }}
+          IN_ANDROID: ${{ inputs.build_android }}
+          IN_FTP: ${{ inputs.publish_ftp }}
+        run: |
+          set -euo pipefail
+          CHANNEL=stable
+          BUILD_WIN=false
+          BUILD_MAC=false
+          BUILD_LINUX=false
+          BUILD_ANDROID=false
+          PUBLISH_FTP=false
+
+          if [[ "$EVENT_NAME" == "release" ]]; then
+            CHANNEL=stable
+            BUILD_WIN=true
+            VER="${TAG#v}"
+            if [[ "$VER" =~ ^[0-9]+\.[0-9]+\.0([.-].*)?$ ]]; then
+              BUILD_MAC=true
+              echo "Release $TAG is an x.Y.0 tag — including macOS"
+            else
+              echo "Release $TAG is a patch — Windows only"
+            fi
+          elif [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            CHANNEL="${IN_CHANNEL:-stable}"
+            [[ "$IN_WIN" == "true" ]] && BUILD_WIN=true
+            [[ "$IN_MAC" == "true" ]] && BUILD_MAC=true
+            [[ "$IN_LINUX" == "true" ]] && BUILD_LINUX=true
+            [[ "$IN_ANDROID" == "true" ]] && BUILD_ANDROID=true
+            [[ "$IN_FTP" == "true" ]] && PUBLISH_FTP=true
+            if [[ "$PUBLISH_FTP" == "true" && "$BUILD_ANDROID" != "true" ]]; then
+              echo "::error::publish_ftp requires build_android (or use tool/local_release.sh)"
+              exit 1
+            fi
+          else
+            echo "::error::Unsupported event: $EVENT_NAME"
+            exit 1
+          fi
+
+          {
+            echo "build_windows=$BUILD_WIN"
+            echo "build_macos=$BUILD_MAC"
+            echo "build_linux=$BUILD_LINUX"
+            echo "build_android=$BUILD_ANDROID"
+            echo "publish_ftp=$PUBLISH_FTP"
+            echo "channel=$CHANNEL"
+          } >> "$GITHUB_OUTPUT"
+          echo "windows=$BUILD_WIN macos=$BUILD_MAC linux=$BUILD_LINUX android=$BUILD_ANDROID ftp=$PUBLISH_FTP channel=$CHANNEL"
+
+  windows:
+    name: Build Windows zip
+    needs: decide
+    if: ${{ needs.decide.outputs.build_windows == 'true' }}
+    runs-on: windows-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          # SDK cache is multi-GB and blows the 0.5 GB Actions storage quota.
+          # Pub-only is ~100–120 MB per OS and saves most of flutter pub get.
+          cache: false
+          pub-cache: true
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust-ci
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      # Dev channel: yellow app icon (matches Android sideloadDev). Must run
+      # before flutter build so Runner.rc and the Inno Setup icon both pick it up.
+      - name: Apply Windows channel icon
+        shell: pwsh
+        env:
+          CHANNEL: ${{ needs.decide.outputs.channel }}
+        run: python tool/apply_windows_channel_icon.py --channel $env:CHANNEL
+
+      # media_kit's CMake downloads these once without retries and leaves a
+      # corrupt archive behind when GitHub returns a partial response.
+      - name: Prefetch Windows media libraries
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $destination = "build\windows\x64"
+          New-Item -ItemType Directory -Force -Path $destination | Out-Null
+          $archives = @(
+            @{
+              Name = "mpv-dev-x86_64-20230924-git-652a1dd.7z"
+              Url = "https://github.com/media-kit/libmpv-win32-video-build/releases/download/2023-09-24/mpv-dev-x86_64-20230924-git-652a1dd.7z"
+              Md5 = "a832ef24b3a6ff97cd2560b5b9d04cd8"
+            },
+            @{
+              Name = "ANGLE.7z"
+              Url = "https://github.com/alexmercerind/flutter-windows-ANGLE-OpenGL-ES/releases/download/v1.0.1/ANGLE.7z"
+              Md5 = "e866f13e8d552348058afaafe869b1ed"
+            }
+          )
+          foreach ($archive in $archives) {
+            $path = Join-Path $destination $archive.Name
+            $temporary = "$path.download"
+            Remove-Item -Force -ErrorAction SilentlyContinue $path, $temporary
+            & curl.exe --fail --location --retry 5 --retry-all-errors `
+              --connect-timeout 20 --output $temporary $archive.Url
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to download $($archive.Name)"
+            }
+            $actual = (Get-FileHash -Algorithm MD5 $temporary).Hash.ToLowerInvariant()
+            if ($actual -ne $archive.Md5) {
+              throw "$($archive.Name) checksum mismatch: $actual"
+            }
+            Move-Item -Force $temporary $path
+          }
+
+      - name: Build Windows release
+        shell: pwsh
+        env:
+          CHANNEL: ${{ needs.decide.outputs.channel }}
+        run: |
+          flutter build windows --release `
+            --dart-define=JAVP_DISTRIBUTION=sideload `
+            --dart-define=JAVP_UPDATE_CHANNEL=$env:CHANNEL
+          if ($LASTEXITCODE -ne 0) {
+            throw "Windows build failed"
+          }
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          $iscc = @(
+            "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
+            "${env:ProgramFiles}\Inno Setup 6\ISCC.exe"
+          ) | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $iscc) { throw "ISCC.exe not found after Inno Setup install" }
+          "ISCC=$iscc" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Package zip + installer
+        shell: pwsh
+        run: |
+          $src = "build\windows\x64\runner\Release"
+          if (-not (Test-Path $src)) { throw "Missing Release output at $src" }
+          python tool/package_windows.py --release-dir $src --out-dir build/windows-dist
+          Get-ChildItem build/windows-dist | Format-Table Name, Length
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: javp-windows-x64
+          path: |
+            build/windows-dist/javp-windows-x64.zip
+            build/windows-dist/javp-setup.exe
+          if-no-files-found: error
+          retention-days: 1
+
+  windows-arm64:
+    name: Build Windows ARM64 zip
+    needs: decide
+    if: ${{ needs.decide.outputs.build_windows == 'true' }}
+    runs-on: windows-11-arm
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    # ARM runners / Flutter ARM Windows may flake; don't block x64 publish.
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: false
+          pub-cache: true
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust-ci
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Apply Windows channel icon
+        shell: pwsh
+        env:
+          CHANNEL: ${{ needs.decide.outputs.channel }}
+        run: python tool/apply_windows_channel_icon.py --channel $env:CHANNEL
+
+      - name: Build Windows release
+        shell: pwsh
+        env:
+          CHANNEL: ${{ needs.decide.outputs.channel }}
+        run: |
+          $buildArgs = @(
+            "build", "windows", "--release",
+            "--dart-define=JAVP_DISTRIBUTION=sideload",
+            "--dart-define=JAVP_UPDATE_CHANNEL=$env:CHANNEL"
+          )
+          for ($attempt = 1; $attempt -le 3; $attempt++) {
+            Write-Host "Windows ARM64 build attempt $attempt of 3"
+            & flutter @buildArgs
+            if ($LASTEXITCODE -eq 0) { exit 0 }
+            if ($attempt -lt 3) {
+              Remove-Item -Recurse -Force -ErrorAction SilentlyContinue `
+                ".dart_tool\hooks_runner", ".dart_tool\native_assets_builder"
+            }
+          }
+          throw "Windows ARM64 build failed after 3 attempts"
+
+      - name: Package zip
+        shell: pwsh
+        run: |
+          $src = "build\windows\arm64\runner\Release"
+          if (-not (Test-Path $src)) { throw "Missing Release output at $src" }
+          python tool/package_windows.py --release-dir $src --out-dir build/windows-dist --arch arm64 --skip-installer
+          Get-ChildItem build/windows-dist | Format-Table Name, Length
+
+      - name: Upload Windows ARM64 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: javp-windows-arm64
+          path: build/windows-dist/javp-windows-arm64.zip
+          if-no-files-found: error
+          retention-days: 1
+
+  linux:
+    name: Build Linux zip
+    needs: decide
+    if: ${{ needs.decide.outputs.build_linux == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Linux desktop build deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake ninja-build pkg-config \
+            libgtk-3-dev liblzma-dev libstdc++-12-dev libsecret-1-dev \
+            libjsoncpp-dev libmpv-dev mpv libayatana-appindicator3-dev
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          # SDK cache is multi-GB and blows the 0.5 GB Actions storage quota.
+          # Pub-only is ~100–120 MB per OS and saves most of flutter pub get.
+          cache: false
+          pub-cache: true
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust-ci
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Build Linux release
+        run: flutter build linux --release --dart-define=JAVP_DISTRIBUTION=sideload
+
+      - name: Package portable zip
+        run: |
+          set -euo pipefail
+          src=build/linux/x64/release/bundle
+          if [[ ! -d "$src" ]]; then
+            echo "::error::Missing Linux bundle at $src"
+            exit 1
+          fi
+          mkdir -p build/linux-dist
+          (cd "$src" && zip -qr "$GITHUB_WORKSPACE/build/linux-dist/javp-linux-x64.zip" .)
+          ls -lh build/linux-dist/javp-linux-x64.zip
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: javp-linux-x64
+          path: build/linux-dist/javp-linux-x64.zip
+          if-no-files-found: error
+          retention-days: 1
+
+  linux-arm64:
+    name: Build Linux ARM64 zip
+    needs: decide
+    if: ${{ needs.decide.outputs.build_linux == 'true' && needs.decide.outputs.channel != 'dev' }}
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    continue-on-error: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Linux desktop build deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq clang cmake ninja-build pkg-config \
+            libgtk-3-dev liblzma-dev libstdc++-12-dev libsecret-1-dev \
+            libjsoncpp-dev libmpv-dev mpv libayatana-appindicator3-dev
+
+      - name: Setup Flutter
+        uses: ./.github/actions/setup-flutter-ci
+        with:
+          linux-arch: arm64
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust-ci
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Build Linux release
+        run: flutter build linux --release --dart-define=JAVP_DISTRIBUTION=sideload
+
+      - name: Package portable zip
+        run: |
+          set -euo pipefail
+          src=build/linux/arm64/release/bundle
+          if [[ ! -d "$src" ]]; then
+            echo "::error::Missing Linux bundle at $src"
+            exit 1
+          fi
+          mkdir -p build/linux-dist
+          (cd "$src" && zip -qr "$GITHUB_WORKSPACE/build/linux-dist/javp-linux-arm64.zip" .)
+          ls -lh build/linux-dist/javp-linux-arm64.zip
+
+      - name: Upload Linux ARM64 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: javp-linux-arm64
+          path: build/linux-dist/javp-linux-arm64.zip
+          if-no-files-found: error
+          retention-days: 1
+
+  macos:
+    name: Build macOS ${{ matrix.arch }}
+    needs: decide
+    if: ${{ needs.decide.outputs.build_macos == 'true' }}
+    runs-on: macos-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    # Intel is extra; keep the Apple Silicon zip if the x86_64 slice fails.
+    continue-on-error: ${{ matrix.arch == 'x86_64' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            artifact: javp-macos-arm64
+          - arch: x86_64
+            artifact: javp-macos-x64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          # SDK cache is multi-GB and blows the 0.5 GB Actions storage quota.
+          # Pub-only is ~100–120 MB per OS and saves most of flutter pub get.
+          cache: false
+          pub-cache: true
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust-ci
+        with:
+          targets: ${{ matrix.arch == 'x86_64' && 'x86_64-apple-darwin' || 'aarch64-apple-darwin' }}
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      # Dev channel: yellow app icon (matches Android sideloadDev / Windows).
+      # Must run before flutter build so AppIcon.appiconset is compiled in.
+      - name: Apply macOS channel icon
+        env:
+          CHANNEL: ${{ needs.decide.outputs.channel }}
+        run: python3 tool/apply_macos_channel_icon.py --channel "$CHANNEL"
+
+      - name: Build macOS release
+        env:
+          CHANNEL: ${{ needs.decide.outputs.channel }}
+          FLUTTER_XCODE_ARCHS: ${{ matrix.arch }}
+          FLUTTER_XCODE_ONLY_ACTIVE_ARCH: "NO"
+        run: |
+          flutter build macos --release \
+            --dart-define=JAVP_DISTRIBUTION=sideload \
+            --dart-define=JAVP_UPDATE_CHANNEL="$CHANNEL"
+
+      - name: Package portable zip
+        env:
+          ARCH: ${{ matrix.arch }}
+          ARTIFACT: ${{ matrix.artifact }}
+        run: |
+          set -euo pipefail
+          src=build/macos/Build/Products/Release/javp.app
+          if [[ ! -d "$src" ]]; then
+            echo "::error::Missing macOS app at $src"
+            ls -la build/macos/Build/Products/Release || true
+            exit 1
+          fi
+          bin="$src/Contents/MacOS/javp"
+          if [[ ! -f "$bin" ]]; then
+            echo "::error::Missing macOS binary at $bin"
+            exit 1
+          fi
+          archs="$(lipo -archs "$bin" 2>/dev/null || true)"
+          echo "App archs: ${archs:-unknown}"
+          if [[ "$archs" != *"$ARCH"* ]]; then
+            echo "::error::Expected $ARCH in $bin (got ${archs:-none})"
+            exit 1
+          fi
+          mkdir -p build/macos-dist
+          (
+            cd "$(dirname "$src")"
+            zip -qr "$GITHUB_WORKSPACE/build/macos-dist/${ARTIFACT}.zip" "$(basename "$src")"
+          )
+          ls -lh "build/macos-dist/${ARTIFACT}.zip"
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: build/macos-dist/${{ matrix.artifact }}.zip
+          if-no-files-found: error
+          retention-days: 1
+
+  # Resolves channel/flavor and the Android ABI matrix so split + universal
+  # APKs build in parallel (stable) while Dev stays arm64-only.
+  android-plan:
+    name: Plan Android builds
+    needs: decide
+    if: ${{ needs.decide.outputs.build_android == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      channel: ${{ steps.plan.outputs.channel }}
+      flavor: ${{ steps.plan.outputs.flavor }}
+      matrix: ${{ steps.plan.outputs.matrix }}
+
+    steps:
+      - name: Resolve channel and ABI matrix
+        id: plan
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_CHANNEL: ${{ inputs.channel }}
+          SKIP_UNIVERSAL: ${{ github.event_name == 'workflow_dispatch' && inputs.skip_universal }}
+          REF: ${{ github.ref }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          CHANNEL="stable"
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            CHANNEL="${INPUT_CHANNEL:-stable}"
+          elif [[ "$REF" == "refs/heads/dev" ]]; then
+            CHANNEL="dev"
+          elif [[ "$REF_NAME" == *-dev ]]; then
+            CHANNEL="dev"
+          fi
+          case "$CHANNEL" in
+            stable|dev) ;;
+            *)
+              echo "::error::Unknown channel: $CHANNEL"
+              exit 1
+              ;;
+          esac
+          if [[ "$CHANNEL" == "dev" ]]; then
+            FLAVOR="sideloadDev"
+          else
+            FLAVOR="sideload"
+          fi
+
+          # JSON matrix consumed by the android job. x86_64 stays inside
+          # universal only (no standalone split).
+          if [[ "$CHANNEL" == "dev" ]]; then
+            MATRIX='[{"label":"arm64","mode":"split","target":"android-arm64","abi":"arm64-v8a"}]'
+          else
+            MATRIX='[{"label":"arm64","mode":"split","target":"android-arm64","abi":"arm64-v8a"},{"label":"arm32","mode":"split","target":"android-arm","abi":"armeabi-v7a"}]'
+            if [[ "$SKIP_UNIVERSAL" != "true" ]]; then
+              MATRIX='[{"label":"arm64","mode":"split","target":"android-arm64","abi":"arm64-v8a"},{"label":"arm32","mode":"split","target":"android-arm","abi":"armeabi-v7a"},{"label":"universal","mode":"universal","target":"","abi":""}]'
+            fi
+          fi
+
+          echo "channel=$CHANNEL" >> "$GITHUB_OUTPUT"
+          echo "flavor=$FLAVOR" >> "$GITHUB_OUTPUT"
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          echo "Resolved update channel: $CHANNEL (flavor $FLAVOR)"
+          echo "Android matrix: $MATRIX"
+
+  android:
+    name: Android ${{ matrix.label }}
+    needs: android-plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    # Fat universal APK can still OOM/disk-out; never block arm64/arm32 publish.
+    continue-on-error: ${{ matrix.mode == 'universal' }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.android-plan.outputs.matrix) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # media-kit "full" + rqbit_engine + Flutter native intermediates need ~20GB+
+      # free. An 8G swapfile previously ate the disk ("No space left on device").
+      - name: Free disk space
+        run: |
+          set -euo pipefail
+          echo "Before cleanup:"
+          df -h
+          sudo swapoff -a || true
+          sudo rm -f /swapfile || true
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android/sdk/ndk-bundle || true
+          sudo rm -rf /usr/share/swift || true
+          sudo rm -rf /usr/local/.ghcup || true
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /usr/local/share/boost || true
+          sudo rm -rf /usr/share/az_* || true
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          sudo rm -rf /opt/hostedtoolcache/go || true
+          sudo rm -rf /opt/hostedtoolcache/Python || true
+          sudo rm -rf /opt/hostedtoolcache/PyPy || true
+          sudo rm -rf /opt/hostedtoolcache/node || true
+          sudo rm -rf /opt/hostedtoolcache/Ruby || true
+          sudo docker system prune -af || true
+          # Small swap after reclaiming space (RAM ~7GB; avoid another disk squeeze).
+          sudo fallocate -l 4G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          echo "After cleanup:"
+          df -h
+          free -h
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          # SDK cache is multi-GB and blows the 0.5 GB Actions storage quota.
+          # Pub-only is ~100–120 MB per OS and saves most of flutter pub get.
+          cache: false
+          pub-cache: true
+
+      - name: Setup rqbit Android native
+        uses: ./.github/actions/setup-rqbit-android-ci
+        with:
+          abis: ${{ matrix.mode == 'split' && matrix.abi || 'arm64-v8a,armeabi-v7a,x86_64' }}
+
+      # Skip ~/.gradle/caches — restores are multi-GB and filled the runner
+      # disk before native strip. Wrapper + per-ABI media-kit jars are enough.
+      - name: Cache Gradle wrapper & media-kit jars
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/wrapper
+            packages/media_kit_libs_android_video/android/build/v1.1.11
+          key: ${{ runner.os }}-javp-android-jars-${{ matrix.label }}-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'packages/**/android/**/*.gradle*', 'packages/**/android/**/*.gradle', 'pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-javp-android-jars-${{ matrix.label }}-
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      # Stable sideload/Play upload key — without this, each runner uses a
+      # fresh Android Debug cert and in-app updates fail with signature mismatch.
+      - name: Install release signing keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${ANDROID_KEYSTORE_BASE64:-}" || -z "${ANDROID_KEYSTORE_PASSWORD:-}" ]]; then
+            echo "::error::Missing ANDROID_KEYSTORE_BASE64 / ANDROID_KEYSTORE_PASSWORD — refusing debug-signed publish."
+            exit 1
+          fi
+          alias="${ANDROID_KEY_ALIAS:-javp}"
+          key_pass="${ANDROID_KEY_PASSWORD:-$ANDROID_KEYSTORE_PASSWORD}"
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/upload-keystore.jks
+          printf '%s\n' \
+            "storePassword=${ANDROID_KEYSTORE_PASSWORD}" \
+            "keyPassword=${key_pass}" \
+            "keyAlias=${alias}" \
+            "storeFile=upload-keystore.jks" \
+            > android/key.properties
+          chmod 600 android/upload-keystore.jks android/key.properties
+          keytool -list -keystore android/upload-keystore.jks \
+            -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$alias" >/dev/null
+
+      - name: Build release APK
+        env:
+          CHANNEL: ${{ needs.android-plan.outputs.channel }}
+          FLAVOR: ${{ needs.android-plan.outputs.flavor }}
+          MODE: ${{ matrix.mode }}
+          TARGET: ${{ matrix.target }}
+          ABI: ${{ matrix.abi }}
+          # Fail the Gradle release build if key.properties somehow disappears.
+          JAVP_REQUIRE_RELEASE_SIGNING: "1"
+          # Cap workers so Flutter + Gradle + NDK fit in the runner.
+          GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2
+        run: |
+          set -euo pipefail
+          df -h
+          if [[ "$MODE" == "split" ]]; then
+            # Narrow native jar downloads to this ABI (media-kit / rqbit_engine).
+            # Do not set ndk.abiFilters — conflicts with Flutter --split-per-abi.
+            export ORG_GRADLE_PROJECT_mediaKitAndroidAbis="$ABI"
+            export ORG_GRADLE_PROJECT_rqbitEngineAbis="$ABI"
+            export MEDIA_KIT_ANDROID_ABIS="$ABI"
+            flutter build apk --release --split-per-abi \
+              --target-platform "$TARGET" \
+              --flavor "$FLAVOR" \
+              --dart-define=JAVP_DISTRIBUTION=sideload \
+              --dart-define=JAVP_UPDATE_CHANNEL="$CHANNEL"
+          else
+            # Universal still needs every ABI, but pin the property set so
+            # cached partial downloads do not surprise the build.
+            export ORG_GRADLE_PROJECT_mediaKitAndroidAbis="arm64-v8a,armeabi-v7a,x86_64"
+            export ORG_GRADLE_PROJECT_rqbitEngineAbis="arm64-v8a,armeabi-v7a,x86_64"
+            export MEDIA_KIT_ANDROID_ABIS="arm64-v8a,armeabi-v7a,x86_64"
+            flutter build apk --release \
+              --flavor "$FLAVOR" \
+              --dart-define=JAVP_DISTRIBUTION=sideload \
+              --dart-define=JAVP_UPDATE_CHANNEL="$CHANNEL"
+          fi
+          df -h
+
+      - name: Refuse Android Debug-signed APKs
+        run: |
+          set -euo pipefail
+          python3 tool/deploy_update.py --check-apk-signing \
+            --apk-dir build/app/outputs/flutter-apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: javp-${{ needs.android-plan.outputs.channel }}-apk-${{ matrix.label }}
+          path: |
+            build/app/outputs/flutter-apk/app-${{ needs.android-plan.outputs.flavor }}-*-release.apk
+            build/app/outputs/flutter-apk/app-*-${{ needs.android-plan.outputs.flavor }}-release.apk
+            build/app/outputs/flutter-apk/app-${{ needs.android-plan.outputs.flavor }}-release.apk
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    name: Publish update
+    needs: [decide, android-plan, android, windows, windows-arm64, linux, linux-arm64, macos]
+    # Escape-hatch FTP only (prefer tool/local_release.sh).
+    if: ${{ always() && needs.decide.outputs.publish_ftp == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+
+    steps:
+      - name: Require Android build
+        if: ${{ needs.android.result != 'success' }}
+        env:
+          ANDROID_RESULT: ${{ needs.android.result }}
+        run: |
+          echo "::error::Android matrix did not succeed (result=$ANDROID_RESULT); skipping FTP publish."
+          exit 1
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Download APK artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: javp-${{ needs.android-plan.outputs.channel }}-apk-*
+          path: build/app/outputs/flutter-apk
+          merge-multiple: true
+
+      - name: Download Windows zip
+        if: ${{ needs.windows.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: javp-windows-x64
+          path: build/windows-dist
+
+      - name: Download Windows ARM64 zip
+        if: ${{ needs.windows-arm64.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: javp-windows-arm64
+          path: build/windows-dist
+
+      - name: Download Linux zip
+        if: ${{ needs.linux.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: javp-linux-x64
+          path: build/linux-dist
+
+      - name: Download Linux ARM64 zip
+        if: ${{ needs.linux-arm64.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: javp-linux-arm64
+          path: build/linux-dist
+
+      - name: Download macOS zips
+        if: ${{ needs.macos.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: javp-macos-*
+          path: build/macos-dist
+          merge-multiple: true
+
+      - name: Install lftp
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+
+      - name: Write changelog
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_BODY: ${{ github.event.release.body }}
+          RELEASE_NAME: ${{ github.event.release.name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          INPUT_CHANGELOG: ${{ inputs.changelog }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "release" ]]; then
+            CHANGELOG="${RELEASE_BODY:-}"
+            CHANGELOG="${CHANGELOG%"${CHANGELOG##*[![:space:]]}"}"
+            if [[ -z "$CHANGELOG" ]]; then
+              CHANGELOG="${RELEASE_NAME:-$RELEASE_TAG}"
+            fi
+          else
+            CHANGELOG="${INPUT_CHANGELOG:-}"
+          fi
+          printf '%s' "$CHANGELOG" > /tmp/javp-changelog.txt
+
+      - name: Publish to updater.javp.app
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        env:
+          JAVP_FTP_HOST: ${{ secrets.JAVP_FTP_HOST }}
+          JAVP_FTP_PORT: ${{ secrets.JAVP_FTP_PORT }}
+          JAVP_FTP_USER: ${{ secrets.JAVP_FTP_USER }}
+          JAVP_FTP_PASS: ${{ secrets.JAVP_FTP_PASS }}
+          JAVP_FTP_DIR: ${{ secrets.JAVP_FTP_DIR }}
+          JAVP_PUBLIC_BASE: ${{ secrets.JAVP_PUBLIC_BASE }}
+          FORCE_UPDATE: ${{ github.event_name == 'workflow_dispatch' && inputs.force }}
+          SKIP_UNIVERSAL: ${{ github.event_name == 'workflow_dispatch' && inputs.skip_universal }}
+          CHANNEL: ${{ needs.android-plan.outputs.channel }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${JAVP_FTP_HOST:-}" ]]; then
+            echo "::error::Missing secret JAVP_FTP_HOST (origin FTP host — do not commit it; Cloudflare hides the origin)."
+            exit 1
+          fi
+          if [[ -z "${JAVP_FTP_PASS:-}" ]]; then
+            echo "::error::Missing secret JAVP_FTP_PASS."
+            exit 1
+          fi
+
+          export JAVP_FTP_PORT="${JAVP_FTP_PORT:-21}"
+          export JAVP_FTP_USER="${JAVP_FTP_USER:-javp}"
+          export JAVP_FTP_DIR="${JAVP_FTP_DIR:-/}"
+          export JAVP_PUBLIC_BASE="${JAVP_PUBLIC_BASE:-https://updater.javp.app}"
+
+          EXTRA=(--channel "$CHANNEL")
+          if [[ "$FORCE_UPDATE" == "true" ]]; then
+            EXTRA+=(--force)
+          fi
+          # Prefer splits when the fat APK job was skipped or ran out of disk.
+          HAS_UNIVERSAL=0
+          for f in build/app/outputs/flutter-apk/app-*-release.apk; do
+            [[ -f "$f" ]] || continue
+            base="$(basename "$f")"
+            if [[ "$base" != *arm64* && "$base" != *armeabi* && "$base" != *x86* ]]; then
+              HAS_UNIVERSAL=1
+              break
+            fi
+          done
+          if [[ "$CHANNEL" == "dev" || "$SKIP_UNIVERSAL" == "true" || "$HAS_UNIVERSAL" -eq 0 ]]; then
+            EXTRA+=(--skip-universal)
+          fi
+          # Only advertise desktop packages when the artifacts actually built.
+          WINDOWS_ZIP=build/windows-dist/javp-windows-x64.zip
+          if [[ -f "$WINDOWS_ZIP" ]]; then
+            EXTRA+=(--windows-zip "$WINDOWS_ZIP")
+          else
+            echo "::warning::No Windows zip — skipping packages.windows-x64."
+          fi
+          WINDOWS_ARM64_ZIP=build/windows-dist/javp-windows-arm64.zip
+          if [[ -f "$WINDOWS_ARM64_ZIP" ]]; then
+            EXTRA+=(--windows-arm64-zip "$WINDOWS_ARM64_ZIP")
+          else
+            echo "::warning::No Windows ARM64 zip — skipping packages.windows-arm64."
+          fi
+          WINDOWS_SETUP=build/windows-dist/javp-setup.exe
+          if [[ -f "$WINDOWS_SETUP" ]]; then
+            EXTRA+=(--windows-installer "$WINDOWS_SETUP")
+          else
+            echo "::warning::No Windows installer — skipping packages.windows-x64-setup."
+          fi
+          LINUX_ZIP=build/linux-dist/javp-linux-x64.zip
+          if [[ -f "$LINUX_ZIP" ]]; then
+            EXTRA+=(--linux-zip "$LINUX_ZIP")
+          else
+            echo "::warning::No Linux zip — skipping packages.linux-x64."
+          fi
+          LINUX_ARM64_ZIP=build/linux-dist/javp-linux-arm64.zip
+          if [[ -f "$LINUX_ARM64_ZIP" ]]; then
+            EXTRA+=(--linux-arm64-zip "$LINUX_ARM64_ZIP")
+          else
+            echo "::warning::No Linux ARM64 zip — skipping packages.linux-arm64."
+          fi
+          MACOS_ZIP=build/macos-dist/javp-macos-arm64.zip
+          if [[ -f "$MACOS_ZIP" ]]; then
+            EXTRA+=(--macos-zip "$MACOS_ZIP")
+          else
+            echo "::warning::No macOS Apple Silicon zip — skipping packages.macos-arm64."
+          fi
+          MACOS_X64_ZIP=build/macos-dist/javp-macos-x64.zip
+          if [[ -f "$MACOS_X64_ZIP" ]]; then
+            EXTRA+=(--macos-x64-zip "$MACOS_X64_ZIP")
+          else
+            echo "::warning::No macOS Intel zip — skipping packages.macos-x64."
+          fi
+
+          python3 tool/deploy_update.py \
+            --apk-dir build/app/outputs/flutter-apk \
+            --changelog-file /tmp/javp-changelog.txt \
+            "${EXTRA[@]}"
+
+      - name: Summary
+        if: always()
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+          CHANNEL: ${{ needs.android-plan.outputs.channel }}
+          ANDROID_RESULT: ${{ needs.android.result }}
+          WINDOWS_RESULT: ${{ needs.windows.result }}
+          LINUX_RESULT: ${{ needs.linux.result }}
+          MACOS_RESULT: ${{ needs.macos.result }}
+          ANDROID_MATRIX: ${{ needs.android-plan.outputs.matrix }}
+        run: |
+          {
+            echo "## Deploy update"
+            echo ""
+            echo "- Event: \`$EVENT_NAME\`"
+            echo "- Channel: \`$CHANNEL\`"
+            echo "- Android matrix: \`$ANDROID_RESULT\` — \`$ANDROID_MATRIX\`"
+            echo "- Windows job: \`$WINDOWS_RESULT\`"
+            echo "- Linux job: \`$LINUX_RESULT\`"
+            echo "- macOS job: \`$MACOS_RESULT\`"
+            echo "- APK artifacts: \`javp-${CHANNEL}-apk-*\`"
+            if [[ "$CHANNEL" == "dev" ]]; then
+              echo "- Dev speedups: arm64-only split, no universal/versioned FTP (download page uploaded under /dev/)"
+            else
+              echo "- Stable Android: arm64 + arm32 + universal in parallel"
+            fi
+            if [[ "$ANDROID_RESULT" != "success" ]]; then
+              echo "- FTP: skipped (Android build failed)"
+            elif [[ "$DRY_RUN" == "true" ]]; then
+              echo "- FTP: skipped (dry run)"
+            elif [[ "$CHANNEL" == "dev" ]]; then
+              echo "- Download page: https://updater.javp.app/dev/"
+              echo "- Manifest: https://updater.javp.app/dev/latest.json"
+              echo "- ARM64 APK: https://updater.javp.app/dev/javp-arm64-v8a.apk"
+            else
+              echo "- Download page: https://updater.javp.app/"
+              echo "- Manifest: https://updater.javp.app/latest.json"
+              echo "- Universal APK: https://updater.javp.app/javp.apk"
+              echo "- ARM64 APK: https://updater.javp.app/javp-arm64-v8a.apk"
+            fi
+            echo "- Origin FTP host: (from secret, not logged)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  release-assets:
+    name: Attach desktop artifacts to Release
+    needs: [windows, macos]
+    if: |
+      always() &&
+      github.event_name == 'release' &&
+      needs.windows.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: javp-windows-x64
+          path: build/windows-dist
+
+      - name: Download macOS zips
+        if: ${{ needs.macos.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: javp-macos-*
+          path: build/macos-dist
+          merge-multiple: true
+
+      - name: Upload desktop assets to the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          SETUP=build/windows-dist/javp-setup.exe
+          ZIP=build/windows-dist/javp-windows-x64.zip
+          MAC=build/macos-dist/javp-macos-arm64.zip
+          MAC_X64=build/macos-dist/javp-macos-x64.zip
+          if [[ ! -f "$SETUP" || ! -f "$ZIP" ]]; then
+            echo "::error::Missing Windows artifacts (setup/zip)."
+            exit 1
+          fi
+          # WinGet Releaser matches javp-setup.exe via installers-regex.
+          FILES=("$SETUP" "$ZIP")
+          if [[ -f "$MAC" ]]; then
+            FILES+=("$MAC")
+          fi
+          if [[ -f "$MAC_X64" ]]; then
+            FILES+=("$MAC_X64")
+          fi
+          gh release upload "$TAG" "${FILES[@]}" --clobber --repo "$GITHUB_REPOSITORY"
+          echo "Attached: ${FILES[*]}"
+
+  winget:
+    name: Publish to WinGet
+    needs: [release-assets]
+    # always(): patch Releases skip the macos job; without this, GitHub propagates
+    # that skip through release-assets even when Attach succeeded (Store/WinGet
+    # never ran for 0.5.3 / 0.5.4).
+    if: |
+      always() &&
+      !cancelled() &&
+      github.event_name == 'release' &&
+      needs.release-assets.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Do not paint the whole Deploy update red when WinGet is not onboarded yet.
+    continue-on-error: true
+    permissions:
+      contents: read
+
+    steps:
+      - name: Require WINGET_TOKEN
+        id: token
+        env:
+          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${WINGET_TOKEN:-}" ]]; then
+            echo "::warning::Missing secret WINGET_TOKEN — skipping WinGet submit."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+      # winget-releaser requires at least one prior version in microsoft/winget-pkgs.
+      - name: Check package exists in winget-pkgs
+        id: pkg
+        if: ${{ steps.token.outputs.skip != 'true' }}
+        run: |
+          set -euo pipefail
+          url="https://github.com/microsoft/winget-pkgs/tree/master/manifests/j/JAVPApp/JAVP"
+          if curl -fsI -o /dev/null "$url"; then
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::JAVPApp.JAVP is not in winget-pkgs yet — skipping auto-submit until the first manual PR lands."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Submit JAVPApp.JAVP to winget-pkgs
+        if: ${{ steps.token.outputs.skip != 'true' && steps.pkg.outputs.skip != 'true' }}
+        uses: vedantmgoyal9/winget-releaser@main
+        with:
+          identifier: JAVPApp.JAVP
+          installers-regex: 'javp-setup\.exe$'
+          fork-user: xemles
+          max-versions-to-keep: 5
+          token: ${{ secrets.WINGET_TOKEN }}
+
+  # Store MSIX channel — parallel to WinGet. Builds with JAVP_DISTRIBUTION=msstore
+  # and submits via msstore CLI when Azure AD secrets exist. Soft-skip otherwise.
+  # First Store listing (screenshots, age rating, etc.) stays manual.
+  msstore:
+    name: Publish to Microsoft Store
+    needs: [release-assets]
+    # always(): same skip-chain fix as winget (macos skipped on non-x.Y.0 tags).
+    if: |
+      always() &&
+      !cancelled() &&
+      github.event_name == 'release' &&
+      needs.release-assets.result == 'success'
+    runs-on: windows-latest
+    timeout-minutes: 120
+    continue-on-error: true
+    permissions:
+      contents: write
+    env:
+      STORE_PRODUCT_ID: 9P4PMM405RZH
+      HAVE_CREDS: ${{ secrets.AZURE_AD_TENANT_ID != '' && secrets.SELLER_ID != '' && secrets.AZURE_AD_APPLICATION_CLIENT_ID != '' && secrets.AZURE_AD_APPLICATION_SECRET != '' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Sync localization ARBs
+        run: python tool/l10n/generate_arbs.py
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          # SDK cache is multi-GB and blows the 0.5 GB Actions storage quota.
+          # Pub-only is ~100–120 MB per OS and saves most of flutter pub get.
+          cache: false
+          pub-cache: true
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust-ci
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Prefetch Windows media libraries
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $destination = "build\windows\x64"
+          New-Item -ItemType Directory -Force -Path $destination | Out-Null
+          $archives = @(
+            @{
+              Name = "mpv-dev-x86_64-20230924-git-652a1dd.7z"
+              Url = "https://github.com/media-kit/libmpv-win32-video-build/releases/download/2023-09-24/mpv-dev-x86_64-20230924-git-652a1dd.7z"
+              Md5 = "a832ef24b3a6ff97cd2560b5b9d04cd8"
+            },
+            @{
+              Name = "ANGLE.7z"
+              Url = "https://github.com/alexmercerind/flutter-windows-ANGLE-OpenGL-ES/releases/download/v1.0.1/ANGLE.7z"
+              Md5 = "e866f13e8d552348058afaafe869b1ed"
+            }
+          )
+          foreach ($archive in $archives) {
+            $path = Join-Path $destination $archive.Name
+            $temporary = "$path.download"
+            Remove-Item -Force -ErrorAction SilentlyContinue $path, $temporary
+            & curl.exe --fail --location --retry 5 --retry-all-errors `
+              --connect-timeout 20 --output $temporary $archive.Url
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to download $($archive.Name)"
+            }
+            $actual = (Get-FileHash -Algorithm MD5 $temporary).Hash.ToLowerInvariant()
+            if ($actual -ne $archive.Md5) {
+              throw "$($archive.Name) checksum mismatch: $actual"
+            }
+            Move-Item -Force $temporary $path
+          }
+
+      - name: Sync msix_version from pubspec version
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $text = Get-Content -Raw pubspec.yaml
+          if ($text -notmatch '(?m)^version:\s*([0-9]+)\.([0-9]+)\.([0-9]+)\+(\d+)') {
+            throw "Could not parse version: from pubspec.yaml"
+          }
+          # Store requires revision (4th) == 0. Main/stable bumps Z, so use
+          # X.Y.Z.0 (not +N). First Store upload used 0.5.65.0 as a one-off.
+          $msix = "$($Matches[1]).$($Matches[2]).$($Matches[3]).0"
+          $updated = [regex]::Replace($text, '(?m)^(\s*msix_version:\s*).+$', "`${1}$msix")
+          Set-Content -Path pubspec.yaml -Value $updated -NoNewline
+          Write-Host "msix_version=$msix"
+
+      - name: Build Store MSIX
+        shell: pwsh
+        run: powershell -File tool/build_msix.ps1
+
+      - name: Locate MSIX package
+        id: pack
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $candidates = @(
+            Get-ChildItem -Path build -Recurse -Include *.msix,*.msixupload -ErrorAction SilentlyContinue
+          ) | Sort-Object LastWriteTime -Descending
+          if (-not $candidates) { throw "No .msix / .msixupload under build/" }
+          $pkg = $candidates[0].FullName
+          Write-Host "Package: $pkg"
+          "msix=$pkg" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "msix_name=$($candidates[0].Name)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Attach MSIX to GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+          PKG: ${{ steps.pack.outputs.msix }}
+        run: |
+          gh release upload $env:TAG $env:PKG --clobber --repo $env:GITHUB_REPOSITORY
+
+      - name: Configure Microsoft Store CLI
+        if: ${{ env.HAVE_CREDS == 'true' }}
+        uses: microsoft/microsoft-store-apppublisher@v1.2
+
+      - name: Submit package to Partner Center
+        if: ${{ env.HAVE_CREDS == 'true' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          msstore reconfigure `
+            --tenantId ${{ secrets.AZURE_AD_TENANT_ID }} `
+            --sellerId ${{ secrets.SELLER_ID }} `
+            --clientId ${{ secrets.AZURE_AD_APPLICATION_CLIENT_ID }} `
+            --clientSecret ${{ secrets.AZURE_AD_APPLICATION_SECRET }}
+          msstore publish "${{ steps.pack.outputs.msix }}" -id $env:STORE_PRODUCT_ID
+
+      - name: Manual-upload reminder (no submission secrets)
+        if: ${{ env.HAVE_CREDS != 'true' }}
+        shell: pwsh
+        run: |
+          Write-Host "::warning::Store secrets missing — MSIX attached to Release only."
+          Write-Host "Add AZURE_AD_TENANT_ID, AZURE_AD_APPLICATION_CLIENT_ID, AZURE_AD_APPLICATION_SECRET, SELLER_ID (95689130)."
+          Write-Host "See docs/microsoft-store.md"
+
+  # Play AAB channel — parallel to Microsoft Store / WinGet. Builds the play
+  # flavor and submits via tool/play_publish.py when PLAY_SERVICE_ACCOUNT_JSON
+  # exists. Soft-skip otherwise (AAB still attaches to the Release).
+  # First listing questionnaires stay manual — see docs/play-store.md.
+  # Manual retry / track override: publish-play.yml (workflow_dispatch).
+  play:
+    name: Publish to Google Play
+    needs: [release-assets]
+    # always(): same skip-chain fix as winget / msstore.
+    if: |
+      always() &&
+      !cancelled() &&
+      github.event_name == 'release' &&
+      needs.release-assets.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    continue-on-error: true
+    permissions:
+      contents: write
+    env:
+      HAVE_PLAY_CREDS: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON != '' }}
+      PLAY_PACKAGE: com.javp.javp
+      PYTHONUNBUFFERED: "1"
+      # Stable Releases land on internal testing first; promote in Console or
+      # re-run publish-play.yml with track=production when ready.
+      PLAY_TRACK: internal
+      PLAY_STATUS: completed
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Sync localization ARBs
+        run: python3 tool/l10n/generate_arbs.py
+
+      - name: Free disk space
+        run: |
+          set -euo pipefail
+          echo "Before cleanup:"
+          df -h
+          sudo swapoff -a || true
+          sudo rm -f /swapfile || true
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android/sdk/ndk-bundle || true
+          sudo rm -rf /usr/share/swift || true
+          sudo rm -rf /usr/local/.ghcup || true
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /usr/local/share/boost || true
+          sudo rm -rf /usr/share/az_* || true
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          sudo rm -rf /opt/hostedtoolcache/go || true
+          sudo rm -rf /opt/hostedtoolcache/Python || true
+          sudo rm -rf /opt/hostedtoolcache/PyPy || true
+          sudo rm -rf /opt/hostedtoolcache/node || true
+          sudo rm -rf /opt/hostedtoolcache/Ruby || true
+          sudo docker system prune -af || true
+          sudo fallocate -l 4G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          echo "After cleanup:"
+          df -h
+          free -h
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: false
+          pub-cache: true
+
+      - name: Setup rqbit Android native
+        uses: ./.github/actions/setup-rqbit-android-ci
+
+      - name: Cache Gradle wrapper & media-kit jars
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/wrapper
+            packages/media_kit_libs_android_video/android/build/v1.1.11
+          key: ${{ runner.os }}-javp-android-jars-play-${{ hashFiles('android/**/*.gradle*', 'android/gradle.properties', 'packages/**/android/**/*.gradle*', 'packages/**/android/**/*.gradle', 'pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-javp-android-jars-play-
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Install release signing keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${ANDROID_KEYSTORE_BASE64:-}" || -z "${ANDROID_KEYSTORE_PASSWORD:-}" ]]; then
+            echo "::error::Missing ANDROID_KEYSTORE_BASE64 / ANDROID_KEYSTORE_PASSWORD — refusing debug-signed Play AAB."
+            exit 1
+          fi
+          alias="${ANDROID_KEY_ALIAS:-javp}"
+          key_pass="${ANDROID_KEY_PASSWORD:-$ANDROID_KEYSTORE_PASSWORD}"
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/upload-keystore.jks
+          printf '%s\n' \
+            "storePassword=${ANDROID_KEYSTORE_PASSWORD}" \
+            "keyPassword=${key_pass}" \
+            "keyAlias=${alias}" \
+            "storeFile=upload-keystore.jks" \
+            > android/key.properties
+          chmod 600 android/upload-keystore.jks android/key.properties
+          keytool -list -keystore android/upload-keystore.jks \
+            -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$alias" >/dev/null
+
+      - name: Build Play AAB
+        env:
+          JAVP_REQUIRE_RELEASE_SIGNING: "1"
+          GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2
+        run: |
+          set -euo pipefail
+          df -h
+          python3 tool/build_distribution.py play
+          df -h
+
+      - name: Locate AAB
+        id: pack
+        run: |
+          set -euo pipefail
+          aab="build/app/outputs/bundle/playRelease/app-play-release.aab"
+          if [[ ! -f "$aab" ]]; then
+            echo "::error::Play AAB not found at $aab"
+            exit 1
+          fi
+          echo "AAB: $aab ($(du -h "$aab" | cut -f1))"
+          echo "aab=$aab" >> "$GITHUB_OUTPUT"
+          echo "aab_name=$(basename "$aab")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: javp-play-aab
+          path: ${{ steps.pack.outputs.aab }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Attach AAB to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+          PKG: ${{ steps.pack.outputs.aab }}
+        run: |
+          set -euo pipefail
+          gh release upload "$TAG" "$PKG" --clobber --repo "$GITHUB_REPOSITORY"
+
+      - name: Install Play API client
+        if: ${{ env.HAVE_PLAY_CREDS == 'true' }}
+        run: |
+          python3 -m pip install --upgrade \
+            google-api-python-client google-auth google-auth-httplib2 httplib2
+
+      - name: Submit AAB to Play Console
+        if: ${{ env.HAVE_PLAY_CREDS == 'true' }}
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          PLAY_HTTP_TIMEOUT: "900"
+          AAB: ${{ steps.pack.outputs.aab }}
+        run: |
+          set -euo pipefail
+          python3 tool/play_publish.py \
+            --aab "$AAB" \
+            --track "$PLAY_TRACK" \
+            --status "$PLAY_STATUS"
+
+      - name: Manual-upload reminder (no Play API secret)
+        if: ${{ env.HAVE_PLAY_CREDS != 'true' }}
+        run: |
+          echo "::warning::PLAY_SERVICE_ACCOUNT_JSON not set — AAB attached to Release only."
+          echo "Upload ${{ steps.pack.outputs.aab_name }} in Play Console, or add the secret (see docs/play-store.md)."
