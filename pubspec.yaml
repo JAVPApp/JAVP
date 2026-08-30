@@ -24,7 +24,7 @@ dependencies:
   connectivity_plus_tizen: ^1.3.2
   package_info_plus_tizen: ^1.0.1
   url_launcher_tizen: ^2.1.7
-  sqflite_tizen: ^0.1.1
+  sqflite_tizen: ^0.1.5
   provider: ^6.1.5+1
   go_router: ^17.4.0
   shared_preferences: ^2.5.5
