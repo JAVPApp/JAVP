@@ -11,7 +11,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 anyhow = "1"
-librqbit = { version = "8.1.1", default-features = false, features = [
+librqbit = { version = "9.0.1", default-features = false, features = [
     "http-api",
     "rust-tls",
     "tracing-subscriber-utils",
