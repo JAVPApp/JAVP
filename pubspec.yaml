@@ -15,7 +15,7 @@ dependencies:
   media_kit: ^1.2.6
   media_kit_video: ^2.0.1
   media_kit_libs_video: ^1.0.7
-  video_player: ^2.10.0
+  video_player: ^2.14.0
   # Tizen / webOS platform implementations (no-op on Android builds).
   video_player_tizen: ^2.5.15
   shared_preferences_tizen: ^2.3.1
