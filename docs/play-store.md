@@ -1,5 +1,8 @@
 # Play Store builds
 
+Public listing: [JAVP on Google Play](https://play.google.com/store/apps/details?id=com.javp.javp)
+(`com.javp.javp`).
+
 JAVP ships two Android **distribution** flavors from the same codebase:
 
 | Flavor | Artifact | Self-update | Permission |

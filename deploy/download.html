@@ -353,13 +353,17 @@
 
     <section class="hero" id="panel-android">
       <h2>Download for Android</h2>
-      <a class="btn" id="dl-android" data-apk="arm64-v8a" href="javp-arm64-v8a.apk">Download for Android</a>
-      <p class="guess">Suggested: <strong>ARM64</strong>, most phones and tablets</p>
-      <p class="install-note stable-only">If this doesn't install, try Universal, especially on a TV.</p>
-      <p class="install-note dev-only">Dev publishes ARM64. 32-bit ARM, x86, and many TVs need Stable Universal.</p>
+      <a class="btn stable-only" id="dl-android-play" href="https://play.google.com/store/apps/details?id=com.javp.javp" rel="noopener">Get it on Google Play</a>
+      <p class="guess stable-only">Suggested: <strong>Google Play</strong>, updates through the Store</p>
+      <a class="btn btn-alt stable-only" id="dl-android" data-apk="arm64-v8a" href="javp-arm64-v8a.apk">Download APK (sideload)</a>
+      <a class="btn dev-only" id="dl-android-dev" data-apk="arm64-v8a" href="javp-arm64-v8a.apk">Download for Android</a>
+      <p class="guess dev-only">Suggested: <strong>ARM64</strong>, most phones and tablets</p>
+      <p class="install-note stable-only">Prefer no Play account, or need Android TV? Sideload an APK. If an ABI fails on a TV, try Universal.</p>
+      <p class="install-note dev-only">Dev publishes ARM64. 32-bit ARM, x86, and many TVs need Stable Universal. Dev is not on Google Play.</p>
       <details class="other">
         <summary>Other Android builds</summary>
         <div class="choices">
+          <a class="choice stable-only" data-apk="arm64-v8a" href="javp-arm64-v8a.apk"><span class="choice-label">ARM64</span><span class="choice-meta">most phones and tablets</span></a>
           <a class="choice stable-only" data-apk="armeabi-v7a" href="javp-armeabi-v7a.apk"><span class="choice-label">ARMv7</span><span class="choice-meta">older 32-bit devices</span></a>
           <a class="choice" id="dl-android-universal" data-apk="universal" href="javp.apk"><span class="choice-label">Universal</span><span class="choice-meta">every ABI · best for Android TV</span></a>
         </div>
@@ -498,9 +502,20 @@
 
       function tweakForDevice() {
         if (guess.tv) {
+          var play = byId("dl-android-play");
           var phone = byId("dl-android");
           var uni = byId("dl-android-universal");
-          if (phone && uni) phone.href = uni.href;
+          var playGuess = document.querySelector("#panel-android .guess.stable-only");
+          if (play) play.setAttribute("hidden", "hidden");
+          if (playGuess) {
+            playGuess.innerHTML = "Suggested: <strong>Universal</strong>, best for Android TV";
+          }
+          if (phone && uni) {
+            phone.href = uni.href;
+            phone.setAttribute("data-apk", "universal");
+            phone.className = "btn stable-only";
+            phone.textContent = "Download Universal APK";
+          }
         }
         // Prefer ARM primary only after latest.json unhides the arm64 package link.
         if (guess.arm) {

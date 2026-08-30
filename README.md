@@ -8,7 +8,7 @@ Bring-your-own media player for **Android**, **Windows**, **Linux**, and **macOS
 
 > Sharp edges welcome. PRs too.
 
-**[Download](https://updater.javp.app/)** · **[Releases](https://github.com/JAVPApp/JAVP/releases)** · **[Discord](https://discord.gg/deEVVzzaE4)**
+**[Download](https://updater.javp.app/)** · **[Google Play](https://play.google.com/store/apps/details?id=com.javp.javp)** · **[Releases](https://github.com/JAVPApp/JAVP/releases)** · **[Discord](https://discord.gg/deEVVzzaE4)**
 
 <p align="center">
   <img src="docs/screenshots/home-16x9.png" alt="JAVP Home — 16:9 with demo catalog" width="720" />
@@ -57,8 +57,8 @@ Optional: HTTP(S) / SOCKS5 proxy (per route), parental PIN, SIMKL / Trakt / Lett
 
 | | Sideload | Store |
 | --- | --- | --- |
-| **Android** | APK + in-app updater (`sideload` / `sideloadDev`) | Google Play AAB (`play`) |
-| **Windows** | Zip + Inno + WinGet scaffolding | Microsoft Store MSIX (`msstore`) |
+| **Android** | APK + in-app updater (`sideload` / `sideloadDev`) | [Google Play](https://play.google.com/store/apps/details?id=com.javp.javp) (`play`) |
+| **Windows** | Zip + Inno + WinGet scaffolding | [Microsoft Store](https://apps.microsoft.com/detail/9P4PMM405RZH) (`msstore`) |
 | **Linux / macOS** | Portable zip (macOS unsigned for now) | Mac App Store planned |
 
 Experimental: [web](docs/web.md), [Smart TV](docs/smart-tv.md) (Tizen / webOS). Capabilities differ by port — see [features](docs/features.md).
