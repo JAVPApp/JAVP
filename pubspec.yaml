@@ -36,7 +36,7 @@ dependencies:
   shared_preferences_windows: ^2.4.1
   collection: ^1.19.1
   uuid: ^4.6.0
-  intl: ^0.20.2
+  intl: ^0.20.3
   xml: ^6.6.1
   google_fonts: ^8.2.1
   file_picker: ^10.3.2
