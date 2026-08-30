@@ -40,7 +40,7 @@ dependencies:
   xml: ^6.6.1
   google_fonts: ^8.2.1
   file_picker: ^10.3.2
-  image: ^4.8.0
+  image: ^4.9.2
   flutter_secure_storage: ^9.2.4
   rqbit_engine:
     path: packages/rqbit_engine
