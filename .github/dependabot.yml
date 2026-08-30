@@ -11,6 +11,22 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    # Pinned by flutter_localizations from the Flutter SDK — Dependabot
+    # bumps break `flutter pub get` until the SDK moves.
+    ignore:
+      - dependency-name: "intl"
+
+  - package-ecosystem: cargo
+    directory: "/packages/rqbit_engine/rust"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    commit-message:
+      prefix: "chore"
+      include: "scope"
 
   - package-ecosystem: github-actions
     directory: "/"
