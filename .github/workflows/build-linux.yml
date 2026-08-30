@@ -77,7 +77,7 @@ jobs:
           ls -lh build/linux-dist/javp-linux-x64.zip
 
       - name: Upload Linux artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: javp-linux-x64-${{ github.event.inputs.channel || 'stable' }}
           path: build/linux-dist/javp-linux-x64.zip

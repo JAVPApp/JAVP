@@ -113,7 +113,7 @@ jobs:
           ls -lh "build/macos-dist/${ARTIFACT}.zip"
 
       - name: Upload macOS artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact }}
           path: build/macos-dist/${{ matrix.artifact }}.zip

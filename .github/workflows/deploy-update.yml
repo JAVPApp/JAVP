@@ -262,7 +262,7 @@ jobs:
           Get-ChildItem build/windows-dist | Format-Table Name, Length
 
       - name: Upload Windows artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: javp-windows-x64
           path: |
@@ -334,7 +334,7 @@ jobs:
           Get-ChildItem build/windows-dist | Format-Table Name, Length
 
       - name: Upload Windows ARM64 artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: javp-windows-arm64
           path: build/windows-dist/javp-windows-arm64.zip
@@ -392,7 +392,7 @@ jobs:
           ls -lh build/linux-dist/javp-linux-x64.zip
 
       - name: Upload Linux artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: javp-linux-x64
           path: build/linux-dist/javp-linux-x64.zip
@@ -447,7 +447,7 @@ jobs:
           ls -lh build/linux-dist/javp-linux-arm64.zip
 
       - name: Upload Linux ARM64 artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: javp-linux-arm64
           path: build/linux-dist/javp-linux-arm64.zip
@@ -542,7 +542,7 @@ jobs:
           ls -lh "build/macos-dist/${ARTIFACT}.zip"
 
       - name: Upload macOS artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact }}
           path: build/macos-dist/${{ matrix.artifact }}.zip
@@ -770,7 +770,7 @@ jobs:
             --apk-dir build/app/outputs/flutter-apk
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: javp-${{ needs.android-plan.outputs.channel }}-apk-${{ matrix.label }}
           path: |
@@ -1410,7 +1410,7 @@ jobs:
           echo "aab_name=$(basename "$aab")" >> "$GITHUB_OUTPUT"
 
       - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: javp-play-aab
           path: ${{ steps.pack.outputs.aab }}

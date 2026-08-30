@@ -116,7 +116,7 @@ jobs:
 
       - name: Upload Windows x64 artifacts
         if: matrix.with_installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact }}
           path: |
@@ -127,7 +127,7 @@ jobs:
 
       - name: Upload Windows arm64 zip
         if: ${{ !matrix.with_installer }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact }}
           path: build/windows-dist/${{ matrix.zip_name }}
@@ -233,7 +233,7 @@ jobs:
           "msix=$pkg" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Upload MSIX artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: javp-msstore-msix
           path: ${{ steps.pack.outputs.msix }}
