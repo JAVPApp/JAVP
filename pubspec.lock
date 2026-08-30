@@ -1276,10 +1276,10 @@ packages:
     dependency: "direct main"
     description:
       name: url_launcher_tizen
-      sha256: a667a5664e9668505dcb8cf618064e3e3944bb351ef7e8d58ef9d5b59e6e8c36
+      sha256: c58e73252f3c8373035a01fc12c7e7ff77463b489e3844d16c72e0dbeb96929a
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.5"
+    version: "2.1.7"
   url_launcher_web:
     dependency: transitive
     description:
