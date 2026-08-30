@@ -47,7 +47,7 @@ class _TvPairingScreenState extends State<TvPairingScreen> {
   Future<void> _start() async {
     final library = context.read<LibraryProvider>();
     final profiles = context.read<ProfileProvider>();
-    final server = SourcePairingServer(library: library, profiles: profiles);
+    final server = SourcePairingServer(libraryProvider: library, profiles: profiles);
     final host = _hostDefine.trim();
     if (host.isNotEmpty) server.hostOverride = host;
     try {

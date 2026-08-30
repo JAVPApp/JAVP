@@ -40,19 +40,228 @@ class SourcePairingImported {
   final String? profileName;
 }
 
-/// LAN HTTP server: phone browser / JAVP app → [LibraryProvider].
+/// LAN pairing surface — instance methods so fakes can stub adds/imports
+/// (extension methods on [LibraryProvider] are not overridable in tests).
+abstract class PairingLibraryHost {
+  List<IptvSource> get sources;
+
+  Future<SourcesExportDocument> buildSourcesExport({
+    required SourcesSecretsMode secretsMode,
+    String? passphrase,
+    Set<String>? sourceIds,
+  });
+
+  Future<int> importSourcesDocument({
+    required SourcesExportDocument document,
+    required SourcesImportMode mode,
+    String? passphrase,
+  });
+
+  Future<void> addM3uSource({
+    required String name,
+    required String playlistUrl,
+    String? epgUrl,
+    String? epgSourceId,
+    bool epgEnabled,
+    bool acceptXtreamPlaylistExport,
+  });
+
+  Future<void> addXmltvSource({
+    required String name,
+    required String epgUrl,
+  });
+
+  Future<void> addXtreamSource({
+    required String name,
+    required String serverUrl,
+    required String username,
+    required String password,
+    String? alternateServerUrl,
+    String? epgUrl,
+    String? epgSourceId,
+    bool epgEnabled,
+    bool vodEnabled,
+  });
+
+  Future<void> addStalkerSource({
+    required String name,
+    required String portalUrl,
+    required String macAddress,
+    String? serial,
+  });
+
+  Future<void> addCustomCatalogSource({
+    required String name,
+    required String catalogUrl,
+    String? authToken,
+    String? vastUrl,
+  });
+
+  Future<void> addMediaServerSource({
+    required String name,
+    required IptvSourceType type,
+    required String serverUrl,
+    String? username,
+    String? password,
+    String? epgUrl,
+    String? epgSourceId,
+    bool epgEnabled,
+  });
+}
+
+/// Forwards pairing calls to [LibraryProvider] extension methods.
+class LibraryProviderPairingHost implements PairingLibraryHost {
+  LibraryProviderPairingHost(this._library);
+
+  final LibraryProvider _library;
+
+  @override
+  List<IptvSource> get sources => _library.sources;
+
+  @override
+  Future<SourcesExportDocument> buildSourcesExport({
+    required SourcesSecretsMode secretsMode,
+    String? passphrase,
+    Set<String>? sourceIds,
+  }) =>
+      _library.buildSourcesExport(
+        secretsMode: secretsMode,
+        passphrase: passphrase,
+        sourceIds: sourceIds,
+      );
+
+  @override
+  Future<int> importSourcesDocument({
+    required SourcesExportDocument document,
+    required SourcesImportMode mode,
+    String? passphrase,
+  }) =>
+      _library.importSourcesDocument(
+        document: document,
+        mode: mode,
+        passphrase: passphrase,
+      );
+
+  @override
+  Future<void> addM3uSource({
+    required String name,
+    required String playlistUrl,
+    String? epgUrl,
+    String? epgSourceId,
+    bool epgEnabled = true,
+    bool acceptXtreamPlaylistExport = false,
+  }) =>
+      _library.addM3uSource(
+        name: name,
+        playlistUrl: playlistUrl,
+        epgUrl: epgUrl,
+        epgSourceId: epgSourceId,
+        epgEnabled: epgEnabled,
+        acceptXtreamPlaylistExport: acceptXtreamPlaylistExport,
+      );
+
+  @override
+  Future<void> addXmltvSource({
+    required String name,
+    required String epgUrl,
+  }) =>
+      _library.addXmltvSource(name: name, epgUrl: epgUrl);
+
+  @override
+  Future<void> addXtreamSource({
+    required String name,
+    required String serverUrl,
+    required String username,
+    required String password,
+    String? alternateServerUrl,
+    String? epgUrl,
+    String? epgSourceId,
+    bool epgEnabled = true,
+    bool vodEnabled = true,
+  }) =>
+      _library.addXtreamSource(
+        name: name,
+        serverUrl: serverUrl,
+        username: username,
+        password: password,
+        alternateServerUrl: alternateServerUrl,
+        epgUrl: epgUrl,
+        epgSourceId: epgSourceId,
+        epgEnabled: epgEnabled,
+        vodEnabled: vodEnabled,
+      );
+
+  @override
+  Future<void> addStalkerSource({
+    required String name,
+    required String portalUrl,
+    required String macAddress,
+    String? serial,
+  }) =>
+      _library.addStalkerSource(
+        name: name,
+        portalUrl: portalUrl,
+        macAddress: macAddress,
+        serial: serial,
+      );
+
+  @override
+  Future<void> addCustomCatalogSource({
+    required String name,
+    required String catalogUrl,
+    String? authToken,
+    String? vastUrl,
+  }) =>
+      _library.addCustomCatalogSource(
+        name: name,
+        catalogUrl: catalogUrl,
+        authToken: authToken,
+        vastUrl: vastUrl,
+      );
+
+  @override
+  Future<void> addMediaServerSource({
+    required String name,
+    required IptvSourceType type,
+    required String serverUrl,
+    String? username,
+    String? password,
+    String? epgUrl,
+    String? epgSourceId,
+    bool epgEnabled = true,
+  }) =>
+      _library.addMediaServerSource(
+        name: name,
+        type: type,
+        serverUrl: serverUrl,
+        username: username,
+        password: password,
+        epgUrl: epgUrl,
+        epgSourceId: epgSourceId,
+        epgEnabled: epgEnabled,
+      );
+}
+
+/// LAN HTTP server: phone browser / JAVP app → [PairingLibraryHost].
 ///
 /// Host (TV/desktop) shows a QR (`javp://pair`) and an optional browser form.
 /// Guests can add one source, push a full [SourcesExportDocument], or pull
 /// sources from this device — all token-gated, LAN-only, no cloud account.
 class SourcePairingServer {
   SourcePairingServer({
-    required this.library,
+    PairingLibraryHost? library,
+    LibraryProvider? libraryProvider,
     required this.profiles,
     this.port = 19287,
-  });
+  }) : library = library ??
+            LibraryProviderPairingHost(
+              libraryProvider ??
+                  (throw ArgumentError(
+                    'library or libraryProvider is required',
+                  )),
+            );
 
-  final LibraryProvider library;
+  final PairingLibraryHost library;
   final ProfileProvider profiles;
   final int port;
 
@@ -468,7 +677,7 @@ class SourcePairingServer {
 ///
 /// Optional `syncSettings` applies profile sync config on [profiles] (LAN only).
 Future<SourcePairingImported> applyPairingImport(
-  LibraryProvider library,
+  PairingLibraryHost library,
   Map<String, dynamic> json, {
   ProfileProvider? profiles,
 }) async {
@@ -548,7 +757,7 @@ Future<SourcePairingImported> applyPairingImport(
 
 /// Maps phone form JSON → [LibraryProvider.add*] (also used by unit tests).
 Future<SourcePairingAdded> applyPairingPayload(
-  LibraryProvider library,
+  PairingLibraryHost library,
   Map<String, dynamic> json,
 ) async {
   final parsed = parsePairingPayload(json);

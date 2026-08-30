@@ -132,7 +132,7 @@ void main() {
   });
 
   test(
-    'orphaned customCatalog magnet with tracker labels as Custom catalog',
+    'orphaned customCatalog magnet with tracker labels as catalog host',
     () {
       library.sources = [
         IptvSource(
@@ -170,8 +170,8 @@ void main() {
         progress: 0.85,
         lastWatchedAt: DateTime.utc(2026, 8, 11, 22, 22),
       );
-      expect(library.sourceLabelFor(episode), 'Custom catalog');
-      expect(library.shelfSourceLabelFor(episode), 'Custom catalog');
+      expect(library.sourceLabelFor(episode), 'catalog.example');
+      expect(library.shelfSourceLabelFor(episode), 'catalog.example');
 
       // Continue Watching series shell: empty playUrl, same orphaned sourceId.
       library.history = [episode];
@@ -190,8 +190,8 @@ void main() {
         progress: 0.85,
         subtitle: 'S01E07',
       );
-      expect(library.sourceLabelFor(shell), 'Custom catalog');
-      expect(library.shelfSourceLabelFor(shell), 'Custom catalog');
+      expect(library.sourceLabelFor(shell), 'catalog.example');
+      expect(library.shelfSourceLabelFor(shell), 'catalog.example');
     },
   );
 

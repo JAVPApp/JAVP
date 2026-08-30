@@ -9,6 +9,13 @@ import 'package:javp/models/iptv_source.dart';
 import 'package:javp/services/iptv/live_ingest_plan.dart';
 import 'package:javp/services/iptv/xtream_client.dart';
 
+import 'package:javp/services/iptv/xtream_client.dart';
+
+XtreamClient xtreamTestClient(MockClient httpClient) => XtreamClient(
+  httpClient: httpClient,
+  debugForwardDumpBytesToWorker: true,
+);
+
 void main() {
   final source = IptvSource(
     id: 'src-1',
@@ -22,8 +29,7 @@ void main() {
   );
 
   test('syncCatalog maps categories, catchup, and epg tvg-id', () async {
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         final action = request.url.queryParameters['action'];
         if (action == null) {
           return http.Response(
@@ -76,8 +82,7 @@ void main() {
           );
         }
         return http.Response('[]', 200);
-      }),
-    );
+    }));
 
     final result = await client.syncCatalog(source);
     expect(result.live, hasLength(2));
@@ -97,8 +102,7 @@ void main() {
   });
 
   test('loadCategoryLivePacked writes SQL maps without MediaItems', () async {
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         final action = request.url.queryParameters['action'];
         if (action == 'get_live_streams') {
           return http.Response(
@@ -118,8 +122,7 @@ void main() {
           );
         }
         return http.Response('[]', 200);
-      }),
-    );
+    }));
 
     final packed = await client.loadCategoryLivePacked(
       source,
@@ -148,8 +151,7 @@ void main() {
 
   test('syncCatalog includeLiveStreams:false skips get_live_streams', () async {
     final actions = <String?>[];
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         final action = request.url.queryParameters['action'];
         actions.add(action);
         if (action == null) {
@@ -177,8 +179,7 @@ void main() {
           fail('get_live_streams should not be called');
         }
         return http.Response('[]', 200);
-      }),
-    );
+    }));
 
     final result = await client.syncCatalog(source, includeLiveStreams: false);
     expect(result.live, isEmpty);
@@ -192,8 +193,7 @@ void main() {
     final client = XtreamClient(
       httpClient: MockClient((_) async {
         return http.Response('{}', 200);
-      }),
-    );
+    }));
     final urls = client.epgCandidateUrls(source);
     expect(urls, hasLength(2));
     expect(urls.first, 'http://example.com/epgZip.xml');
@@ -201,8 +201,7 @@ void main() {
   });
 
   test('syncCatalog maps is_adult on categories and streams', () async {
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         final action = request.url.queryParameters['action'];
         if (action == null) {
           return http.Response(
@@ -265,8 +264,7 @@ void main() {
           );
         }
         return http.Response('[]', 200);
-      }),
-    );
+    }));
 
     final result = await client.syncCatalog(source);
     expect(
@@ -286,8 +284,7 @@ void main() {
   test('fetchChannelEpg prefers get_short_epg then falls back', () async {
     final title = base64.encode(utf8.encode('Evening News'));
     var calls = 0;
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         calls++;
         final action = request.url.queryParameters['action'];
         if (action == 'get_short_epg') {
@@ -310,8 +307,7 @@ void main() {
           }),
           200,
         );
-      }),
-    );
+    }));
 
     final programs = await client.fetchChannelEpg(source, streamId: '22807');
     expect(calls, 2);
@@ -324,8 +320,7 @@ void main() {
 
   test('fetchChannelEpg uses short epg when present', () async {
     final title = base64.encode(utf8.encode('JT 20h'));
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         expect(request.url.queryParameters['action'], 'get_short_epg');
         expect(request.url.queryParameters['limit'], '24');
         return http.Response(
@@ -344,8 +339,7 @@ void main() {
           }),
           200,
         );
-      }),
-    );
+    }));
 
     final programs = await client.fetchChannelEpg(source, streamId: '154');
     expect(programs, hasLength(1));
@@ -447,8 +441,7 @@ void main() {
   });
 
   test('loadCategoryStreams filters by category_id', () async {
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         expect(request.url.queryParameters['category_id'], '1016');
         return http.Response(
           jsonEncode([
@@ -461,8 +454,7 @@ void main() {
           ]),
           200,
         );
-      }),
-    );
+    }));
 
     final items = await client.loadCategoryStreams(
       source,
@@ -482,8 +474,7 @@ void main() {
     final client = XtreamClient(
       httpClient: MockClient((_) async {
         return http.Response('{}', 200);
-      }),
-    );
+    }));
     final start = DateTime.utc(2026, 8, 7, 20, 30, 0);
     final url = client.catchupUrl(
       source: source,
@@ -563,8 +554,7 @@ void main() {
   });
 
   test('fetchSeriesInfo maps seasons and episodes', () async {
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         expect(request.url.queryParameters['action'], 'get_series_info');
         expect(request.url.queryParameters['series_id'], '62277');
         return http.Response(
@@ -608,8 +598,7 @@ void main() {
           }),
           200,
         );
-      }),
-    );
+    }));
 
     final info = await client.fetchSeriesInfo(source, seriesId: '62277');
     expect(info.title, 'EN| Justice, USA');
@@ -628,8 +617,7 @@ void main() {
   });
 
   test('loadCategoryStreams maps series kind', () async {
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         return http.Response(
           jsonEncode([
             {
@@ -646,8 +634,7 @@ void main() {
           ]),
           200,
         );
-      }),
-    );
+    }));
 
     final items = await client.loadCategoryStreams(
       source,
@@ -707,8 +694,7 @@ void main() {
   );
 
   test('fetchVodInfo reads tmdb from info and movie_data', () async {
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         expect(request.url.queryParameters['action'], 'get_vod_info');
         return http.Response(
           jsonEncode({
@@ -717,8 +703,7 @@ void main() {
           }),
           200,
         );
-      }),
-    );
+    }));
     final info = await client.fetchVodInfo(source, vodId: '11');
     expect(info?.tmdbId, 550);
     expect(info?.plot, 'Soap');
@@ -727,8 +712,7 @@ void main() {
   test(
     'fetchOnDemandCatalogPlan packs movies and series as SQL maps',
     () async {
-      final client = XtreamClient(
-        httpClient: MockClient((request) async {
+      final client = xtreamTestClient(MockClient((request) async {
           final action = request.url.queryParameters['action'];
           if (action == null) {
             return http.Response(
@@ -784,8 +768,7 @@ void main() {
             );
           }
           return http.Response('[]', 200);
-        }),
-      );
+      }));
 
       final plan = await client.fetchOnDemandCatalogPlan(source);
       expect(plan.vodCount, 2);
@@ -808,8 +791,7 @@ void main() {
   );
 
   test('streamOnDemandCatalog skipIf avoids copying SQL rows', () async {
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         final action = request.url.queryParameters['action'];
         if (action == null) {
           return http.Response(
@@ -848,8 +830,7 @@ void main() {
           return http.Response(jsonEncode([]), 200);
         }
         return http.Response('[]', 200);
-      }),
-    );
+    }));
 
     final copied = <int>[];
     final dumped = await client.streamOnDemandCatalog(
@@ -867,8 +848,7 @@ void main() {
   });
 
   test('fetchAllLivePacked returns SQL maps from the unscoped dump', () async {
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         final action = request.url.queryParameters['action'];
         if (action == 'get_live_categories') {
           return http.Response(
@@ -894,8 +874,7 @@ void main() {
           );
         }
         return http.Response('[]', 200);
-      }),
-    );
+    }));
 
     final packed = await client.fetchAllLivePacked(source);
     expect(packed, hasLength(1));
@@ -905,8 +884,7 @@ void main() {
   });
 
   test('streamLiveCatalog skipIf avoids copying SQL rows', () async {
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         final action = request.url.queryParameters['action'];
         if (action == 'get_live_categories') {
           return http.Response(
@@ -932,8 +910,7 @@ void main() {
           );
         }
         return http.Response('[]', 200);
-      }),
-    );
+    }));
 
     final copied = <int>[];
     final dumped = await client.streamLiveCatalog(
@@ -951,8 +928,7 @@ void main() {
   });
 
   test('streamLiveCatalog streams listings without concatenating SQL', () async {
-    final client = XtreamClient(
-      httpClient: MockClient((request) async {
+    final client = xtreamTestClient(MockClient((request) async {
         final action = request.url.queryParameters['action'];
         if (action == 'get_live_categories') {
           return http.Response(
@@ -976,8 +952,7 @@ void main() {
           );
         }
         return http.Response('[]', 200);
-      }),
-    );
+    }));
 
     final sql = <Map<String, Object?>>[];
     final listings = <Map<String, Object?>>[];

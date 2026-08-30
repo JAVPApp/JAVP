@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:javp/models/iptv_source.dart';
 import 'package:javp/models/profile.dart';
 import 'package:javp/models/sync_settings.dart';
-import 'package:javp/providers/library_provider.dart';
 import 'package:javp/providers/profile_provider.dart';
 import 'package:javp/services/deep_links/javp_pair_link.dart';
 import 'package:javp/services/pairing/device_pairing_client.dart';
@@ -13,7 +12,7 @@ import 'package:javp/services/pairing/source_pairing_server.dart';
 import 'package:javp/services/storage/sources_export.dart';
 
 /// Lightweight stand-in so pairing HTTP can be exercised without full storage.
-class _FakeLibrary extends Fake implements LibraryProvider {
+class _FakeLibrary implements PairingLibraryHost {
   final added = <Map<String, dynamic>>[];
   List<IptvSource> storedSources = [];
   SourcesExportDocument? lastImported;
@@ -78,6 +77,29 @@ class _FakeLibrary extends Fake implements LibraryProvider {
       'epgSourceId': epgSourceId,
       'epgEnabled': epgEnabled,
       'vodEnabled': vodEnabled,
+    });
+  }
+
+  @override
+  Future<void> addXmltvSource({
+    required String name,
+    required String epgUrl,
+  }) async {
+    added.add({'type': 'xmltv', 'name': name, 'epg': epgUrl});
+  }
+
+  @override
+  Future<void> addStalkerSource({
+    required String name,
+    required String portalUrl,
+    required String macAddress,
+    String? serial,
+  }) async {
+    added.add({
+      'type': 'stalker',
+      'name': name,
+      'server': portalUrl,
+      'user': macAddress,
     });
   }
 

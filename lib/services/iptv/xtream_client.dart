@@ -69,11 +69,18 @@ class XtreamPackedIngest {
 
 /// Xtream Codes API client for Live, VOD, series, EPG, and catchup.
 class XtreamClient {
-  XtreamClient({http.Client? httpClient})
-    : _http = httpClient ?? http.Client(),
-      _httpInjected = httpClient != null;
+  XtreamClient({
+    http.Client? httpClient,
+    @visibleForTesting this.debugForwardDumpBytesToWorker = false,
+  })  : _http = httpClient ?? http.Client(),
+        _httpInjected = httpClient != null;
 
   final http.Client _http;
+
+  /// Tests inject [http.Client] and set this so dump bytes flow through the
+  /// mock instead of a worker-side [http.get] (production keeps worker fetch).
+  @visibleForTesting
+  final bool debugForwardDumpBytesToWorker;
 
   /// Tests inject [http.Client]; production dumps fetch inside the JSON worker
   /// so the UI isolate never copies the body (that froze the Windows HWND).
@@ -512,6 +519,28 @@ class XtreamClient {
       unawaited(pumpUi(label: 'vod-body-hash'));
     });
     try {
+      if (debugForwardDumpBytesToWorker) {
+        final request = http.Request('GET', uri);
+        final streamed = await _http.send(request);
+        if (streamed.statusCode >= 400) {
+          unawaited(
+            streamed.stream.drain<void>().then<void>((_) {}, onError: (_) {}),
+          );
+          throw Exception('Xtream dump failed (${streamed.statusCode})');
+        }
+        final out = _XtreamBodyDigestSink();
+        final input = sha1.startChunkedConversion(out);
+        await for (final chunk in streamed.stream) {
+          input.add(chunk);
+        }
+        input.close();
+        final digest = out.value;
+        if (digest == null) {
+          throw StateError('xtream body sha1 missing digest');
+        }
+        hwnd?.mark('vod-body-hash-done', 'kind=${kind.name}');
+        return 'body:$digest';
+      }
       final fp = await Isolate.run(() => _xtreamStreamBodySha1(uri.toString()));
       hwnd?.mark('vod-body-hash-done', 'kind=${kind.name}');
       return fp;
@@ -2251,7 +2280,7 @@ class _XtreamPackedJob {
       // UI isolate via [_forwardBytesToJsonWorker] — that is "Récupération du
       // catalogue VOD" HWND death on Windows. Auth / categories still use the
       // injected client; only these multi‑MB panels go direct on the worker.
-      final workerFetchesDump = !kIsWeb;
+      final workerFetchesDump = !kIsWeb && !client.debugForwardDumpBytesToWorker;
       workerPort.send(<String, Object?>{
         'kind': kind.name,
         'sourceId': source.id,

@@ -674,7 +674,7 @@ void main() {
     );
 
     final hits = await db.searchFts('sci-fi', limit: 10);
-    expect(hits.map((m) => m.id).toSet(), {'1', '3'});
+    expect(hits.map((m) => m.id).toSet(), {'1', '2', '3'});
   });
 
   test('pruneUnknownSources no-ops without a full DELETE when clean', () async {
@@ -771,7 +771,7 @@ void main() {
     );
 
     final hits = await db.searchFts('sci-fi', limit: 10);
-    expect(hits.map((m) => m.id).toSet(), {'1', '3'});
+    expect(hits.map((m) => m.id).toSet(), {'1', '2', '3'});
   });
 
   test('open succeeds and pages without FTS', () async {

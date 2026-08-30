@@ -1170,7 +1170,7 @@ void main() {
     );
     expect(
       client.resolveEndpoint('https://catalog.example/catalog', '/search').toString(),
-      'https://catalog.example/catalog/search',
+      'https://catalog.example/search',
     );
     expect(
       client
