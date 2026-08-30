@@ -137,7 +137,7 @@ jobs:
         uses: ./.github/actions/setup-rqbit-android-ci
 
       - name: Cache Gradle wrapper & media-kit jars
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.gradle/wrapper

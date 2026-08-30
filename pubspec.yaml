@@ -20,7 +20,7 @@ dependencies:
   video_player_tizen: ^2.5.12
   shared_preferences_tizen: ^2.3.1
   path_provider_tizen: ^2.2.1
-  flutter_secure_storage_tizen: ^0.1.2
+  flutter_secure_storage_tizen: ^0.1.5
   connectivity_plus_tizen: ^1.3.2
   package_info_plus_tizen: ^1.0.1
   url_launcher_tizen: ^2.1.7
@@ -36,12 +36,12 @@ dependencies:
   shared_preferences_windows: ^2.4.1
   collection: ^1.19.1
   uuid: ^4.6.0
-  intl: ^0.20.3
+  intl: ^0.20.2
   xml: ^6.6.1
   google_fonts: ^8.2.1
   file_picker: ^10.3.2
   image: ^4.9.2
-  flutter_secure_storage: ^9.2.4
+  flutter_secure_storage: ^10.3.1
   rqbit_engine:
     path: packages/rqbit_engine
   socks5_proxy: ^2.1.1

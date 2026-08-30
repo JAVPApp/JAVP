@@ -173,7 +173,7 @@ jobs:
 
       - name: Configure Microsoft Store CLI
         if: ${{ env.HAVE_CREDS == 'true' && inputs.submit }}
-        uses: microsoft/microsoft-store-apppublisher@v1.2
+        uses: microsoft/microsoft-store-apppublisher@v1.4
 
       - name: Submit package to Partner Center
         if: ${{ env.HAVE_CREDS == 'true' && inputs.submit }}

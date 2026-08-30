@@ -686,7 +686,7 @@ jobs:
       # Skip ~/.gradle/caches — restores are multi-GB and filled the runner
       # disk before native strip. Wrapper + per-ABI media-kit jars are enough.
       - name: Cache Gradle wrapper & media-kit jars
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.gradle/wrapper
@@ -806,7 +806,7 @@ jobs:
           fetch-tags: true
 
       - name: Download APK artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: javp-${{ needs.android-plan.outputs.channel }}-apk-*
           path: build/app/outputs/flutter-apk
@@ -814,35 +814,35 @@ jobs:
 
       - name: Download Windows zip
         if: ${{ needs.windows.result == 'success' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: javp-windows-x64
           path: build/windows-dist
 
       - name: Download Windows ARM64 zip
         if: ${{ needs.windows-arm64.result == 'success' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: javp-windows-arm64
           path: build/windows-dist
 
       - name: Download Linux zip
         if: ${{ needs.linux.result == 'success' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: javp-linux-x64
           path: build/linux-dist
 
       - name: Download Linux ARM64 zip
         if: ${{ needs.linux-arm64.result == 'success' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: javp-linux-arm64
           path: build/linux-dist
 
       - name: Download macOS zips
         if: ${{ needs.macos.result == 'success' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: javp-macos-*
           path: build/macos-dist
@@ -1027,14 +1027,14 @@ jobs:
 
     steps:
       - name: Download Windows artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: javp-windows-x64
           path: build/windows-dist
 
       - name: Download macOS zips
         if: ${{ needs.macos.result == 'success' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: javp-macos-*
           path: build/macos-dist
@@ -1244,7 +1244,7 @@ jobs:
 
       - name: Configure Microsoft Store CLI
         if: ${{ env.HAVE_CREDS == 'true' }}
-        uses: microsoft/microsoft-store-apppublisher@v1.2
+        uses: microsoft/microsoft-store-apppublisher@v1.4
 
       - name: Submit package to Partner Center
         if: ${{ env.HAVE_CREDS == 'true' }}
@@ -1349,7 +1349,7 @@ jobs:
         uses: ./.github/actions/setup-rqbit-android-ci
 
       - name: Cache Gradle wrapper & media-kit jars
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.gradle/wrapper
