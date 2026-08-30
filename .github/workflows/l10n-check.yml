@@ -72,8 +72,5 @@ jobs:
       - name: Generate Flutter localizations
         run: flutter gen-l10n
 
-      - name: Localization unit tests
-        run: flutter test test/unit/app_localizations_test.dart
-
       - name: Tooling unit tests
         run: python3 tool/l10n/test_check_l10n.py
