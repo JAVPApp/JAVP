@@ -46,7 +46,7 @@ dependencies:
     path: packages/rqbit_engine
   socks5_proxy: ^2.1.1
   url_launcher: ^6.3.1
-  flutter_local_notifications: ^19.4.0
+  flutter_local_notifications: ^20.1.0
   timezone: ^0.10.1
   flutter_timezone: ^4.1.1
   sqflite: ^2.4.3
