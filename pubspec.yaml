@@ -19,7 +19,7 @@ dependencies:
   # Tizen / webOS platform implementations (no-op on Android builds).
   video_player_tizen: ^2.5.15
   shared_preferences_tizen: ^2.3.5
-  path_provider_tizen: ^2.2.1
+  path_provider_tizen: ^2.3.3
   flutter_secure_storage_tizen: ^0.1.5
   connectivity_plus_tizen: ^1.3.2
   package_info_plus_tizen: ^1.1.2
