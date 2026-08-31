@@ -60,7 +60,7 @@ dependencies:
   google_sign_in_web: ^1.1.0
   sqflite_common_ffi: ^2.4.2
   window_manager: ^0.5.2
-  archive: ^4.0.9
+  archive: ^4.2.0
   sqlite3_flutter_libs: ^0.5.39
   ffi: ^2.2.0
   dart_discord_presence: ^1.2.0
