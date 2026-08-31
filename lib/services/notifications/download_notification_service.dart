@@ -178,7 +178,7 @@ class DownloadNotificationService {
       _lastProgressPct[task.id] = pct;
       _activeIds.add(task.id);
       try {
-        await _plugin.cancel(_notificationId(task.id));
+        await _plugin.cancel(id: _notificationId(task.id));
       } catch (_) {}
       return;
     }
@@ -212,10 +212,10 @@ class DownloadNotificationService {
               : l10n.downloadingPercent(pct));
 
     await _plugin.show(
-      _notificationId(task.id),
-      title,
-      body,
-      NotificationDetails(
+      id: _notificationId(task.id),
+      title: title,
+      body: body,
+      notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           _channelId,
           l10n.downloads,
@@ -248,10 +248,10 @@ class DownloadNotificationService {
 
   Future<void> _showCompleted(DownloadTask task, AppLocalizations l10n) async {
     await _plugin.show(
-      _notificationId(task.id),
-      titleFor(task.item),
-      l10n.downloadComplete,
-      NotificationDetails(
+      id: _notificationId(task.id),
+      title: titleFor(task.item),
+      body: l10n.downloadComplete,
+      notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           _channelId,
           l10n.downloads,
@@ -285,10 +285,10 @@ class DownloadNotificationService {
         : l10n.downloadFailed;
     final title = titleFor(task.item);
     await _plugin.show(
-      _notificationId(task.id),
-      title,
-      body,
-      NotificationDetails(
+      id: _notificationId(task.id),
+      title: title,
+      body: body,
+      notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           _channelId,
           l10n.downloads,
@@ -321,7 +321,7 @@ class DownloadNotificationService {
     _lastProgressPct.remove(taskId);
     try {
       await ensureInitialized();
-      await _plugin.cancel(_notificationId(taskId));
+      await _plugin.cancel(id: _notificationId(taskId));
     } catch (_) {}
   }
 }

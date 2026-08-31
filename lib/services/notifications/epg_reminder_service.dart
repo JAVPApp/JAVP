@@ -30,8 +30,8 @@ class EpgReminderService {
 
     tz_data.initializeTimeZones();
     try {
-      final name = await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(name));
+      final info = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(info.identifier));
     } catch (_) {
       tz.setLocalLocation(tz.getLocation('UTC'));
     }
@@ -56,7 +56,7 @@ class EpgReminderService {
           )
         : null;
     await _plugin.initialize(
-      InitializationSettings(
+      settings: InitializationSettings(
         android: android,
         iOS: ios,
         windows: windows,
@@ -148,11 +148,11 @@ class EpgReminderService {
     // Inexact alarms avoid SCHEDULE_EXACT_ALARM / Play Console declaration.
     // Reminders may fire slightly late; boot receiver reschedules after reboot.
     await _plugin.zonedSchedule(
-      reminder.notificationId,
-      reminder.programTitle,
-      'Starting now on ${reminder.channelTitle}',
-      when,
-      details,
+      id: reminder.notificationId,
+      title: reminder.programTitle,
+      body: 'Starting now on ${reminder.channelTitle}',
+      scheduledDate: when,
+      notificationDetails: details,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       payload: reminder.mediaItemId,
     );
@@ -160,7 +160,7 @@ class EpgReminderService {
 
   Future<void> cancel(EpgReminder reminder) async {
     await ensureInitialized();
-    await _plugin.cancel(reminder.notificationId);
+    await _plugin.cancel(id: reminder.notificationId);
   }
 
   Future<void> rescheduleAll(List<EpgReminder> reminders) async {
