@@ -14,7 +14,8 @@ Windows, and Android main builds compile this crate on each platform.
 
 | Platform | How the `.so` / `.dll` / `.dylib` is produced |
 | --- | --- |
-| Linux / Windows / macOS | CMake / CocoaPods runs `cargo build --release` |
+| Linux / Windows | CMake runs `cargo build --release` and Flutter copies the artifact next to the binary |
+| macOS | CocoaPods runs `cargo build --release`, rewrites `LC_ID_DYLIB` to `@rpath/librqbit_engine.dylib`, and vendors the dylib (required so shipped `.app` zips do not embed `/Users/…` load paths) |
 | Android | Gradle uses `prebuilt/android/<abi>/librqbit_engine.so` when present (CI Play/sideload builds skip cargo-ndk). Otherwise runs `cargo ndk` when the NDK + `cargo-ndk` are on PATH. |
 
 ```bash
