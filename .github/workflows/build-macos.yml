@@ -105,6 +105,7 @@ jobs:
             echo "::error::Expected $ARCH in $bin (got ${archs:-none})"
             exit 1
           fi
+          bash "$GITHUB_WORKSPACE/tool/verify_macos_app_dylibs.sh" "$src"
           mkdir -p build/macos-dist
           (
             cd "$(dirname "$src")"
